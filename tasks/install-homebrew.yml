@@ -1,0 +1,11 @@
+---
+- name     : Checking if Homebrew is installed
+  command  : brew -v
+  register : has_brew
+  ignore_errors : true
+  no_log        : true
+  changed_when  : "has_brew.stderr != ''"
+
+- name    : Installing Homebrew
+  command : /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+  when    : has_brew.stderr != ""

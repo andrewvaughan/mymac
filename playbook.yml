@@ -6,3 +6,8 @@
 
       # Install XCode on the platform
       - include: tasks/install-xcode.yml
+
+      # Install Homebrew
+      - include: tasks/install-homebrew.yml
+
+    
