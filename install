@@ -1,0 +1,19 @@
+#!/bin/bash
+
+if [[ $EUID -eq 0 ]]; then
+   echo "This script cannot be run as root." 1>&2
+   exit 1
+fi
+
+if ! type "brew" > /dev/null; then
+    /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+fi
+
+brew install ansible git
+
+cd /tmp
+git clone https://github.com/andrewvaughan/mymac.git
+cd mymac
+ansible-playbook playbook.yml
+
+rm -rf /tmp/mymac
