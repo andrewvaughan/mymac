@@ -1,6 +1,5 @@
 ---
 - hosts: local
-  become: yes
 
   tasks:
 

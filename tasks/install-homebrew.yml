@@ -7,8 +7,9 @@
   changed_when  : "has_brew.stderr != ''"
 
 - name    : Installing Homebrew
-  command : /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+  command : "/usr/bin/ruby -e \"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)\""
   when    : has_brew.stderr != ""
 
 - name    : Adding Homebrew support to Ansible
   command : ansible-galaxy install geerlingguy.homebrew
+  become  : true
