@@ -1,0 +1,11 @@
+# Installs XCode on the Mac platform.  May cause a popup to appear
+---
+- name  : Installing XCode
+  shell : xcode-select --install
+  changed_when  : false
+  ignore_errors : true
+  no_log        : true
+
+- name: Pausing
+  pause:
+    prompt: "Press any key when XCode installation has completed"
