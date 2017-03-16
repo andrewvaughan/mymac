@@ -3,8 +3,118 @@
 
   tasks:
 
-      # Install XCode on the platform
-      - include: tasks/install-xcode.yml
+    # # Set this computer's identity
+    # - include: tasks/set-identity.yml
+    #
+    #
+    # # Update any existing software before starting new paths
+    # - include: tasks/update-software.yml
+    #
+    #
+    # # Create an ssh key in the user's home directory (if one does not already exist)
+    # - include: tasks/create-ssh-key.yml
 
-      # Install Homebrew
-      - include: tasks/install-homebrew.yml
+
+    # Install XCode on the platform
+    - include: tasks/install-xcode.yml
+
+
+    # Install Homebrew
+    - include: tasks/install-homebrew.yml
+
+
+    # # Install Homebrew packages
+    # - include: tasks/install-homebrew-packages.yml
+    #   vars:
+    #     packages:
+    #       - ack
+    #       - dock-util
+    #       - docker
+    #       - git
+    #       - gpg
+    #       - openssl
+    #       - mysql
+    #       - nmap
+    #       - nvm
+    #       - sqlite
+    #       - unrar
+    #       - watch
+    #       - wget
+    #
+    #
+    # # Install Homebrew casks
+    # - include: tasks/install-homebrew-casks.yml
+    #   vars:
+    #     taps:
+    #       - caskroom/cask
+    #       - caskroom/versions
+    #     casks:
+    #       - atom
+    #       - dropbox
+    #       - evernote
+    #       - firefox
+    #       - google-chrome
+    #       - google-drive
+    #       - google-hangouts
+    #       - java
+    #       - kindle
+    #       - omnigraffle
+    #       - skype
+    #       - slack
+    #       - spotify
+    #       - the-unarchiver
+    #       - transmission
+    #       - virtualbox
+    #
+    #
+    # # Clean up the macOS Dock
+    # - include: tasks/reset-dock.yml
+    #   vars:
+    #     apps:
+    #       - /Applications/1Password.app
+    #       - /Applications/Google Chrome.app
+    #       - /Applications/Utilities/Terminal.app
+    #       - /Applications/Atom.app
+    #       - /Applications/Spark.app
+    #       - /Applications/Microsoft Outlook.app
+    #       - /Applications/Messages.app
+    #       - /Applications/Slack.app
+    #       - /Applications/Google Hangouts.app
+    #       - /Applications/Spotify.app
+    #
+    #
+    # # Install other applications
+    # - include: tasks/install-creative-cloud.yml
+    # - include: tasks/install-photoshop.yml
+    # - include: tasks/install-steam.yml
+    #
+    #
+    # # Configure git globals and add a global .gitignore for macOS
+    # - include: tasks/configure-git.yml
+    #
+    #
+    # # Install the most common Node.js versions
+    # - include: tasks/install-nodejs.yml
+    #
+    #
+    # # Sign into Chrome and make it the default browser
+    # - include: tasks/chrome-login.yml
+    # - include: tasks/chrome-default.yml
+    #
+    #
+    # # Various defaults and other settings for macOS
+    # - include: tasks/defaults-hot-corners.yml
+    # - include: tasks/defaults-terminal.yml
+    # - include: tasks/defaults-keyboard.yml
+    # - include: tasks/defaults-auto-correct.yml
+    # - include: tasks/defaults-menu-bar.yml
+    # - include: tasks/defaults-window.yml
+    # - include: tasks/defaults-dock.yml
+    # - include: tasks/defaults-finder.yml
+    # - include: tasks/defaults-auto-update.yml
+    # - include: tasks/defaults-tap-to-click.yml
+    #
+    #
+    #
+    # # Restart for good luck
+    # - include: tasks/restart.yml
