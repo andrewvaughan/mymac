@@ -14,6 +14,6 @@ brew install ansible git
 cd /tmp
 git clone https://github.com/andrewvaughan/mymac.git
 cd mymac
-ansible-playbook playbook.yml
+ansible-playbook playbook.yml --ask-become-pass
 
 rm -rf /tmp/mymac

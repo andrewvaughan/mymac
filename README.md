@@ -37,7 +37,7 @@ Alternatively, the following can be manually installed:
 Once dependencies are installed, the provided playbook can be run via Ansible:
 
 ```bash
-ansible-playbook playbook.yml
+ansible-playbook playbook.yml --ask-become-pass
 ```
 
 

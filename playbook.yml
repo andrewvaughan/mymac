@@ -1,6 +1,6 @@
 ---
 - hosts: local
-  remote_user: root
+  become: yes
 
   tasks:
 
@@ -9,5 +9,3 @@
 
       # Install Homebrew
       - include: tasks/install-homebrew.yml
-
-    
