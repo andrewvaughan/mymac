@@ -1,0 +1,7 @@
+# Creates an SSH key for the current user, if one does not already exist.
+---
+- name : Checking for (or generating) user's SSH key
+  user :
+    name             : "{{ ansible_user_id }}"
+    ssh_key_file     : ".ssh/id_rsa"
+    generate_ssh_key : yes

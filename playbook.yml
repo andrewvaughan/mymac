@@ -1,7 +1,15 @@
 ---
 - hosts: local
 
+  vars:
+    scope : "{{ lookup('env', 'SCOPE') }}"
+
+
   tasks:
+
+    - name : Checking for SCOPE
+      fail : msg="Please set the environment variable SCOPE to either 'work' or 'personal'"
+      when : scope != "work" and scope != "personal"
 
     # # Set this computer's identity
     # - include: tasks/set-identity.yml
@@ -9,10 +17,10 @@
     #
     # # Update any existing software before starting new paths
     # - include: tasks/update-software.yml
-    #
-    #
-    # # Create an ssh key in the user's home directory (if one does not already exist)
-    # - include: tasks/create-ssh-key.yml
+
+
+    # Create an ssh key in the user's home directory (if one does not already exist)
+    - include: tasks/create-ssh-key.yml
 
 
     # Install XCode on the platform
@@ -86,6 +94,7 @@
     # # Install other applications
     # - include: tasks/install-creative-cloud.yml
     # - include: tasks/install-photoshop.yml
+    # - include: tasks/install-spark.yml
     # - include: tasks/install-steam.yml
     #
     #

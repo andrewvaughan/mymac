@@ -22,8 +22,11 @@ applicable.
 A remote install script is available to install all required dependencies and execute the standard Ansible playbook:
 
 ```bash
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/andrewvaughan/mymac/master/install)"
+SCOPE=work /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/andrewvaughan/mymac/master/install)"
 ```
+
+The `SCOPE` value can be either `work` or `personal`, depending on which environment is being created.  This affects
+some of the configurations.
 
 
 ## Installation
@@ -37,7 +40,7 @@ Alternatively, the following can be manually installed:
 Once dependencies are installed, the provided playbook can be run via Ansible:
 
 ```bash
-ansible-playbook playbook.yml --ask-become-pass
+SCOPE=work ansible-playbook playbook.yml --ask-become-pass
 ```
 
 
