@@ -11,12 +11,13 @@
       fail : msg="Please set the environment variable SCOPE to either 'work' or 'personal'"
       when : scope != "work" and scope != "personal"
 
-    # # Set this computer's identity
-    # - include: tasks/set-identity.yml
-    #
-    #
-    # # Update any existing software before starting new paths
-    # - include: tasks/update-software.yml
+
+    # Set this computer's identity
+    #- include: tasks/set-identity.yml
+
+
+    # Update any existing software before starting new paths
+    - include: tasks/update-macos.yml
 
 
     # Create an ssh key in the user's home directory (if one does not already exist)
