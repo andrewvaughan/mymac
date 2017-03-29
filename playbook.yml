@@ -17,7 +17,8 @@
 
 
     # Update any existing software before starting new paths
-    - include: tasks/update-macos.yml
+    # @TODO: This is currently pretty buggy (waiting for input and getting stuck, maybe?)
+    #- include: tasks/update-macos.yml
 
 
     # Create an ssh key in the user's home directory (if one does not already exist)
