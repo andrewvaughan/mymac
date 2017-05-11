@@ -8,7 +8,9 @@
   tasks:
 
     # Check that this is a supported MacOS version (and computer)
-    # @TODO
+    - name : Checking Operating system
+      fail : msg="This installer is only supported by MacOSX, current operating system is \"{{ ansible_distribution }}\""
+      when : ansible_distribution != "MacOSX"
 
 
     # Check that the scope of the system has been set
@@ -22,16 +24,12 @@
 
 
     # Set this computer's identity
-    #- include: tasks/set-identity.yml
+    #- include: tasks/macos-identity.yml
 
 
     # Update any existing software before starting new paths
     # @TODO: This is currently pretty buggy (waiting for input and getting stuck, maybe?)
     #- include: tasks/macos-app-update.yml
-
-
-    # Turn on file vault if not enabled
-    # @TODO
 
 
     # Create an ssh key in the user's home directory (if one does not already exist)
@@ -81,7 +79,6 @@
     #       - google-hangouts
     #       - java
     #       - kindle
-    #       - omnigraffle
     #       - skype
     #       - slack
     #       - spotify
@@ -93,12 +90,27 @@
     # Configure installed applications
     # @TODO
     # docker
-    # https://blog.joefallon.net/2013/10/install-mysql-on-mac-osx-using-homebrew/
+    # git
+    # mysql https://blog.joefallon.net/2013/10/install-mysql-on-mac-osx-using-homebrew/
+    # nvm
+    # Atom
+    # dropbox
+    # evernote
+    # firefox
+    # google-chrome
+    # google-drive
+    # google-hangouts
+    # kindle
+    # skype
+    # slack
+    # spotify
+    # transmission
+    # virtualbox
 
-    #
-    #
+
+
     # # Clean up the macOS Dock
-    # - include: tasks/reset-dock.yml
+    # - include: tasks/macos-dock.yml
     #   vars:
     #     apps:
     #       - /Applications/1Password.app
@@ -134,6 +146,9 @@
     #
     #
     # # Various defaults and other settings for macOS
+    # - include: tasks/macos-defaults.yml
+
+
     # - include: tasks/defaults-hot-corners.yml
     # - include: tasks/defaults-terminal.yml
     # - include: tasks/defaults-keyboard.yml
@@ -144,6 +159,8 @@
     # - include: tasks/defaults-finder.yml
     # - include: tasks/defaults-auto-update.yml
     # - include: tasks/defaults-tap-to-click.yml
+
+
     #
     #
     # # Install Bash-It

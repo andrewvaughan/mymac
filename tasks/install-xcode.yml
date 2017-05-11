@@ -4,7 +4,6 @@
   command       : xcode-select --install
   changed_when  : false
   ignore_errors : true
-  no_log        : true
 
 - name  : Pausing
   pause :
