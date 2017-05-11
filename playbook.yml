@@ -21,6 +21,10 @@
     #- include: tasks/update-macos.yml
 
 
+    # Turn on file vault if not enabled
+    # @TODO
+
+
     # Create an ssh key in the user's home directory (if one does not already exist)
     - include: tasks/create-ssh-key.yml
 
@@ -33,26 +37,26 @@
     - include: tasks/install-homebrew.yml
 
 
-    # # Install Homebrew packages
-    # - include: tasks/install-homebrew-packages.yml
-    #   vars:
-    #     packages:
-    #       - ack
-    #       - dock-util
-    #       - docker
-    #       - git
-    #       - gpg
-    #       - openssl
-    #       - mysql
-    #       - nmap
-    #       - nvm
-    #       - sqlite
-    #       - unrar
-    #       - watch
-    #       - wget
-    #
-    #
-    # # Install Homebrew casks
+    # Install Homebrew packages
+    - include: tasks/install-homebrew-packages.yml
+      vars:
+        packages:
+          - ack
+          - dockutil
+          - docker
+          - git
+          - gpg
+          - openssl
+          - mysql
+          - nmap
+          - nvm
+          - sqlite
+          - unrar
+          - watch
+          - wget
+
+
+    # Install Homebrew casks
     # - include: tasks/install-homebrew-casks.yml
     #   vars:
     #     taps:
@@ -75,6 +79,13 @@
     #       - the-unarchiver
     #       - transmission
     #       - virtualbox
+
+
+    # Configure installed applications
+    # @TODO
+    # docker
+    # https://blog.joefallon.net/2013/10/install-mysql-on-mac-osx-using-homebrew/
+
     #
     #
     # # Clean up the macOS Dock
@@ -104,8 +115,8 @@
     # - include: tasks/configure-git.yml
     #
     #
-    # # Install the most common Node.js versions
-    # - include: tasks/install-nodejs.yml
+    # # Install common Node.js versions with nvm
+    # - include: tasks/install-nvm-nodejs.yml
     #
     #
     # # Sign into Chrome and make it the default browser
@@ -126,6 +137,8 @@
     # - include: tasks/defaults-tap-to-click.yml
     #
     #
+    # # Install Bash-It
+    # # @TODO
     #
     # # Restart for good luck
     # - include: tasks/restart.yml
