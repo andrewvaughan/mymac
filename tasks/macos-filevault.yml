@@ -1,0 +1,12 @@
+# Checks if FileVault is enabled, and enables it if not
+---
+- name          : Checking if FileVault is enabled for Full Disk Encryption
+  command       : fdesetup status
+  register      : has_fde
+  ignore_errors : true
+  changed_when  : false
+
+- name    : Enabling FileVault on restart
+  become  : true
+  command : "fdesetup enable -defer ~/.recovery.plist -keychain -user {{ ansible_user_id }}"
+  when    : '"FileVault is On." not in has_fde.stdout_lines'

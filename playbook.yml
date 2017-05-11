@@ -7,9 +7,18 @@
 
   tasks:
 
+    # Check that this is a supported MacOS version (and computer)
+    # @TODO
+
+
+    # Check that the scope of the system has been set
     - name : Checking for SCOPE
       fail : msg="Please set the environment variable SCOPE to either 'work' or 'personal'"
       when : scope != "work" and scope != "personal"
+
+
+    # Enable FileVault
+    - include: tasks/macos-filevault.yml
 
 
     # Set this computer's identity
@@ -18,7 +27,7 @@
 
     # Update any existing software before starting new paths
     # @TODO: This is currently pretty buggy (waiting for input and getting stuck, maybe?)
-    #- include: tasks/update-macos.yml
+    #- include: tasks/macos-app-update.yml
 
 
     # Turn on file vault if not enabled
