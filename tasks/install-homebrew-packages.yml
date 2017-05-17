@@ -1,10 +1,5 @@
-# Installs Homebrew using Ruby from the online installer script (only if the "brew" command does not currently work).
+# Installs Packages using Homebrew.  Both Homebrew and the Ansible galaxy extension must be installed to use.
 ---
-- name     : Updating Homebrew and all existing packages
-  homebrew :
-    update_homebrew : yes
-    upgrade_all     : yes
-
 - name       : "Installing Homebrew packages"
   homebrew   :
     name  : "{{ item }}"

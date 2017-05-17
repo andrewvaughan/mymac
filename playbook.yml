@@ -52,7 +52,6 @@
         packages:
           - ack
           - dockutil
-          - docker
           - git
           - gpg
           - openssl
@@ -65,50 +64,117 @@
           - wget
 
 
-    # Install Homebrew casks
-    # - include: tasks/install-homebrew-casks.yml
+    # Sign into the App Store
+    # @TODO
+
+
+    # Install AppStore applications
+    # @TODO - anything in [brackets] also has a Homebrew cask
+    # - include : tasks/install-appstore-apps.yml
     #   vars:
-    #     taps:
-    #       - caskroom/cask
-    #       - caskroom/versions
-    #     casks:
-    #       - atom
-    #       - dropbox
-    #       - evernote
-    #       - firefox
-    #       - google-chrome
-    #       - google-drive
-    #       - google-hangouts
-    #       - java
-    #       - kindle
-    #       - skype
-    #       - slack
-    #       - spotify
-    #       - the-unarchiver
-    #       - transmission
-    #       - virtualbox
+    #     - [1password]
+    #     - [cloudapp]
+    #     - [daisydisk]
+    #     - [evernote]
+    #     - [flexiglass]
+    #     - radarscope
+    #     - [slack]
+    #     - spark
+    #     - [textual 6]
+    #     - [the unarchiver]
+
+
+    # Install common Homebrew casks
+    - include: tasks/install-homebrew-casks.yml
+      vars:
+        taps:
+          - caskroom/cask
+          - caskroom/versions
+        casks:
+          - 1password
+          - adobe-creative-cloud
+          - adobe-photoshop-cc
+          - atom
+          - cloudapp
+          - daisydisk
+          # - docker
+          - docker-toolbox
+          - doxie
+          - dropbox
+          - evernote
+          - filezilla
+          - firefox
+          - flash-player
+          - flexiglass
+          - google-chrome
+          - google-drive
+          - google-hangouts
+          - intellij-idea-ce
+          - java
+          - skype
+          - slack
+          - snagit
+          - spotify
+          - the-unarchiver
+          - unity-web-player
+          - virtualbox
+          - vlc
+          - vlc-webplugin
+
+
+    # Install work Homebrew casks
+    - include : tasks/install-homebrew-casks.yml
+      when    : scope == "work"
+      vars:
+        taps:
+          - caskroom/cask
+          - caskroom/versions
+        casks:
+          - ringcentral
+          - tableau
+          - tableau-reader
+
+
+    # Install personal Homebrew casks
+    - include : tasks/install-homebrew-casks.yml
+      when    : scope == "personal"
+      vars:
+        taps:
+          - caskroom/cask
+          - caskroom/versions
+        casks:
+          - ableton-live-intro
+          - arduino
+          - beersmith2
+          - handbrake
+          - kicad
+          - kicad-extras
+          - kindle
+          - league-of-legends
+          - microsoft-office
+          - nox-app-player
+          - plex-media-player
+          - steam
+          - steamcmd
+          - teamspeak-client
+          - textual
+          - transmission
+          - unity
+          - unity-android-support-for-editor
+          - unity-download-assistant
+          - unity-ios-support-for-editor
+          - unity-linux-support-for-editor
+          - unity-standard-assets
+          - unity-webgl-support-for-editor
+          - unity-windows-support-for-editor
+
+
+    # @TODO: Install Fusion 360 (Personal only)
+    # @TODO: Install Curse Client (Personal only)
 
 
     # Configure installed applications
     # @TODO
-    # docker
-    # git
-    # mysql https://blog.joefallon.net/2013/10/install-mysql-on-mac-osx-using-homebrew/
-    # nvm
-    # Atom
-    # dropbox
-    # evernote
-    # firefox
-    # google-chrome
-    # google-drive
-    # google-hangouts
-    # kindle
-    # skype
-    # slack
-    # spotify
-    # transmission
-    # virtualbox
-
 
 
     # # Clean up the macOS Dock

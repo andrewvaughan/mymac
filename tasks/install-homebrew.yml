@@ -14,3 +14,8 @@
 - name    : Adding Homebrew support to Ansible
   become  : true
   command : ansible-galaxy install geerlingguy.homebrew
+
+- name: Updating all installed Homebrew packages and casks
+  homebrew:
+    update_homebrew : yes
+    upgrade_all     : yes
