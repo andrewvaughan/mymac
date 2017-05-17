@@ -12,78 +12,56 @@
       when : ansible_distribution != "MacOSX"
 
 
-    # Check that the scope of the system has been set
-    - name : Checking for SCOPE environment variable
-      fail : msg="Please set the environment variable SCOPE to either 'work' or 'personal'"
-      when : scope != "work" and scope != "personal"
-
-
-    # Enable FileVault
-    - include : tasks/macos-filevault.yml
-
-
-    # Set this computer's identity
-    # @TODO: Need to determine how to prompt questions during tasks (pause doesn't work any more)
-    #- include : tasks/macos-identity.yml
-    #  when    : scope == "personal"
-
-
-    # Update any existing software before starting new paths
-    # @TODO: This is currently pretty buggy (waiting for input and getting stuck, maybe?)
-    - include : tasks/macos-app-update.yml
-      when    : false
-
-
-    # Create an ssh key in the user's home directory (if one does not already exist)
-    - include : tasks/create-ssh-key.yml
-
-
-    # Install XCode on the platform
-    - include : tasks/install-xcode.yml
-
-
-    # Install Homebrew
-    - include : tasks/install-homebrew.yml
-
-
-    # Install Homebrew packages
-    - include : tasks/install-homebrew-packages.yml
-      vars:
-        packages:
-          - ack
-          - dockutil
-          - git
-          - gpg
-          - openssl
-          - mysql
-          - nmap
-          - nvm
-          - sqlite
-          - unrar
-          - watch
-          - wget
-
-
-    # Sign into the App Store
-    # @TODO
-
-
-    # Install AppStore applications
-    # @TODO - anything in [brackets] also has a Homebrew cask
-    # - include : tasks/install-appstore-apps.yml
+    # # Check that the scope of the system has been set
+    # - name : Checking for SCOPE environment variable
+    #   fail : msg="Please set the environment variable SCOPE to either 'work' or 'personal'"
+    #   when : scope != "work" and scope != "personal"
+    #
+    #
+    # # Enable FileVault
+    # - include : tasks/macos-filevault.yml
+    #
+    #
+    # # Update any existing software before starting new paths
+    # - include : tasks/macos-app-update.yml
+    #   when    : false
+    #
+    #
+    # # Create an ssh key in the user's home directory (if one does not already exist)
+    # - include : tasks/create-ssh-key.yml
+    #
+    #
+    # # Install XCode on the platform
+    # - include : tasks/install-xcode.yml
+    #
+    #
+    # # Install Homebrew
+    # - include : tasks/install-homebrew.yml
+    #
+    #
+    # # Install Homebrew packages
+    # - include : tasks/install-homebrew-packages.yml
     #   vars:
-    #     - [1password]
-    #     - [cloudapp]
-    #     - [daisydisk]
-    #     - [evernote]
-    #     - [flexiglass]
-    #     - radarscope
-    #     - [slack]
-    #     - spark
-    #     - [textual 6]
-    #     - [the unarchiver]
-
-
+    #     packages:
+    #       - ack
+    #       - bash-completion
+    #       - dockutil
+    #       - gettext
+    #       - git
+    #       - gpg
+    #       - openssl
+    #       - mcrypt
+    #       - mysql
+    #       - nmap
+    #       - nvm
+    #       - pv
+    #       - ssh-copy-id
+    #       - sqlite
+    #       - unrar
+    #       - watch
+    #       - wget
+    #
+    #
     # Install common Homebrew casks
     - include: tasks/install-homebrew-casks.yml
       vars:
@@ -91,148 +69,102 @@
           - caskroom/cask
           - caskroom/versions
         casks:
-          - 1password
-          - adobe-creative-cloud
-          - adobe-photoshop-cc
+    #       - 1password
+    #       - adobe-creative-cloud
+    #       - adobe-photoshop-cc
           - atom
-          - cloudapp
-          - daisydisk
-          # - docker
-          - docker-toolbox
-          - doxie
-          - dropbox
-          - evernote
-          - filezilla
-          - firefox
-          - flash-player
-          - flexiglass
-          - google-chrome
-          - google-drive
+    #       - cloudapp
+    #       - daisydisk
+    #       - docker-toolbox
+    #       - doxie
+    #       - dropbox
+    #       - evernote
+    #       - filezilla
+    #       - firefox
+    #       - flash-player
+    #       - flexiglass
+    #       - google-chrome
+    #       - google-drive
           - google-hangouts
-          - intellij-idea-ce
-          - java
-          - skype
-          - slack
-          - snagit
-          - spotify
-          - the-unarchiver
-          - unity-web-player
-          - virtualbox
-          - vlc
-          - vlc-webplugin
-
-
-    # Install work Homebrew casks
-    - include : tasks/install-homebrew-casks.yml
-      when    : scope == "work"
-      vars:
-        taps:
-          - caskroom/cask
-          - caskroom/versions
-        casks:
-          - ringcentral
-          - tableau
-          - tableau-reader
-
-
-    # Install personal Homebrew casks
-    - include : tasks/install-homebrew-casks.yml
-      when    : scope == "personal"
-      vars:
-        taps:
-          - caskroom/cask
-          - caskroom/versions
-        casks:
-          - ableton-live-intro
-          - arduino
-          - beersmith2
-          - handbrake
-          - kicad
-          - kicad-extras
-          - kindle
-          - league-of-legends
-          - microsoft-office
-          - nox-app-player
-          - plex-media-player
-          - steam
-          - steamcmd
-          - teamspeak-client
-          - textual
-          - transmission
-          - unity
-          - unity-android-support-for-editor
-          - unity-download-assistant
-          - unity-ios-support-for-editor
-          - unity-linux-support-for-editor
-          - unity-standard-assets
-          - unity-webgl-support-for-editor
-          - unity-windows-support-for-editor
-
-
-    # @TODO: Install Fusion 360 (Personal only)
-    # @TODO: Install Curse Client (Personal only)
-
-
-    # Configure installed applications
-    # @TODO
-
-
-    # # Clean up the macOS Dock
-    # - include : tasks/macos-dock.yml
+    #       - intellij-idea-ce
+    #       - istat-menus
+    #       - java
+    #       - skype
+    #       - slack
+    #       - snagit
+    #       - spotify
+    #       - the-unarchiver
+    #       - unity-web-player
+    #       - virtualbox
+    #       - vlc
+    #       - vlc-webplugin
+    #
+    #
+    # # Install work Homebrew casks
+    # - include : tasks/install-homebrew-casks.yml
+    #   when    : scope == "work"
     #   vars:
-    #     apps:
-    #       - /Applications/1Password.app
-    #       - /Applications/Google Chrome.app
-    #       - /Applications/Utilities/Terminal.app
-    #       - /Applications/Atom.app
-    #       - /Applications/Spark.app
-    #       - /Applications/Microsoft Outlook.app
-    #       - /Applications/Messages.app
-    #       - /Applications/Slack.app
-    #       - /Applications/Google Hangouts.app
-    #       - /Applications/Spotify.app
+    #     taps:
+    #       - caskroom/cask
+    #       - caskroom/versions
+    #     casks:
+    #       - ringcentral
+    #       - tableau
+    #       - tableau-reader
     #
     #
-    # # Install other applications
-    # - include : tasks/install-creative-cloud.yml
-    # - include : tasks/install-photoshop.yml
-    # - include : tasks/install-spark.yml
-    # - include : tasks/install-steam.yml
-    #
-    #
-    # # Configure git globals and add a global .gitignore for macOS
-    # - include : tasks/configure-git.yml
-    #
-    #
-    # # Install common Node.js versions with nvm
-    # - include : tasks/install-nvm-nodejs.yml
-    #
-    #
-    # # Sign into Chrome and make it the default browser
-    # - include : tasks/chrome-login.yml
-    # - include : tasks/chrome-default.yml
-    #
-    #
-    # # Various defaults and other settings for macOS
-    # - include : tasks/macos-defaults.yml
+    # # Install personal Homebrew casks
+    # - include : tasks/install-homebrew-casks.yml
+    #   when    : scope == "personal"
+    #   vars:
+    #     taps:
+    #       - caskroom/cask
+    #       - caskroom/versions
+    #     casks:
+    #       - ableton-live-intro
+    #       - arduino
+    #       - beersmith2
+    #       - handbrake
+    #       - kicad
+    #       - kicad-extras
+    #       - kindle
+    #       - league-of-legends
+    #       - microsoft-office
+    #       - nox-app-player
+    #       - plex-media-player
+    #       - steam
+    #       - steamcmd
+    #       - teamspeak-client
+    #       - textual
+    #       - transmission
+    #       - unity
+    #       - unity-android-support-for-editor
+    #       - unity-download-assistant
+    #       - unity-ios-support-for-editor
+    #       - unity-linux-support-for-editor
+    #       - unity-standard-assets
+    #       - unity-webgl-support-for-editor
+    #       - unity-windows-support-for-editor
 
 
-    # - include : tasks/defaults-hot-corners.yml
-    # - include : tasks/defaults-terminal.yml
-    # - include : tasks/defaults-keyboard.yml
-    # - include : tasks/defaults-auto-correct.yml
-    # - include : tasks/defaults-menu-bar.yml
-    # - include : tasks/defaults-window.yml
-    # - include : tasks/defaults-dock.yml
-    # - include : tasks/defaults-finder.yml
-    # - include : tasks/defaults-auto-update.yml
-    # - include : tasks/defaults-tap-to-click.yml
+    # Clean up the macOS Dock
+    - include : tasks/macos-dock.yml
+      vars:
+        apps:
+          - /Applications/Utilities/Terminal.app
+          - /Applications/Google Chrome.app
+          - /Applications/Atom.app
+          - /Applications/Messages.app
+          - /Applications/Slack.app
+          - /Applications/Google Hangouts.app
+          - /Applications/Spark.app
+          - /Applications/Microsoft Outlook.app
+          - /Applications/1Password 6.app
+          - /Applications/Spotify.app
+        spacers:
+          - Atom
+          - Google Hangouts
+          - Microsoft Outlook
 
 
-    #
-    #
-    # # Install Bash-It
-    # # @TODO
-    #
-    # # Restart for good luck
-    # - include : tasks/restart.yml
+    - debug: msg="Installation has completed.  It is recommended that you restart the system to finalize the process."

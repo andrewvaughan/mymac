@@ -1,0 +1,5 @@
+# Installs applications via the MacOS AppStore.
+---
+- name    : Adding MacOS App Store support to Ansible
+  become  : true
+  command : ansible-galaxy install geerlingguy.mas

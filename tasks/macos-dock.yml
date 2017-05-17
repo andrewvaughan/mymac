@@ -1,0 +1,15 @@
+# Reconfigures the icons on the MacOS dock
+---
+- name  : "Removing all icons from the dock"
+  shell : dockutil --remove all --no-restart
+
+- name       : "Adding requested icons to the dock"
+  shell      : "dockutil --add \"{{ item }}\" --no-restart"
+  with_items : "{{ apps }}"
+
+- name       : "Adding spaces to the dock"
+  shell      : "dockutil --add '' --type spacer --section apps --after \"{{ item }}\" --no-restart"
+  with_items : "{{ spacers }}"
+
+- name  : "Adding Applications grid"
+  shell : "dockutil --add '/Applications' --view grid --display folder"
