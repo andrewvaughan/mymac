@@ -1,9 +1,5 @@
 # Installs Homebrew using Ruby from the online installer script (only if the "brew" command does not currently work).
 ---
-- name    : Checking if Homebrew is installed
-  command : brew -v
-  no_log  : true
-
 - name     : Updating Homebrew and all existing packages
   homebrew :
     update_homebrew : yes

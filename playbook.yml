@@ -4,7 +4,6 @@
   vars:
     scope : "{{ lookup('env', 'SCOPE') }}"
 
-
   tasks:
 
     # Check that this is a supported MacOS version (and computer)
@@ -14,38 +13,41 @@
 
 
     # Check that the scope of the system has been set
-    - name : Checking for SCOPE
+    - name : Checking for SCOPE environment variable
       fail : msg="Please set the environment variable SCOPE to either 'work' or 'personal'"
       when : scope != "work" and scope != "personal"
 
 
     # Enable FileVault
-    - include: tasks/macos-filevault.yml
+    - include : tasks/macos-filevault.yml
 
 
     # Set this computer's identity
-    #- include: tasks/macos-identity.yml
+    # @TODO: Need to determine how to prompt questions during tasks (pause doesn't work any more)
+    #- include : tasks/macos-identity.yml
+    #  when    : scope == "personal"
 
 
     # Update any existing software before starting new paths
     # @TODO: This is currently pretty buggy (waiting for input and getting stuck, maybe?)
-    #- include: tasks/macos-app-update.yml
+    - include : tasks/macos-app-update.yml
+      when    : false
 
 
     # Create an ssh key in the user's home directory (if one does not already exist)
-    - include: tasks/create-ssh-key.yml
+    - include : tasks/create-ssh-key.yml
 
 
     # Install XCode on the platform
-    - include: tasks/install-xcode.yml
+    - include : tasks/install-xcode.yml
 
 
     # Install Homebrew
-    - include: tasks/install-homebrew.yml
+    - include : tasks/install-homebrew.yml
 
 
     # Install Homebrew packages
-    - include: tasks/install-homebrew-packages.yml
+    - include : tasks/install-homebrew-packages.yml
       vars:
         packages:
           - ack
@@ -110,7 +112,7 @@
 
 
     # # Clean up the macOS Dock
-    # - include: tasks/macos-dock.yml
+    # - include : tasks/macos-dock.yml
     #   vars:
     #     apps:
     #       - /Applications/1Password.app
@@ -126,39 +128,39 @@
     #
     #
     # # Install other applications
-    # - include: tasks/install-creative-cloud.yml
-    # - include: tasks/install-photoshop.yml
-    # - include: tasks/install-spark.yml
-    # - include: tasks/install-steam.yml
+    # - include : tasks/install-creative-cloud.yml
+    # - include : tasks/install-photoshop.yml
+    # - include : tasks/install-spark.yml
+    # - include : tasks/install-steam.yml
     #
     #
     # # Configure git globals and add a global .gitignore for macOS
-    # - include: tasks/configure-git.yml
+    # - include : tasks/configure-git.yml
     #
     #
     # # Install common Node.js versions with nvm
-    # - include: tasks/install-nvm-nodejs.yml
+    # - include : tasks/install-nvm-nodejs.yml
     #
     #
     # # Sign into Chrome and make it the default browser
-    # - include: tasks/chrome-login.yml
-    # - include: tasks/chrome-default.yml
+    # - include : tasks/chrome-login.yml
+    # - include : tasks/chrome-default.yml
     #
     #
     # # Various defaults and other settings for macOS
-    # - include: tasks/macos-defaults.yml
+    # - include : tasks/macos-defaults.yml
 
 
-    # - include: tasks/defaults-hot-corners.yml
-    # - include: tasks/defaults-terminal.yml
-    # - include: tasks/defaults-keyboard.yml
-    # - include: tasks/defaults-auto-correct.yml
-    # - include: tasks/defaults-menu-bar.yml
-    # - include: tasks/defaults-window.yml
-    # - include: tasks/defaults-dock.yml
-    # - include: tasks/defaults-finder.yml
-    # - include: tasks/defaults-auto-update.yml
-    # - include: tasks/defaults-tap-to-click.yml
+    # - include : tasks/defaults-hot-corners.yml
+    # - include : tasks/defaults-terminal.yml
+    # - include : tasks/defaults-keyboard.yml
+    # - include : tasks/defaults-auto-correct.yml
+    # - include : tasks/defaults-menu-bar.yml
+    # - include : tasks/defaults-window.yml
+    # - include : tasks/defaults-dock.yml
+    # - include : tasks/defaults-finder.yml
+    # - include : tasks/defaults-auto-update.yml
+    # - include : tasks/defaults-tap-to-click.yml
 
 
     #
@@ -167,4 +169,4 @@
     # # @TODO
     #
     # # Restart for good luck
-    # - include: tasks/restart.yml
+    # - include : tasks/restart.yml

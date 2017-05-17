@@ -12,5 +12,5 @@
   when    : has_brew.stderr != ""
 
 - name    : Adding Homebrew support to Ansible
-  command : ansible-galaxy install geerlingguy.homebrew
   become  : true
+  command : ansible-galaxy install geerlingguy.homebrew

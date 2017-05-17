@@ -2,8 +2,10 @@
 ---
 - name          : Installing XCode
   command       : xcode-select --install
-  changed_when  : false
+  register      : has_xcode
   ignore_errors : true
+  no_log        : true
+  changed_when  : "has_xcode.stderr == ''"
 
 - name  : Pausing
   pause :
