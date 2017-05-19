@@ -1,0 +1,11 @@
+# Updates any software on the computer via the command line.
+---
+- debug: var="{{ domain }}"
+
+- debug: var="{{ clear }}"
+
+- debug: var="{{ defaults }}"
+
+# - name: Setting MacOS Defaults
+#   osx_defaults:
+#     state : present

@@ -40,7 +40,7 @@ Alternatively, the following can be manually installed:
 Once dependencies are installed, the provided playbook can be run via Ansible:
 
 ```bash
-SCOPE=work ansible-playbook playbook.yml --ask-become-pass
+SCOPE=work ansible-playbook -v playbook.yml --ask-become-pass
 ```
 
 
