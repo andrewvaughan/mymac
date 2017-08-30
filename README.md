@@ -28,6 +28,14 @@ SCOPE=work /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/andrewva
 The `SCOPE` value can be either `work` or `personal`, depending on which environment is being created.  This affects
 some of the configurations.
 
+> *Note:* This installer can take some time.  As such, you may be asked to enter your `sudo` password several times
+> during installation.  You can temporarily avoid this by adding this to `visudo` before running:
+>
+> `Defaults timestamp_timeout=0`
+>
+> It is recommended that this line be removed after completion.  Alternatively, you can enter the `sudo` password
+> multiple times during configuration.
+
 
 ## Installation
 
