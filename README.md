@@ -23,6 +23,9 @@ PROFILE=personal /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/an
 The `PROFILE` value equates to any `config.PROFILE.yml` file in the root directory of the folder.  By defauly, a
 `work` and `personal` set of configurations are provided.  Additional profiles can be added to suit your needs.
 
+If you are running into problems, you can also run the install script in debug mode by adding `-- -d` to the line
+above.  For more verbose logging, use `-v` instead of `-d`.
+
 > *Note:* This installer can take some time.  It is recommended that this script be monitored.  You may be asked to
 > enter your `sudo` password multiple times during installation, due to timeouts in the base system.
 
@@ -32,7 +35,13 @@ The `PROFILE` value equates to any `config.PROFILE.yml` file in the root directo
 Alternatively, the playbook can be run directly from [Ansible][ansible-url], assuming it has been installed:
 
 ```bash
-PROFILE=personal ansible-playbook -v playbook.yml --ask-become-pass
+PROFILE=personal ansible-playbook playbook.yml --ask-become-pass
+```
+
+The playbook can be run in debug-mode by changing the strategy and increasing verbosity:
+
+```bash
+PROFILE=personal ANSIBLE_STRATEGY=debug ansible-playbook -vv playbook.yml --ask-become-pass
 ```
 
 ## Configuration
