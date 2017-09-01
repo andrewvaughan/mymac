@@ -6,6 +6,11 @@
 # user_dotfiles: []
 ---
 
+# Configuration options for the operating system
+# @see https://github.com/andrewvaughan/mymac/blob/master/USAGE.md#macOS
+macos:
+  version_check : 10.12
+
 # Configuration options for the system's sudo controls
 # @see https://github.com/andrewvaughan/mymac/blob/master/USAGE.md#Sudoers
 sudoers:

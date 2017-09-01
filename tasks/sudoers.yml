@@ -14,5 +14,5 @@
   tags: [print_action]
 
 - debug:
-    msg       : Created and validated /etc/sudoers from templates/etc/sudoers.j2
+    msg       : Sudoer configuration complete. Created and validated /etc/sudoers from templates/etc/sudoers.j2
     verbosity : 2
