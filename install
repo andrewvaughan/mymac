@@ -1,19 +1,111 @@
 #!/bin/bash
 
+# Ensure we're not running as root
 if [[ $EUID -eq 0 ]]; then
    echo "This script cannot be run as root." 1>&2
    exit 1
 fi
 
-if ! type "brew" > /dev/null; then
-    /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+# Load our options
+usage() {
+  echo "Usage: $0 [-d] [-v]" 1>&2
+  echo "    -d  Enables debugging" 1>&2
+  echo "    -v  Enables verbose debugging (implies -d)" 1>&2
+}
+
+ANSIBLE_DEBUG_PARAM=""
+DEBUG_PARAM=""
+while getopts ":dvh" opt; do
+  case $opt in
+    d)
+      ANSIBLE_STRATEGY=debug
+      ANSIBLE_DEBUG_PARAM=${ANSIBLE_DEBUG_PARAM:="-v"}
+      DEBUG_PARAM="-v"
+      ;;
+
+    v)
+      ANSIBLE_STRATEGY=debug
+      ANSIBLE_DEBUG_PARAM="-vvv"
+      DEBUG_PARAM="-v"
+      ;;
+
+    h)
+      usage
+      exit
+      ;;
+
+    \?)
+      echo "Invalid option: -$OPTARG" >&2
+      usage
+      exit 2
+      ;;
+  esac
+done
+
+echo
+echo "NOTE: You may be asked to enter your password multiple times during installation."
+echo "      Please do not step away from your computer."
+echo
+
+sudo -v
+
+# Install dependencies
+command -v easy_install >/dev/null 2>&1 || {
+  echo "Could not find easy_install. Please ensure Python is installed and try again. Exiting." >&2;
+  exit 3
+}
+
+command -v pip >/dev/null 2>&1 || {
+  echo "pip not found. Installing..."
+  sudo easy_install $DEBUG_PARAM pip
+}
+
+command -v ansible-playbook >/dev/null 2>&1 || {
+  echo "Ansible not found. Installing..."
+  sudo pip install $DEBUG_PARAM ansible
+}
+
+command -v ansible-playbook >/dev/null 2>&1 || { echo "Ansible did not install correctly. Exiting." >&2; exit 4; }
+
+# Create a temporary directory to work in
+MYMAC_TEMPDIR=$(mktemp -d)
+cd $MYMAC_TEMPDIR
+
+# Download the latest master branch from Github
+echo
+echo "Downloading latest MyMac configuration agent..."
+echo
+
+curl -LOk https://github.com/andrewvaughan/mymac/archive/master.tar.gz
+
+if [ ! -f master.tar.gz ]; then
+    echo "Could not download required files. Exiting." >&2
+    exit 5
 fi
 
-brew install ansible git
+tar ${DEBUG_PARAM}xfz master.tar.gz
 
-cd /tmp
-git clone https://github.com/andrewvaughan/mymac.git
-cd mymac
-ansible-playbook -v playbook.yml --ask-become-pass
+if [ ! -d mymac-master ]; then
+    echo "Failed to extract required files. Exiting." >&2
+    exit 6
+fi
 
-rm -rf /tmp/mymac
+# Run the Ansible playbook downloaded
+echo
+echo
+echo "Running MyMac configuration agent..."
+echo
+
+cd mymac-master
+
+# Run ansible with our provided debug mode
+ansible-playbook playbook.yml $ANSIBLE_DEBUG_PARAM --ask-become-pass
+
+# Cleanup
+cd ~
+rm -rf $MYMAC_TEMPDIR
+
+unset MYMAC_TEMPDIR
+unset ANSIBLE_STRATEGY
+unset ANSIBLE_DEBUG_PARAM
+unset DEBUG_PARAM

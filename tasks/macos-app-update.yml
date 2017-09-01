@@ -1,9 +1,0 @@
-# Updates any software on the computer via the command line.
----
-- name    : Updating all available App Store updates
-  command : softwareupdate -i -a
-  become  : true
-
-- name    : Turning on scheduled updates
-  command : softwareupdate --schedule on
-  become  : true

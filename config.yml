@@ -1,0 +1,18 @@
+# Master configuration file for all profiles.  Profile configuration should override or extend these settings.
+# @see https://github.com/andrewvaughan/mymac/blob/master/USAGE.md
+#
+# Note: Comment out, or set to blank array, to disable configuration of a given section.  For example:
+#
+# user_dotfiles: []
+---
+
+# Configuration options for the system's sudo controls
+# @see https://github.com/andrewvaughan/mymac/blob/master/USAGE.md#Sudoers
+sudoers:
+  user_aliases  : []
+  runas_aliases : []
+  host_aliases  : []
+  cmnd_aliases  : []
+  users:
+    - "root    ALL = (ALL) ALL"
+    - "%admin  ALL = (ALL) ALL"

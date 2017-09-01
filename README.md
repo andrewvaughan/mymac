@@ -2,15 +2,10 @@
 
 [![Codename][codename-image]][codename-url]
 [![Version][version-image]][codename-url]
+[![License][license-image]][license-url]
+[![Build][build-image]][build-url]
 
-This tool configures macOS to the default environment used by Andrew Vaughan on his devices.  These configurations
-have been tested on the following models:
-
-* MacBook Pro (Retina, 15-inch, Late 2016)
-* MacBook Pro (Retina, 15-inch, Late 2013)
-
-The scripts included will automatically adjust their configurations depending on what model is being configured, when
-applicable.
+This tool configures macOS to the default environment used by Andrew Vaughan on his devices.
 
   **NOTE** Use this script at your own risk.  These scripts change critical components of your devices.  By installing
   or using this software, you agree to take ownership of all liability and changes to your system.  You own your
@@ -22,35 +17,34 @@ applicable.
 A remote install script is available to install all required dependencies and execute the standard Ansible playbook:
 
 ```bash
-SCOPE=work /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/andrewvaughan/mymac/master/install)"
+PROFILE=personal /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/andrewvaughan/mymac/master/install)"
 ```
 
-The `SCOPE` value can be either `work` or `personal`, depending on which environment is being created.  This affects
-some of the configurations.
+The `PROFILE` value equates to any `config.PROFILE.yml` file in the root directory of the folder.  By defauly, a
+`work` and `personal` set of configurations are provided.  Additional profiles can be added to suit your needs.
 
-> *Note:* This installer can take some time.  As such, you may be asked to enter your `sudo` password several times
-> during installation.  You can temporarily avoid this by adding this to `visudo` before running:
->
-> `Defaults timestamp_timeout=0`
->
-> It is recommended that this line be removed after completion.  Alternatively, you can enter the `sudo` password
-> multiple times during configuration.
+> *Note:* This installer can take some time.  It is recommended that this script be monitored.  You may be asked to
+> enter your `sudo` password multiple times during installation, due to timeouts in the base system.
 
 
 ## Installation
 
-Alternatively, the following can be manually installed:
-
-* [Ansible][ansible-url] (Along with a [Homebrew Extension][ansible-homebrew-url])
-* [Homebrew][homebrew-url]
-* [pip][pip-url]
-
-Once dependencies are installed, the provided playbook can be run via Ansible:
+Alternatively, the playbook can be run directly from [Ansible][ansible-url], assuming it has been installed:
 
 ```bash
-SCOPE=work ansible-playbook -v playbook.yml --ask-become-pass
+PROFILE=personal ansible-playbook -v playbook.yml --ask-become-pass
 ```
 
+## Configuration
+
+A number of configurations and installations are available using this script.  All are designed to be customized,
+overridden, or disabled in a profile's configuration file.  More information can be found in the
+[usage documentation](USAGE.md).
+
+## License
+
+All use, interaction, and extension of this project is controlled by the [MIT License](LICENSE) under which this
+project is made available.
 
 
 
@@ -58,7 +52,9 @@ SCOPE=work ansible-playbook -v playbook.yml --ask-become-pass
 [version-url]:    http://www.apple.com/macos/sierra/
 [codename-image]: https://img.shields.io/badge/Version-10.12.3-blue.svg?style=flat
 [codename-url]:   https://developer.apple.com/library/content/releasenotes/MacOSX/WhatsNewInOSX/Articles/OSXv10.html#//apple_ref/doc/uid/TP40017145-SW1
+[license-image]:  https://img.shields.io/badge/License-MIT-orange.svg?style=flat
+[license-url]:    https://github.com/andrewvaughan/mymac/blob/master/LICENSE
+[build-image]:    https://travis-ci.org/andrewvaughan/mymac.svg?branch=master
+[build-url]:      https://travis-ci.org/andrewvaughan/mymac
 
 [ansible-url]:    https://www.ansible.com/
-[homebrew-url]:   https://brew.sh/
-[pip-url]:        https://pypi.python.org/pypi/pip

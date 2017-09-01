@@ -1,0 +1,34 @@
+---
+sudo      : required
+os        : osx
+osx_image : xcode9   # macOS v10.12 / Xcode v9b6 (@see https://docs.travis-ci.com/user/osx-ci-environment/#OS-X-Version)
+language  : python
+
+# Uninstall the existing Homebrew installation that TravisCI sets up
+before_install:
+  - 'ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/uninstall)"'
+  - rm -rf /usr/local/Homebrew
+  - rm -rf /usr/local/Caskroom
+  - rm -rf /usr/local/bin/brew
+
+# Install Ansible on the system using pip
+install:
+  - sudo easy_install pip
+  - sudo pip install ansible
+
+script:
+
+  # Check our syntax before beginning
+  - ansible-playbook playbook.yml --syntax-check
+
+  # Wait for 30 seconds and run the playbook
+  - "travis_wait 30 ansible-playbook --extra-vars '{\"sudoers\" : false}' playbook.yml"
+
+  # Repeat the playbook to ensure that nothing changed (idempotence test)
+  - DIFFTEST=$(mktemp)
+  - "ansible-playbook --extra-vars '{\"sudoers\": false}' playbook.yml | tee -a ${DIFFTEST}"
+  - >
+    cat ${DIFFTEST}
+    | grep -q 'changed=0.*failed=0'
+    && (echo 'Idempotence Passed' && exit)
+    || (echo 'Idempotence Failed' && exit 1)

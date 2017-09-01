@@ -1,0 +1,6 @@
+# Profile for work computers.  See `config.yml` for common configuration and parent to this file.
+# @see https://github.com/andrewvaughan/mymac/blob/master/USAGE.md
+---
+
+# Disable any changes to sudoers
+sudoers: false

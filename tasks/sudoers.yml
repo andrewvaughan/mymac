@@ -1,0 +1,18 @@
+# Configures the sudoers file on the system.
+---
+- debug:
+    msg       : Sudoers Configuration
+    verbosity : 1
+
+- name: Configuring sudoers
+  become: yes
+  template:
+    src      : templates/etc/sudoers.j2
+    dest     : /etc/sudoers
+    mode     : 0440
+    validate : 'visudo -cf %s'
+  tags: [print_action]
+
+- debug:
+    msg       : Created and validated /etc/sudoers from templates/etc/sudoers.j2
+    verbosity : 2

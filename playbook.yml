@@ -1,141 +1,26 @@
 ---
-- hosts: local
+- hosts: all
+  connection: local
 
   vars:
-    scope : "{{ lookup('env', 'SCOPE') }}"
+    profile : "{{ lookup('env', 'PROFILE') }}"
+
+  vars_files:
+    - config.yml
+
+  # Load whichever profile we want on top of the default
+  pre_tasks:
+    - include_vars: "{{ item }}"
+      with_fileglob:
+        - "config.{{ profile }}.yml"
+      tags : ['always']
+      when : profile != ""
 
   tasks:
 
-    # Check that this is a supported MacOS version (and computer)
-    - name : Checking Operating system
-      fail : msg="This installer is only supported by MacOSX, current operating system is \"{{ ansible_distribution }}\""
-      when : ansible_distribution != "MacOSX"
+    # Helper task to set the proper path to sed
+    - include : tasks/helpers/sed.yml
 
-
-    # Check that the scope of the system has been set
-    - name : Checking for SCOPE environment variable
-      fail : msg="Please set the environment variable SCOPE to either 'work' or 'personal'"
-      when : scope != "work" and scope != "personal"
-
-
-    # Enable FileVault
-    - include : tasks/macos-filevault.yml
-
-
-    # Update any existing software before starting new paths
-    - include : tasks/macos-app-update.yml
-      when    : false
-
-
-    # Create an ssh key in the user's home directory (if one does not already exist)
-    - include : tasks/create-ssh-key.yml
-
-
-    # Install XCode on the platform
-    - include : tasks/install-xcode.yml
-
-
-    # Install Homebrew
-    - include : tasks/install-homebrew.yml
-
-
-    # Install common Homebrew packages
-    - include : tasks/install-homebrew-packages.yml
-      vars:
-        packages:
-          - ack
-          - bash-completion
-          - dockutil
-          - gettext
-          - git
-          - gpg
-          - openssl
-          - mcrypt
-          - mysql
-          - nmap
-          - nvm
-          - pv
-          - ssh-copy-id
-          - sqlite
-          - unrar
-          - watch
-          - wget
-
-
-    # Install common Homebrew casks
-    - include: tasks/install-homebrew-casks.yml
-      vars:
-        taps:
-          - caskroom/cask
-          - caskroom/versions
-        casks:
-          - 1password
-          - adobe-creative-cloud
-          - adobe-photoshop-cc
-          - atom
-          #- cloudapp
-          #- daisydisk
-          - docker-toolbox
-          - doxie
-          - dropbox
-          #- evernote
-          - filezilla
-          - firefox
-          - flash-player
-          #- flexiglass
-          - google-chrome
-          - google-drive
-          - google-hangouts
-          - intellij-idea-ce
-          - istat-menus
-          - java
-          - skype
-          #- slack
-          - snagit
-          - spotify
-          #- the-unarchiver
-          - unity-web-player
-          - virtualbox
-          - vlc
-          - vlc-webplugin
-
-
-    # Set system preferences for the Dock
-    - include : tasks/macos-defaults.yml
-      vars:
-        domain  : com.apple.dock
-        clear   : true
-        defaults:
-          - key   : static-only               # Only show applications that are running
-            type  : bool
-            value : true
-          - key   : orientation               # Put the Dock on the left-hand side of the screen
-            value : "left"
-          - key   : showhidden                # Show hidden applications with a dot
-            type  : bool
-            value : true
-          - key   : tilesize                  # Set dock icons to 40px
-            type  : integer
-            value : 40
-          - key   : minimize-to-application   # Minimize applications into their app icon
-            type  : bool
-            value : true
-          - key   : launchanim                # Remove the dock's launch animation
-            type  : bool
-            value : false
-          - key   : autohide                  # Ensure the Dock doesn't autohide when not in focus
-            type  : bool
-            value : false
-
-
-    # Adding work-specific changes
-    - include : playbook-work.yml
-      when    : scope == "work"
-
-
-    # Adding personal-specific changes
-    - include : playbook-personal.yml
-      when    : scope == "personal"
-
-
-    - debug: msg="Installation has completed.  It is recommended that you restart the system to finalize the process."
+    # Configure sudoers on the system
+    - include : tasks/sudoers.yml
+      when    : sudoers is defined and sudoers != false and sudoers != []
