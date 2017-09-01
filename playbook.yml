@@ -21,6 +21,10 @@
     # Helper task to set the proper path to sed
     - include : tasks/helpers/sed.yml
 
+    # Update macos basics
+    - include : tasks/macos.yml
+      when    : macos is defined and macos != false and macos != []
+
     # Configure sudoers on the system
     - include : tasks/sudoers.yml
       when    : sudoers is defined and sudoers != false and sudoers != []

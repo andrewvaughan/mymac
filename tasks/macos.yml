@@ -1,0 +1,42 @@
+# Configures macOS basic settings
+---
+- debug:
+    msg       : macOS Configuration
+    verbosity : 1
+
+# Ensure we are running on macOS
+- name: Checking Operating System type
+  fail:
+    msg : "This installer is only supported by macOS, current operating system is \"{{ ansible_distribution }}\""
+  when: ansible_distribution != "MacOSX"
+
+# Check the operating system version number
+- set_fact:
+    version_check:
+      os:
+        major : "{{ ansible_distribution_version.split('.')[0]|int }}"
+        minor : "{{ ansible_distribution_version.split('.')[1]|int }}"
+      target:
+        major : "{{ (macos.version_check|string).split('.')[0]|int }}"
+        minor : "{{ (macos.version_check|string).split('.')[1]|int }}"
+
+- debug:
+    var       : version_check
+    verbosity : 2
+
+- name: Checking macOS version
+  fail:
+    msg : "This installer requires macOS version {{ macos.version_check }} or above. Current version is {{ ansible_distribution_version }}"
+  when: >
+    (version_check.os.major < version_check.target.major) or
+    (version_check.os.major == version_check.target.major and version_check.os.minor < version_check.target.minor)
+
+- debug:
+    msg : "Warning, operating system version higher than tested.  Unexpected results may occur."
+  when: >
+    (version_check.os.major > version_check.target.major) or
+    (version_check.os.major == version_check.target.major and version_check.os.minor > version_check.target.minor)
+
+- debug:
+    msg       : "OS and Version check complete."
+    verbosity : 1
