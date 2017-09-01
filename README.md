@@ -59,7 +59,7 @@ project is made available.
 
 [version-image]:  https://img.shields.io/badge/macOS-Sierra-blue.svg?style=flat
 [version-url]:    http://www.apple.com/macos/sierra/
-[codename-image]: https://img.shields.io/badge/Version-10.12.3-blue.svg?style=flat
+[codename-image]: https://img.shields.io/badge/Version-10.12.6-blue.svg?style=flat
 [codename-url]:   https://developer.apple.com/library/content/releasenotes/MacOSX/WhatsNewInOSX/Articles/OSXv10.html#//apple_ref/doc/uid/TP40017145-SW1
 [license-image]:  https://img.shields.io/badge/License-MIT-orange.svg?style=flat
 [license-url]:    https://github.com/andrewvaughan/mymac/blob/master/LICENSE
