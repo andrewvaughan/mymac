@@ -69,7 +69,7 @@
           - caskroom/cask
           - caskroom/versions
         casks:
-          #- 1password
+          - 1password
           - adobe-creative-cloud
           - adobe-photoshop-cc
           - atom

@@ -1,6 +1,8 @@
 # Performs changes to the system specific to a personal environment.
 ---
 
+- debug : msg="Beginning Personal playbook..."
+
 # Install personal Homebrew casks
 - include : tasks/install-homebrew-casks.yml
   vars:
@@ -8,12 +10,12 @@
       - caskroom/cask
       - caskroom/versions
     casks:
-      - ableton-live-intro
+      #- ableton-live-intro
       - arduino
       - beersmith2
       - handbrake
       - kicad
-      - kicad-extras
+      #- kicad-extras
       - kindle
       - league-of-legends
       - microsoft-office
@@ -23,7 +25,7 @@
       - steamcmd
       - teamspeak-client
       #- textual
-      - transmission
+      #- transmission
       - unity
       - unity-android-support-for-editor
       - unity-download-assistant
@@ -42,7 +44,6 @@
       - /Applications/Utilities/Terminal.app
       - /Applications/Google Chrome.app
       - /Applications/Atom.app
-      - /Applications/Spark.app
       - /Applications/Microsoft Outlook.app
       - /Applications/Messages.app
       - /Applications/Slack.app
@@ -50,5 +51,4 @@
       - /Applications/Steam.app
     spacers:
       - Atom
-      - Microsoft Outlook
       - Slack

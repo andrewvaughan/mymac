@@ -1,9 +1,10 @@
 # Performs changes to the system specific to a work environment.
 ---
 
+- debug : msg="Beginning Work playbook..."
+
 # Install work Homebrew casks
 - include : tasks/install-homebrew-casks.yml
-  when    : scope == "work"
   vars:
     taps:
       - caskroom/cask
