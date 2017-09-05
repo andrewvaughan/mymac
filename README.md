@@ -11,6 +11,16 @@ This tool configures macOS to the default environment used by Andrew Vaughan on 
   or using this software, you agree to take ownership of all liability and changes to your system.  You own your
   device, and you should fully understand the changes this tool performs on your system prior to execution.
 
+This tool is automatically tested on the following macOS and Xcode combinations:
+
+| macOS Version | macOS Release | Xcode Version |
+|:-------------:|:-------------:|:-------------:|
+| 10.13         | High Sierra   | 9             |
+| 10.12         | Sierra        | 8.3           |
+| 10.12         | Sierra        | 8.2           |
+| 10.12         | Sierra        | 8.1           |
+| 10.11         | El Capitan    | 8             |
+| 10.11         | El Capitan    | 7.3           |
 
 ## Quick Start
 
