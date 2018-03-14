@@ -1,0 +1,20 @@
+# Personal configuration settings for Andrew Vaughan.  Provided as a reference for other users.
+#
+# To run from the online installer script:
+#
+#   MYMAC_PROFILE="profiles/personal.yml" /bin/bash <(curl -fsSL https://raw.githubusercontent.com/andrewvaughan/mymac/master/install)
+#
+# To run via Ansible:
+#
+#
+# @see https://github.com/andrewvaughan/mymac/blob/master/USAGE.md
+---
+
+# This profile supports MacOS 10.11 (El Capitan) and above
+# @see https://github.com/andrewvaughan/mymac/blob/master/USAGE.md#macOS
+macos:
+  version_check : 10.11
+
+# Default sudo configurations work fine
+# @see https://github.com/andrewvaughan/mymac/blob/master/USAGE.md#Sudoers
+sudoers: false

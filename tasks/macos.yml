@@ -1,8 +1,5 @@
 # Configures macOS basic settings
 ---
-- debug:
-    msg       : macOS Configuration
-    verbosity : 1
 
 # Ensure we are running on macOS
 - name: Checking Operating System type

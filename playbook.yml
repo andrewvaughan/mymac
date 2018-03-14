@@ -2,29 +2,39 @@
 - hosts: all
   connection: local
 
+  # If a profile is provided, load it from the environment
   vars:
-    profile : "{{ lookup('env', 'PROFILE') }}"
+    profile : "{{ lookup('env', 'MYMAC_PROFILE') }}"
 
+
+  # Load noop.yml as a default to disable unset profile options
   vars_files:
-    - config.yml
+    - profiles/noop.yml
 
-  # Load whichever profile we want on top of the default
+
+  # If a profile has been set, load that file
   pre_tasks:
-    - include_vars: "{{ item }}"
-      with_fileglob:
-        - "config.{{ profile }}.yml"
+    - name          : Loading Profile (if set)
+      include_vars  : "{{ item }}"
+      with_fileglob :
+        - "{{ profile }}"
       tags : ['always']
       when : profile != ""
 
+
+  # Run the profile
   tasks:
 
     # Helper task to set the proper path to sed
-    - include : tasks/helpers/sed.yml
+    - name          : --PREP-- sed location discovery
+      include_tasks : tasks/helpers/sed.yml
 
-    # Update macos basics
-    - include : tasks/macos.yml
-      when    : macos is defined and macos != false and macos != []
+    # MacOS compatibility checks
+    - name          : Mac Compatibility Checks
+      include_tasks : tasks/macos.yml
+      when          : macos is defined and macos != false and macos != []
 
     # Configure sudoers on the system
-    - include : tasks/sudoers.yml
-      when    : sudoers is defined and sudoers != false and sudoers != []
+    - name          : Sudoers Configuration
+      include_tasks : tasks/sudoers.yml
+      when          : sudoers is defined and sudoers != false and sudoers != []
