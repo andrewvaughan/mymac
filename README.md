@@ -27,17 +27,21 @@ This tool is automatically tested on the following macOS and Xcode combinations:
 A remote install script is available to install all required dependencies and execute the standard Ansible playbook:
 
 ```bash
-PROFILE=personal /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/andrewvaughan/mymac/master/install)"
+PROFILE=personal /bin/bash <(curl -fsSL https://raw.githubusercontent.com/andrewvaughan/mymac/master/install)
 ```
 
 The `PROFILE` value equates to any `config.PROFILE.yml` file in the root directory of the folder.  By defauly, a
 `work` and `personal` set of configurations are provided.  Additional profiles can be added to suit your needs.
 
-If you are running into problems, you can also run the install script in debug mode by adding `-- -d` to the line
-above.  For more verbose logging, use `-v` instead of `-d`.
+If you are running into problems, there are verbosity options available in the script.  All options can be listed by
+using the `-h` argument:
+
+```bash
+/bin/bash <(curl -fsSL https://raw.githubusercontent.com/andrewvaughan/mymac/master/install) -h
+```
 
 > *Note:* This installer can take some time.  It is recommended that this script be monitored.  You may be asked to
-> enter your `sudo` password multiple times during installation, due to timeouts in the base system.
+> enter your `sudo` password multiple times during installation, due to security timeouts in the base system.
 
 
 ## Installation
