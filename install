@@ -1,21 +1,49 @@
 #!/bin/bash
+#
+# To run this script from a terminal, enter the following:
+#
+#   /bin/bash <(curl -fsSL https://raw.githubusercontent.com/andrewvaughan/mymac/master/install)
+#
+# Arguments can be added to the script by placing them at the end; to see all options, use the `-h` argument:
+#
+#   /bin/bash <(curl -fsSL https://raw.githubusercontent.com/andrewvaughan/mymac/master/install) -h
+
 
 # Ensure we're not running as root
 if [[ $EUID -eq 0 ]]; then
-   echo "This script cannot be run as root." 1>&2
+   echo "This script cannot be run as root.  Please try again." 1>&2
    exit 1
 fi
 
 # Load our options
 usage() {
-  echo "Usage: $0 [-d] [-v]" 1>&2
+  echo "Usage: install [-d] [-v]" 1>&2
+  echo "    -m  Use the master branch instead of latest release" 1>&2
   echo "    -d  Enables debugging" 1>&2
   echo "    -v  Enables verbose debugging (implies -d)" 1>&2
+  echo "    -h  Printes this usage information and exits" 1>&2
 }
 
+# Cleans up any temporary files used during installation
+cleanup() {
+  echo "Cleaning up..."
+
+  cd ~
+  rm -rf ${MYMAC_TEMPDIR}
+
+  unset MYMAC_TEMPDIR
+  unset ANSIBLE_STRATEGY
+  unset ANSIBLE_DEBUG_PARAM
+  unset DEBUG_PARAM
+}
+
+# Argument Defaults
 ANSIBLE_DEBUG_PARAM=""
 DEBUG_PARAM=""
-while getopts ":dvh" opt; do
+GITHUB_BRANCH="latest"
+
+# Parse any arguments sent
+while getopts ":mdvh" opt; do
   case $opt in
     d)
       ANSIBLE_STRATEGY=debug
@@ -29,83 +57,100 @@ while getopts ":dvh" opt; do
       DEBUG_PARAM="-v"
       ;;
 
+    m)
+      GITHUB_BRANCH=master
+      ;;
+
     h)
       usage
       exit
       ;;
 
     \?)
-      echo "Invalid option: -$OPTARG" >&2
+      echo "Invalid option: -${OPTARG}" >&2
       usage
       exit 2
       ;;
   esac
 done
 
+
 echo
-echo "NOTE: You may be asked to enter your password multiple times during installation."
-echo "      Please do not step away from your computer."
+echo "NOTE: You may be asked to enter your computer user's password multiple times during installation."
 echo
 
 sudo -v
 
-# Install dependencies
-command -v easy_install >/dev/null 2>&1 || {
-  echo "Could not find easy_install. Please ensure Python is installed and try again. Exiting." >&2;
-  exit 3
-}
 
-command -v pip >/dev/null 2>&1 || {
-  echo "pip not found. Installing..."
-  sudo easy_install $DEBUG_PARAM pip
-}
-
+# Do we have access to ansible-playbook?
 command -v ansible-playbook >/dev/null 2>&1 || {
-  echo "Ansible not found. Installing..."
-  sudo pip install $DEBUG_PARAM ansible
+  echo "Ansible not found... attempting install"
+
+  # Is pip installed?
+  command -v pip >/dev/null 2>&1 || {
+    echo "Dependency pip not found... attempting install"
+
+    # Is easy_install available?
+    command -v easy_install >/dev/null 2>&1 || {
+      echo "Python easy_install is not availabe on this system.  Please ensure Python 2.7 is installed and try again." >&2
+      exit 3
+    }
+
+    echo "Installing dependency pip..."
+    sudo easy_install ${DEBUG_PARAM} pip
+  }
+
+  echo "Installing Ansible..."
+  sudo pip install ${DEBUG_PARAM} ansible
 }
 
-command -v ansible-playbook >/dev/null 2>&1 || { echo "Ansible did not install correctly. Exiting." >&2; exit 4; }
+
+# Ensure Ansible is loaded and available
+command -v ansible-playbook >/dev/null 2>&1 || {
+  echo "Ansible did not install correctly. Exiting." >&2
+  exit 4
+}
+
 
 # Create a temporary directory to work in
 MYMAC_TEMPDIR=$(mktemp -d)
-cd $MYMAC_TEMPDIR
+cd ${MYMAC_TEMPDIR}
 
-# Download the latest master branch from Github
+
+# Download the latest branch from Github
 echo
 echo "Downloading latest MyMac configuration agent..."
 echo
 
-curl -LOk https://github.com/andrewvaughan/mymac/archive/master.tar.gz
+curl -LOk https://github.com/andrewvaughan/mymac/archive/${GITHUB_BRANCH}.tar.gz
 
-if [ ! -f master.tar.gz ]; then
-    echo "Could not download required files. Exiting." >&2
+if [ ! -f ${GITHUB_BRANCH}.tar.gz ]; then
+    cleanup
+    echo "Could not download required files from \"https://github.com/andrewvaughan/mymac/archive/${GITHUB_BRANCH}.tar.gz\". Exiting." >&2
     exit 5
 fi
 
-tar ${DEBUG_PARAM}xfz master.tar.gz
+tar ${DEBUG_PARAM}xfz ${GITHUB_BRANCH}.tar.gz
 
-if [ ! -d mymac-master ]; then
-    echo "Failed to extract required files. Exiting." >&2
+if [ ! -d mymac-${GITHUB_BRANCH} ]; then
+    cleanup
+    echo "Failed to extract required files from \"https://github.com/andrewvaughan/mymac/archive/${GITHUB_BRANCH}.tar.gz\". Exiting." >&2
     exit 6
 fi
 
 # Run the Ansible playbook downloaded
 echo
-echo
-echo "Running MyMac configuration agent..."
+echo "Running MyMac configuration..."
 echo
 
-cd mymac-master
+cd mymac-${GITHUB_BRANCH}
 
 # Run ansible with our provided debug mode
-ansible-playbook playbook.yml $ANSIBLE_DEBUG_PARAM --ask-become-pass
+ansible-playbook playbook.yml ${ANSIBLE_DEBUG_PARAM} --ask-become-pass
 
-# Cleanup
-cd ~
-rm -rf $MYMAC_TEMPDIR
+# Cleanup and exit
+cleanup
 
-unset MYMAC_TEMPDIR
-unset ANSIBLE_STRATEGY
-unset ANSIBLE_DEBUG_PARAM
-unset DEBUG_PARAM
+echo
+echo "Finished successfully!"
+echo
