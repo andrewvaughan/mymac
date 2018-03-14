@@ -27,21 +27,27 @@ This tool is automatically tested on the following macOS and Xcode combinations:
 A remote install script is available to install all required dependencies and execute the standard Ansible playbook:
 
 ```bash
-PROFILE=personal /bin/bash <(curl -fsSL https://raw.githubusercontent.com/andrewvaughan/mymac/master/install)
+/bin/bash <(curl -fsSL https://raw.githubusercontent.com/andrewvaughan/mymac/master/install)
 ```
 
-The `PROFILE` value equates to any `config.PROFILE.yml` file in the root directory of the folder.  By defauly, a
-`work` and `personal` set of configurations are provided.  Additional profiles can be added to suit your needs.
+Optionally, a customized profile can be provided that customizes the settings that the Ansible script executes.  This
+file should follow the format explained in the provided [config.yml](defaults/config.yml) file.  To run the custom
+file, the `MYMAC_PROFILE` environment variable should be set to the profile's location before running.  One way of
+doing this is by prepending it to the execution:
 
-If you are running into problems, there are verbosity options available in the script.  All options can be listed by
-using the `-h` argument:
+```bash
+MYMAC_PROFILE="~/mymac.yml" /bin/bash <(curl -fsSL https://raw.githubusercontent.com/andrewvaughan/mymac/master/install)
+```
+
+Additional options are available in the script to modify things such as debugging and verbosity.  A complete list of
+these can be found by adding the `-h` argument to the end of the script call:
 
 ```bash
 /bin/bash <(curl -fsSL https://raw.githubusercontent.com/andrewvaughan/mymac/master/install) -h
 ```
 
 > *Note:* This installer can take some time.  It is recommended that this script be monitored.  You may be asked to
-> enter your `sudo` password multiple times during installation, due to security timeouts in the base system.
+> enter your user's `sudo` password multiple times during installation, due to security timeouts in the base system.
 
 
 ## Installation
@@ -49,13 +55,13 @@ using the `-h` argument:
 Alternatively, the playbook can be run directly from [Ansible][ansible-url], assuming it has been installed:
 
 ```bash
-PROFILE=personal ansible-playbook playbook.yml --ask-become-pass
+MYMAC_PROFILE=custom.yml ansible-playbook playbook.yml
 ```
 
-The playbook can be run in debug-mode by changing the strategy and increasing verbosity:
+The playbook can, additionally, be run in debug-mode by changing the strategy and increasing verbosity:
 
 ```bash
-PROFILE=personal ANSIBLE_STRATEGY=debug ansible-playbook -vv playbook.yml --ask-become-pass
+PROFILE=personal ANSIBLE_STRATEGY=debug ansible-playbook -vv playbook.yml
 ```
 
 ## Configuration

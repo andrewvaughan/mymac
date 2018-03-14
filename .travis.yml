@@ -45,10 +45,10 @@ script:
   # Check our syntax before beginning
   - sudo ansible-playbook playbook.yml --syntax-check
 
-  # Wait for 30 seconds and run the playbook
+  # Run the playbook, without sudoers, to see if it works
   - "sudo ansible-playbook --extra-vars '{\"sudoers\" : false}' playbook.yml"
 
-  # Repeat the playbook to ensure that nothing changed (idempotence test)
+  # Repeat the playbook to ensure that all changes were identified and skipped (idempotence test)
   - DIFFTEST=$(mktemp)
   - "sudo ansible-playbook --extra-vars '{\"sudoers\": false}' playbook.yml | tee -a ${DIFFTEST}"
   - >

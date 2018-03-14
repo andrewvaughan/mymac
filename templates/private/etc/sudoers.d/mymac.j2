@@ -1,0 +1,39 @@
+#
+# {{ ansible_managed }}
+#
+{% if sudoers.user_aliases is defined %}
+
+##
+# User alias specification
+##
+{% for alias in sudoers.user_aliases %}
+User_Alias {{ alias }}
+{% endfor %}{% endif %}{% if sudoers.runas_aliases is defined %}
+
+##
+# Runas alias specification
+##
+{% for alias in sudoers.runas_aliases %}
+Runas_Alias {{ alias }}
+{% endfor %}{% endif %}{% if sudoers.host_aliases is defined %}
+
+##
+# Host alias specification
+##
+{% for alias in sudoers.host_aliases %}
+Host_Alias {{ alias }}
+{% endfor %}{% endif %}{% if sudoers.cmnd_aliases is defined %}
+
+##
+# Cmnd alias specification
+##
+{% for alias in sudoers.cmnd_aliases %}
+Cmnd_Alias {{ alias }}
+{% endfor %}{% endif %}{% if sudoers.users is defined %}
+
+##
+# User specification
+##
+{% for user in sudoers.users %}
+{{ user }}
+{% endfor %}{% endif %}

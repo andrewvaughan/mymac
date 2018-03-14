@@ -146,7 +146,7 @@ echo
 cd mymac-${GITHUB_BRANCH}
 
 # Run ansible with our provided debug mode
-ansible-playbook playbook.yml ${ANSIBLE_DEBUG_PARAM} --ask-become-pass
+ansible-playbook ${ANSIBLE_DEBUG_PARAM} playbook.yml
 
 # Cleanup and exit
 cleanup

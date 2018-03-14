@@ -1,0 +1,12 @@
+# No-Operations configuration file.  Running this file prevents any operations from being executed.
+#
+# @see https://github.com/andrewvaughan/mymac/blob/master/USAGE.md
+---
+
+# Configuration options for the operating system
+# @see https://github.com/andrewvaughan/mymac/blob/master/USAGE.md#macos
+macos : false
+
+# Configuration options for the system's sudo controls
+# @see https://github.com/andrewvaughan/mymac/blob/master/USAGE.md#sudoers
+sudoers : false
