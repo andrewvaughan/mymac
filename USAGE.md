@@ -66,23 +66,73 @@ variable in a profile.
 
 ### macos
 
-The MacOS module performs checks to ensure that the configuration script is working on a supported platform.  It is
-highly recommended that you do not modify this setting, unless you are actively developing or modifying the product.
+The MacOS module performs checks to ensure that the configuration script is working on a supported platform.  
+Additionally, it can upgrade the macOS version to the latest version, if requested.  The `macos` section has two
+variables:
 
-To skip compatibility checks, set `macos` to `false` in your profile configuration:
+```yml
+# Example...
+macos:
+  version_check : 10.13
+  update        : true
+```
+
+To skip compatibility and version checks and updates entirely, disable the entire block:
 
 ```yml
 macos: false
 ```
 
-Alternatively, you can specify a major and minor version, which will act as the minimum version supported for the
-profile:
+#### version_check
+
+The `version_check` parameter sets the minimum version that must be installed for the application to proceed.  Only
+the Major and Minor revisions are supported at this time.  For instance, to support OSX "El Capitan" and later:
 
 ```yml
-macos: 10.13
+macos:
+  version_check: 10.13
 ```
 
 _Note: Reversion version checks are not supported at this time._
+
+For reference, the labeled versions of OSX and macOS releases are as follows:
+
+| Version | Codename      | Released   |
+|:-------:|:-------------:|------------|
+| `10.13` | High Sierra   |  9/25/2017 |
+| `10.12` | Sierra        |  9/20/2016 |
+| `10.11` | El Capitan    |  9/30/2015 |
+| `10.10` | Yosemite      | 10/16/2014 |
+| `10.9`  | Mavericks     | 10/22/2013 |
+| `10.8`  | Mountain Lion |  7/25/2012 |
+| `10.7`  | Lion          |  7/20/2011 |
+| `10.6`  | Snow Leopard  |  8/28/2009 |
+| `10.5`  | Leopard       | 10/26/2007 |
+| `10.4`  | Tiger         |  4/29/2005 |
+| `10.3`  | Panther       | 10/24/2003 |
+| `10.2`  | Jaguar        |  8/24/2002 |
+| `10.1`  | Puma          |  9/24/2001 |
+| `10.0`  | Cheetah       |  3/24/2001 |
+
+To skip compatibility checks, you can also set the `version_check` option to `false`:
+
+```yml
+macos:
+  version_check: false
+```
+
+#### update
+
+The `update` option is a boolean metric that will update the macOS version to it's latest version if set to `true`.
+By default, this is not enabled, due to the number of restarts often required with system updates:
+
+```yml
+macos:
+  update: true
+```
+
+**Note** that this does *not* update App Store items or any other software, just the base operating system.  To update
+other applications, see the [#appstore](appstore) option.
 
 ### sudoers
 

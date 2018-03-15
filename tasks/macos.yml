@@ -4,7 +4,7 @@
 ---
 
 # Ensure we are running on macOS
-- name: Checking Operating System type
+- name: Checking operating system type
   fail:
     msg : "This installer is only supported by macOS, current operating system is \"{{ ansible_distribution }}\""
   when:
@@ -37,6 +37,19 @@
   when: >
     (version_check.os.major > version_check.target.major) or
     (version_check.os.major == version_check.target.major and version_check.os.minor > version_check.target.minor)
+
+
+# Update the operating system if `update` is set
+- name: Updating operating system to latest version
+  become        : yes
+  shell         : softwareupdate -i -a
+  register      : os_update
+  changed_when  : os_update.stderr.find("No updates are available") == -1
+  when          : macos.update is defined and macos.update
+
+- debug:
+    var       : os_update
+    verbosity : 2
 
 
 # Mark this script complete in case others need to reference it
