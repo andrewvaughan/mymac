@@ -61,7 +61,7 @@ MYMAC_PROFILE=custom.yml ansible-playbook playbook.yml
 The playbook can, additionally, be run in debug-mode by changing the strategy and increasing verbosity:
 
 ```bash
-PROFILE=personal ANSIBLE_STRATEGY=debug ansible-playbook -vv playbook.yml
+MYMAC_PROFILE=custom.yml ANSIBLE_STRATEGY=debug ansible-playbook -vv playbook.yml
 ```
 
 ## Configuration

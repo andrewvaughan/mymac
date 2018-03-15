@@ -165,6 +165,20 @@ root    ALL = (ALL) ALL
 
 More details can be found [here](https://help.ubuntu.com/community/Sudoers#User_Specifications).
 
+### devtools
+
+The `devtools` option will take care of installing Homebrew (as a dependency), XCode, and the XCode Command Line
+Tools.  You will likely get a popup, if Command Line Tools has not been installed, that you will b required to
+interact with along the process.  Failure to react to this modal may cause the script to exit prematurely.
+
+All that is needed to ensure `devtools` are created is to set the value to `true` in the profile:
+
+```yaml
+devtools: true
+```
+
+This is highly recommended, as many other platforms rely on `devtools` to be installed.  An error will be thrown at a
+later point in the script if any portion of the configuration relies on `devtools` and it has not been enabled.
 
 
 

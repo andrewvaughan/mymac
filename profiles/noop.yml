@@ -3,10 +3,18 @@
 # @see https://github.com/andrewvaughan/mymac/blob/master/USAGE.md
 ---
 
-# Configuration options for the operating system
+# Operating system checks and configurations
 # @see https://github.com/andrewvaughan/mymac/blob/master/USAGE.md#macos
 macos : false
 
-# Configuration options for the system's sudo controls
+# System sudo configuration
 # @see https://github.com/andrewvaughan/mymac/blob/master/USAGE.md#sudoers
 sudoers : false
+
+# Homebrew casks, packages, and configurations
+# @see https://github.com/andrewvaughan/mymac/blob/master/USAGE.md#homebrew
+homebrew : false
+
+# Whether to install development tools (Homebrew, XCode, XCode Command Line Tools, Git)
+# @see https://github.com/andrewvaughan/mymac/blob/master/USAGE.md#devtools
+devtools : false

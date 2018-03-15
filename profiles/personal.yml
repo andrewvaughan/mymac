@@ -10,11 +10,15 @@
 # @see https://github.com/andrewvaughan/mymac/blob/master/USAGE.md
 ---
 
-# This profile supports MacOS 10.11 (El Capitan) and above
-# @see https://github.com/andrewvaughan/mymac/blob/master/USAGE.md#macOS
+# Operating system checks and configurations
+# @see https://github.com/andrewvaughan/mymac/blob/master/USAGE.md#macos
 macos:
   version_check : 10.11
 
-# Default sudo configurations work fine
-# @see https://github.com/andrewvaughan/mymac/blob/master/USAGE.md#Sudoers
-sudoers: false
+# System sudo configuration
+# @see https://github.com/andrewvaughan/mymac/blob/master/USAGE.md#sudoers
+sudoers : false
+
+# Whether to install development tools (Homebrew, XCode, XCode Command Line Tools, Git)
+# @see https://github.com/andrewvaughan/mymac/blob/master/USAGE.md#devtools
+devtools : true
