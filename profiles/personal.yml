@@ -14,6 +14,7 @@
 # @see https://github.com/andrewvaughan/mymac/blob/master/USAGE.md#macos
 macos:
   version_check : 10.11
+  update        : true
 
 # System sudo configuration
 # @see https://github.com/andrewvaughan/mymac/blob/master/USAGE.md#sudoers

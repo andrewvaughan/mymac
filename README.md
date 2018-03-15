@@ -33,10 +33,22 @@ A remote install script is available to install all required dependencies and ex
 Optionally, a customized profile can be provided that customizes the settings that the Ansible script executes.  This
 file should follow the format explained in the provided [config.yml](defaults/config.yml) file.  To run the custom
 file, the `MYMAC_PROFILE` environment variable should be set to the profile's location before running.  One way of
-doing this is by prepending it to the execution:
+doing this is by prepending it to the execution.
+
+Additionally, a vault file can be included to provide sensitive information in the same manner.  The environment
+variable to do so is `MYMAC_VAULT`.  An example of this file, unencrypted, looks akin to:
+
+```yml
+# AppStore Credentials
+appstore:
+  email : your@appstore.email
+  pass  : yourappstorepassword
+```
+
+And the command to run these configurations would be:
 
 ```bash
-MYMAC_PROFILE="~/mymac.yml" /bin/bash <(curl -fsSL https://raw.githubusercontent.com/andrewvaughan/mymac/master/install)
+MYMAC_PROFILE="~/mymac.yml" MYMAC_VAULT="~/mymac.vault.yml" /bin/bash <(curl -fsSL https://raw.githubusercontent.com/andrewvaughan/mymac/master/install)
 ```
 
 Additional options are available in the script to modify things such as debugging and verbosity.  A complete list of
@@ -55,13 +67,13 @@ these can be found by adding the `-h` argument to the end of the script call:
 Alternatively, the playbook can be run directly from [Ansible][ansible-url], assuming it has been installed:
 
 ```bash
-MYMAC_PROFILE=custom.yml ansible-playbook playbook.yml
+MYMAC_PROFILE=custom.yml ansible-playbook -K playbook.yml
 ```
 
 The playbook can, additionally, be run in debug-mode by changing the strategy and increasing verbosity:
 
 ```bash
-MYMAC_PROFILE=custom.yml ANSIBLE_STRATEGY=debug ansible-playbook -vv playbook.yml
+MYMAC_PROFILE=custom.yml MYMAC_VAULT=vault.yml ANSIBLE_STRATEGY=debug ansible-playbook -K -vv playbook.yml
 ```
 
 ## Configuration
