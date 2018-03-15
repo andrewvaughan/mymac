@@ -89,10 +89,10 @@ project is made available.
 
 
 
-[version-image]:  https://img.shields.io/badge/macOS-Sierra-blue.svg?style=flat
-[version-url]:    http://www.apple.com/macos/sierra/
-[codename-image]: https://img.shields.io/badge/Version-10.12.6-blue.svg?style=flat
-[codename-url]:   https://developer.apple.com/library/content/releasenotes/MacOSX/WhatsNewInOSX/Articles/OSXv10.html#//apple_ref/doc/uid/TP40017145-SW1
+[version-image]:  https://img.shields.io/badge/Version-0.1.0-blue.svg?style=flat
+[version-url]:    https://github.com/andrewvaughan/mymac/releases/tag/0.1.0
+[codename-image]: https://img.shields.io/badge/macOS-High_Sierra-blue.svg?style=flat
+[codename-url]:   https://www.apple.com/macos/high-sierra/
 [license-image]:  https://img.shields.io/badge/License-MIT-orange.svg?style=flat
 [license-url]:    https://github.com/andrewvaughan/mymac/blob/master/LICENSE
 [build-image]:    https://travis-ci.org/andrewvaughan/mymac.svg?branch=master
