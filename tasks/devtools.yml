@@ -1,0 +1,55 @@
+#
+# Installs and configures the following:
+#
+#   - Homebrew
+#   - MAS Homebrew Package (to install XCode)
+#   - XCode
+#   - XCode Command Line Tools
+#   - Git
+#
+# Variables
+#   appstore_email : the email for the Apple AppStore (optional)
+#   appstore_password : the password for the Apple AppStore (optional)
+#
+---
+
+# Install Homebrew MAS to install XCode
+- name: Upgrading Homebrew and MAS to latest version(s)
+  homebrew:
+    name            : mas
+    state           : latest
+    update_homebrew : yes
+
+
+# Install XCode from the Mac AppStore
+- name          : Updating XCode to latest version
+  include_tasks : installers/appstore.yml
+  vars:
+    email    : "{{ appstore_email|default('') }}"
+    password : "{{ appstore_password|default('') }}"
+    apps:
+      - { id: '497799835', name: 'Xcode (9.2)' }
+
+
+# Repeat installation checks until installation is complete
+- name          : Installing XCode Command Line Tools (Accept any Popup Dialogs)
+  become        : yes
+  shell         : xcode-select --install
+  register      : xcode_clt
+  retries       : 400
+  delay         : 15
+  until         : xcode_clt.stderr.find("command line tools are already installed") != -1
+  changed_when  : xcode_clt.attempts is defined and xcode_clt.attempts > 0
+  failed_when   : xcode_clt.stderr.find("command line tools are already installed") == -1
+  ignore_errors : true
+
+
+
+# Configure Git
+# @TODO
+
+
+# Mark this script complete in case others need to reference it
+- name: DevTools configuration complete
+  set_fact:
+    mymac: "{{ mymac|default([]) + [{ 'devtools': true }] }}"

@@ -1,4 +1,6 @@
+#
 # Configures the sudoers file on the system.
+#
 ---
 
 - name: Configuring sudoers
@@ -13,3 +15,8 @@
 - debug:
     msg       : Sudoer configuration complete. Created and validated /private/etc/sudoers.d/mymac from templates/private/etc/sudoers.d/mymac.j2
     verbosity : 2
+
+# Mark this script complete in case others need to reference it
+- name: Sudoers configuration complete
+  set_fact:
+    mymac: "{{ mymac|default([]) + [{ 'sudoers': true }] }}"

@@ -5,21 +5,30 @@
   # If a profile is provided, load it from the environment
   vars:
     profile : "{{ lookup('env', 'MYMAC_PROFILE') }}"
-
-
-  # Load noop.yml as a default to disable unset profile options
-  vars_files:
-    - profiles/noop.yml
+    vault   : "{{ lookup('env', 'MYMAC_VAULT') }}"
 
 
   # If a profile has been set, load that file
   pre_tasks:
-    - name          : Loading Profile (if set)
-      include_vars  : "{{ item }}"
-      with_fileglob :
+    - name : Load NoOp Profile for Defaults
+      include_vars : profiles/noop.yml
+      tags: ['always']
+
+    - name         : Loading Custom Profile
+      include_vars : "{{ item }}"
+      with_fileglob:
         - "{{ profile }}"
-      tags : ['always']
-      when : profile != ""
+      tags: ['always']
+      when:
+        - profile != ""
+
+    - name         : Loading Custom Variable Vault
+      include_vars : "{{ item }}"
+      with_fileglob:
+        - "{{ vault }}"
+      tags: ['always']
+      when:
+        - vault != ""
 
 
   # Run the profile
@@ -29,12 +38,31 @@
     - name          : --PREP-- sed location discovery
       include_tasks : tasks/helpers/sed.yml
 
+
     # MacOS compatibility checks
-    - name          : Mac Compatibility Checks
+    - name          : Checking MacOS version compatibility...
       include_tasks : tasks/macos.yml
-      when          : macos is defined and macos != false and macos != []
+      when:
+        - macos is defined
+        - macos != false
+        - macos != []
+
 
     # Configure sudoers on the system
-    - name          : Sudoers Configuration
+    - name          : Configuring sudoers...
       include_tasks : tasks/sudoers.yml
-      when          : sudoers is defined and sudoers != false and sudoers != []
+      when:
+        - sudoers is defined
+        - sudoers != false
+        - sudoers != []
+
+
+    # Install and configure Homebrew, XCode, XCode Command Line Tools, Git
+    - name          : Installing development tools...
+      include_tasks : tasks/devtools.yml
+      vars:
+        appstore_email    : appstore.email
+        appstore_password : appstore.password
+      when:
+        - devtools is defined
+        - devtools != false
