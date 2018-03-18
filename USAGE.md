@@ -83,6 +83,9 @@ macos:
   version_check : 10.13
   system_update : true
   filevault     : true
+
+  defaults:
+    update_frequency : 1
 ```
 
 #### macos.version_check
@@ -122,7 +125,7 @@ other applications, see the [appstore](#appstore) option.
 version check may fail, even if the `system_update` command is set to true.  If your version check fails with
 `system_update` enabled, you should restart your computer and run the profile again.
 
-#### filevault
+#### macos.filevault
 
 The `filevault` parameter can be either set to `true`, `false`, or omitted.  If omitted, the state of FileVault will
 not be changed on the system.  However, if the parameter is set to either `true` or `false`, the system will either
@@ -131,6 +134,14 @@ enable or disable FileVault on the system, respectively.
 **Note** that encrypting the disk with FileVault can take some time.  Instead of waiting for the disk to encrypt, a
 flag will be set to enable FileVault the next time you restart your computer.  Because of this, you will likely be
 asked to enter your computer's password upon your next restart.
+
+#### macos.defaults
+
+A number of configurations exist to customize the way MacOSX behaves.  The following are avaiable in this module:
+
+| Name               | Default Value | Description                                       |
+|:------------------:|:-------------:|---------------------------------------------------|
+| `update_frequency` | `1`           | How often (in days) to check for software updates |
 
 ### sudoers
 
@@ -158,14 +169,14 @@ Any sections that are omitted or set explicitly to `false` will be skipped in th
 **Note** setting this section to `false` will *remove* any previously-configured `sudoers` configurations by MyMac.
 Only by omitting the section entirely will no action be taken.
 
-#### user_aliases
+#### sudoers.user_aliases
 
 `user_aliases` are used to specify groups of users. You can specify usernames, system groups (prefixed by a `%`) and
 netgroups (prefixed by a `+`).
 
 More details can be found [here](https://help.ubuntu.com/community/Sudoers#User_Aliases).
 
-#### runas_aliases
+#### sudoers.runas_aliases
 
 `runas_aliases` are almost the same as `user_aliases`, but you are allowed to specify users by uid's. This is helpful,
 as usernames and groups are matched as strings, so two users with the same uid but different usernames will not be
@@ -173,21 +184,21 @@ matched by entering a single username, but can be matched with a uid.
 
 More details can be found [here](https://help.ubuntu.com/community/Sudoers#Runas_Aliases).
 
-#### host_aliases
+#### sudoers.host_aliases
 
 A `host_alias` is a list of hostname, ip addresses, networks and netgroups (prefixed with a `+`). If you do not
 specify a netmask with a network, the netmask of the hosts ethernet interface(s) will be used when matching.
 
 More details can be found [here](https://help.ubuntu.com/community/Sudoers#Host_Aliases).
 
-#### cmnd_aliases
+#### sudoers.cmnd_aliases
 
 `cmnd_aliases` are lists of commands and directories. You can use this to specify a group of commands. If you
 specify a directory it will include any file within that directory but not in any subdirectories.
 
 More details can be found [here](https://help.ubuntu.com/community/Sudoers#Command_Aliases).
 
-#### users
+#### sudoers.users
 
 `users` are where the sudoers file sets who can run what as who. It is the key part of the file and all the aliases
 have just been set up for this very point. If this was a film this part is where all the key threads of the story come
@@ -237,12 +248,12 @@ identity:
       private_key : ./profiles/keys/personal/gpg.asc
 ```
 
-#### names.computer
+#### identity.names.computer
 
 This is the name of the computer for use on things like network and services.  If omitted or explicitly set to
 `false`, the computer name will not be changed.
 
-#### names.host
+#### identity.names.host
 
 This is the hostname of the computer for use on the network.  If omitted or explicitly set to `false`, the
 hostname will not be changed.
@@ -251,18 +262,18 @@ hostname will not be changed.
 will set both, with the former having a `.local` suffix.  **Do not** include the `.local` suffix when setting the
 hostname, or your result will end up with something like `hostname.local.local`.
 
-#### ssh_key.bits
+#### identity.ssh_key.bits
 
 The number of bits for the RSA algorithm when generating the SSH key.  By default, the value is `4096`.  RSA keys have
 a minimum of `1024` bits, and need to be a factor of 2, but this is not checked by the system.  The underlying
 software may or may not throw an error if these are malformed.
 
-#### ssh_key.comment
+#### identity.ssh_key.comment
 
 The comment to include at the end of the SSH key.  This is often useful to distinguish the SSH key when multiple are
 placed on external services or servers.  If omitted, no comment will be included.
 
-#### ssh_key.password
+#### identity.ssh_key.password
 
 The password for the SSH key.  If omitted, the SSH key will be generated without a password; however, this is usually
 not recommended for security reasons.
@@ -270,7 +281,7 @@ not recommended for security reasons.
 **Note** it is recommended to use [Ansible Vault][ansible-vault-url] to encrypt the `password` string so it does not
 sit in plain text.
 
-#### gpg_key.id
+#### identity.gpg_key.id
 
 The long-format ID of the GPG key being copied.  This can be found on a computer with the existing key by entering
 the following command:
@@ -279,7 +290,7 @@ the following command:
 gpg --list-secret-keys --keyid-format LONG
 ```
 
-#### gpg_key.files.public_key
+#### identity.gpg_key.files.public_key
 
 The location of the public key data for the GPG key being installed.  This file can, optionally, be encrypted by
 [Ansible Vault][ansible-vault-url].  To export a GPG public key on an existing machine, use the following command:
@@ -288,7 +299,7 @@ The location of the public key data for the GPG key being installed.  This file 
 gpg --export -a [YOUR_KEY_ID] > gpg.pub.asc
 ```
 
-#### gpg_key.files.private_key
+#### identity.gpg_key.files.private_key
 
 The location of the private key data for the GPG key being installed.  To export a GPG private key on an existing
 machine, and encrypt it using Ansible Vault, use the following commands:
@@ -332,12 +343,12 @@ app_store:
         3363
 ```
 
-#### email
+#### app_store.email
 
 This is the email used to login to the Apple AppStore.  This is an optional field - if the user is already logged in
 to the AppStore, the credentials will not be used.
 
-#### password
+#### app_store.password
 
 This is the password used to login to the Apple AppStore.  This is an optional field - if the user is already logged
 in to the AppStore, the credentials will not be used.

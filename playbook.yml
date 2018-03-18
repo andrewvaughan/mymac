@@ -55,14 +55,17 @@
 
     ### MODULES ######################################################################################################
 
-    - name          : Loading MacOS module (1 / 4)
+    - name          : Loading MacOS module (1 / 5)
       include_tasks : tasks/macos.yml
 
-    - name          : Loading Sudoers module (2 / 4)
+    - name          : Loading Sudoers module (2 / 5)
       include_tasks : tasks/sudoers.yml
 
-    - name          : Loading Identity module (3 / 4)
+    - name          : Loading Identity module (3 / 5)
       include_tasks : tasks/identity.yml
 
-    - name          : Loading DevTools module (4 / 4)
+    - name          : Loading DevTools module (4 / 5)
       include_tasks : tasks/dev-tools.yml
+
+    - name          : Loading Defaults module (5 / 5)
+      include_tasks : tasks/defaults.yml
