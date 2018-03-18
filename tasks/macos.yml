@@ -4,6 +4,7 @@
 # Options:
 #   - update - set to true to upate the system to the latest version
 #   - version_check - the major and minor version (e.g., 10.13) minimum to run this script
+#   - filevault - whether to enable filevault or not
 #
 # Any option can be set to `false` or left undefined to skip it
 #
@@ -55,6 +56,24 @@
       when: >
         (version_check.os.major > version_check.target.major) or
         (version_check.os.major == version_check.target.major and version_check.os.minor > version_check.target.minor)
+
+
+    # Enable or disable FileVault, if the configuration is set
+    - name   : Enabling FileVault
+      become : true
+      filevault:
+        enabled : True
+      when:
+        - macos.filevault is defined
+        - macos.filevault == true
+
+    - name   : Disabling FileVault
+      become : true
+      filevault:
+        enabled : False
+      when:
+        - macos.filevault is defined
+        - macos.filevault == false
 
 
     # Mark this script complete in case others need to reference it

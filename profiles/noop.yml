@@ -9,7 +9,7 @@ macos : false
 
 # System sudo configuration
 # @see https://github.com/andrewvaughan/mymac/blob/master/USAGE.md#sudoers
-sudoers : false
+#sudoers : false
 
 # Homebrew casks, packages, and configurations
 # @see https://github.com/andrewvaughan/mymac/blob/master/USAGE.md#homebrew
