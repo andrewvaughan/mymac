@@ -171,7 +171,7 @@ fi
 # Install ansible-galaxy dependencies
 echo "Installing dependencies..."
 echo
-ansible-galaxy install -r ${ANSIBLE_DEBUG_PARAM} requirements.yml
+ansible-galaxy ${ANSIBLE_DEBUG_PARAM} install -r requirements.yml
 echo
 
 # Run ansible with our provided debug mode
