@@ -24,6 +24,10 @@ sudoers : false
 # Identity and encyption configuration
 # @see https://github.com/andrewvaughan/mymac/blob/master/USAGE.md#identity
 identity:
+  names:
+    host     : andrew-macbook
+    computer : Andrew's MacBook Pro
+
   ssh_key:
     bits     : 4096
     comment  : Andrew Vaughan's Personal MacBook Pro <hello@andrewvaughan.io>

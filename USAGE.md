@@ -213,6 +213,10 @@ services that need it.  All changes happen to the user who is running the script
 
 ```yml
 identity:
+  names:
+    computer : Andrew's Macbook
+    host     : andrew-macbook
+
   ssh_key:
     bits     : 4096
     comment  : Andrew Vaughan's Personal MacBook <hello@andrewvaughan.io>
@@ -225,18 +229,32 @@ identity:
           3530
 ```
 
-#### bits
+#### names.computer
+
+This is the name of the computer for use on things like network and services.  If omitted or explicitly set to
+`false`, the computer name will not be changed.
+
+#### names.host
+
+This is the hostname of the computer for use on the network.  If omitted or explicitly set to `false`, the
+hostname will not be changed.
+
+**Note** that there are two types of hostnames on MacOSX computers: *primary* and *bonjour* hostnames.  This script
+will set both, with the former having a `.local` suffix.  **Do not** include the `.local` suffix when setting the
+hostname, or your result will end up with something like `hostname.local.local`.
+
+#### ssh_key.bits
 
 The number of bits for the RSA algorithm when generating the SSH key.  By default, the value is `4096`.  RSA keys have
 a minimum of `1024` bits, and need to be a factor of 2, but this is not checked by the system.  The underlying
 software may or may not throw an error if these are malformed.
 
-#### comment
+#### ssh_key.comment
 
 The comment to include at the end of the SSH key.  This is often useful to distinguish the SSH key when multiple are
 placed on external services or servers.  If omitted, no comment will be included.
 
-#### password
+#### ssh_key.password
 
 The password for the SSH key.  If omitted, the SSH key will be generated without a password; however, this is usually
 not recommended for security reasons.
