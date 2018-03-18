@@ -182,5 +182,5 @@ echo
 cleanup
 
 echo
-echo "Finished successfully!"
+echo "Done!"
 echo

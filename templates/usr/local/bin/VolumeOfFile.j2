@@ -1,0 +1,22 @@
+#!/bin/bash
+
+#
+# Returns the Volume of a given file
+#
+RESULT=$(
+  /bin/df "$1" \
+    | /usr/bin/sed -e 1d -e 's,  *, ,g' -e s,/Volumes/,, \
+    | cut -d' ' -f 9-
+)
+
+if [[ $RESULT == / ]]; then
+
+  /bin/ls -l /Volumes \
+    | /usr/bin/sed -n -e 's,  *, ,g' -e 's, -> /$,,p' \
+    | cut -d' ' -f 9-
+
+else
+
+  echo "$RESULT"
+
+fi

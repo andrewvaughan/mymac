@@ -9,8 +9,32 @@
 # Any option can be set to `false` or left undefined to skip it
 #
 ---
-- name  : MacOS
-  block :
+- name : MacOS
+  block:
+
+    # Set our configuration dot-files
+    - name       : Copying .bash_profile to home
+      template:
+        src      : templates/Users/home/.bash_profile.j2
+        dest     : ~/.bash_profile
+        mode     : u=rw,g=r,o=r
+        backup   : true
+      register   : bash_profile
+
+    - name  : Sourcing .bash_profile
+      shell : source ~/.bash_profile
+      when  : bash_profile|changed
+
+
+    # Load custom scripts
+    - name : Copying custom scripts
+      template:
+        src  : "templates/usr/local/bin/{{ item }}.j2"
+        dest : "/usr/local/bin/{{ item }}"
+        mode : u=rwx,g=rwx,o=rx
+      with_items:
+        - VolumeOfFile
+
 
     # Update the operating system if `update` is set
     - name          : Updating operating system to latest version
@@ -19,11 +43,6 @@
       register      : os_update
       changed_when  : os_update.stderr.find("No updates are available") == -1
       when          : macos.update is defined and macos.update
-
-
-    - debug:
-        var       : os_update
-        verbosity : 2
 
 
     # Check the operating system version number
