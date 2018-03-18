@@ -20,6 +20,32 @@ macos:
 # @see https://github.com/andrewvaughan/mymac/blob/master/USAGE.md#sudoers
 sudoers : false
 
+# Identity and encyption configuration
+# @see https://github.com/andrewvaughan/mymac/blob/master/USAGE.md#identity
+identity:
+  ssh_key:
+    bits     : 4096
+    comment  : Andrew Vaughan's Personal MacBook Pro <hello@andrewvaughan.io>
+    password : !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          33313034646564636330326338356565306336373065623439616539373938613832356665613338
+          3862383938383732366262353335643461646130363832310a613231376637623065326235383133
+          37353766343438626639333262663261623565383430306338303865343833633266643263303032
+          3330656539306439360a633534383538393466363930386563363366656233336530316330656264
+          3530
+
 # Whether to install development tools (Homebrew, XCode, XCode Command Line Tools, Git)
-# @see https://github.com/andrewvaughan/mymac/blob/master/USAGE.md#devtools
-devtools : true
+# @see https://github.com/andrewvaughan/mymac/blob/master/USAGE.md#dev_tools
+dev_tools: true
+
+# Manages the Mac AppStore and any applications installed with it
+# @see https://github.com/andrewvaughan/mymac/blob/master/USAGE.md#app_store
+app_store:
+  email    : andrew@undoubtedly.me
+  password : !vault |
+        $ANSIBLE_VAULT;1.1;AES256
+        37636666386265393735656530376232353039616132393363616339383037353965666664616635
+        3765613831393663333766366533343936323434393463350a363661623265616534343963383634
+        32643337333561623664623165653562643631313365663930623533653633303133653530366264
+        3561343830303661310a333738616437623035666239336339343131616661396464656633666666
+        3363

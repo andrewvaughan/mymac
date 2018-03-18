@@ -17,8 +17,10 @@ fi
 
 # Load our options
 usage() {
-  echo "Usage: install [-d] [-v]" 1>&2
+  echo "Usage: install [-d] [-v]"
   echo "    -m  Use the master branch instead of latest release" 1>&2
+  echo "    -e  Use an encypted profile and ask for a vault password" 1>&2
+  echo "    -l  Launches a local version of MyMac instead of downloading it" 1>&2
   echo "    -d  Enables debugging" 1>&2
   echo "    -v  Enables verbose debugging (implies -d)" 1>&2
   echo "    -h  Printes this usage information and exits" 1>&2
@@ -29,36 +31,49 @@ cleanup() {
   echo "Cleaning up..."
 
   cd ~
-  rm -rf ${MYMAC_TEMPDIR}
 
-  unset MYMAC_TEMPDIR
+  if [ -n "$MYMAC_TEMPDIR" ]; then
+    rm -rf ${MYMAC_TEMPDIR}
+    unset MYMAC_TEMPDIR
+  fi
+
   unset ANSIBLE_STRATEGY
-  unset ANSIBLE_DEBUG_PARAM
+  unset ANSIBLE_PARAM
   unset DEBUG_PARAM
+  unset GITHUB_BRANCH
 }
 
 # Argument Defaults
-ANSIBLE_DEBUG_PARAM=""
+ANSIBLE_STRATEGY=""
+ANSIBLE_PARAM="--ask-become-pass"
 DEBUG_PARAM=""
 GITHUB_BRANCH="latest"
 
 # Parse any arguments sent
-while getopts ":mdvh" opt; do
+while getopts ":meldvh" opt; do
   case $opt in
+    m)
+      GITHUB_BRANCH=master
+      ;;
+
+    e)
+      ANSIBLE_PARAM="${ANSIBLE_PARAM} --ask-vault-pass"
+      ;;
+
+    l)
+      NO_DOWNLOAD=1
+      ;;
+
     d)
       ANSIBLE_STRATEGY=debug
-      ANSIBLE_DEBUG_PARAM=${ANSIBLE_DEBUG_PARAM:="-v"}
+      ANSIBLE_PARAM="${ANSIBLE_PARAM} -v"
       DEBUG_PARAM="-v"
       ;;
 
     v)
       ANSIBLE_STRATEGY=debug
-      ANSIBLE_DEBUG_PARAM="-vvv"
+      ANSIBLE_PARAM="${ANSIBLE_PARAM} -vvv"
       DEBUG_PARAM="-v"
-      ;;
-
-    m)
-      GITHUB_BRANCH=master
       ;;
 
     h)
@@ -76,14 +91,16 @@ done
 
 
 echo
-echo "NOTE: You may be asked to enter your computer user's password multiple times during installation."
+echo "NOTE: You may be asked to enter your computer user's sudo password multiple"
+echo "      times during installation. Computer configuration may take a significant"
+echo "      amount of time."
 echo
-
-sudo -v
 
 
 # Do we have access to ansible-playbook?
 command -v ansible-playbook >/dev/null 2>&1 || {
+  sudo -v
+
   echo "Ansible not found... attempting install"
 
   # Is pip installed?
@@ -112,41 +129,45 @@ command -v ansible-playbook >/dev/null 2>&1 || {
 }
 
 
-# Create a temporary directory to work in
-MYMAC_TEMPDIR=$(mktemp -d)
-cd ${MYMAC_TEMPDIR}
+if [ -z "${NO_DOWNLOAD}" ]; then
+
+  # Create a temporary directory to work in
+  MYMAC_TEMPDIR=$(mktemp -d)
+  cd ${MYMAC_TEMPDIR}
 
 
-# Download the latest branch from Github
-echo
-echo "Downloading latest MyMac configuration agent..."
-echo
+  # Download the latest branch from Github
+  echo
+  echo "Downloading MyMac configuration agent..."
+  echo
 
-curl -LOk https://github.com/andrewvaughan/mymac/archive/${GITHUB_BRANCH}.tar.gz
+  curl -LOk https://github.com/andrewvaughan/mymac/archive/${GITHUB_BRANCH}.tar.gz
 
-if [ ! -f ${GITHUB_BRANCH}.tar.gz ]; then
-    cleanup
-    echo "Could not download required files from \"https://github.com/andrewvaughan/mymac/archive/${GITHUB_BRANCH}.tar.gz\". Exiting." >&2
-    exit 5
+  if [ ! -f ${GITHUB_BRANCH}.tar.gz ]; then
+      cleanup
+      echo "Could not download required files from \"https://github.com/andrewvaughan/mymac/archive/${GITHUB_BRANCH}.tar.gz\". Exiting." >&2
+      exit 5
+  fi
+
+  tar ${DEBUG_PARAM}xfz ${GITHUB_BRANCH}.tar.gz
+
+  if [ ! -d mymac-${GITHUB_BRANCH} ]; then
+      cleanup
+      echo "Failed to extract required files from \"https://github.com/andrewvaughan/mymac/archive/${GITHUB_BRANCH}.tar.gz\". Exiting." >&2
+      exit 6
+  fi
+
+  # Run the Ansible playbook downloaded
+  echo
+  echo "Running MyMac configuration..."
+  echo
+
+  cd mymac-${GITHUB_BRANCH}
+
 fi
-
-tar ${DEBUG_PARAM}xfz ${GITHUB_BRANCH}.tar.gz
-
-if [ ! -d mymac-${GITHUB_BRANCH} ]; then
-    cleanup
-    echo "Failed to extract required files from \"https://github.com/andrewvaughan/mymac/archive/${GITHUB_BRANCH}.tar.gz\". Exiting." >&2
-    exit 6
-fi
-
-# Run the Ansible playbook downloaded
-echo
-echo "Running MyMac configuration..."
-echo
-
-cd mymac-${GITHUB_BRANCH}
 
 # Run ansible with our provided debug mode
-ansible-playbook -K ${ANSIBLE_DEBUG_PARAM} playbook.yml
+ansible-playbook ${ANSIBLE_PARAM} playbook.yml
 
 # Cleanup and exit
 cleanup

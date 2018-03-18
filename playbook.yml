@@ -1,68 +1,57 @@
 ---
-- hosts: all
-  connection: local
+- hosts      : all
+  connection : local
 
   # If a profile is provided, load it from the environment
   vars:
-    profile : "{{ lookup('env', 'MYMAC_PROFILE') }}"
-    vault   : "{{ lookup('env', 'MYMAC_VAULT') }}"
-
-
-  # If a profile has been set, load that file
-  pre_tasks:
-    - name : Load NoOp Profile for Defaults
-      include_vars : profiles/noop.yml
-      tags: ['always']
-
-    - name         : Loading Custom Profile
-      include_vars : "{{ item }}"
-      with_fileglob:
-        - "{{ profile }}"
-      tags: ['always']
-      when:
-        - profile != ""
-
-    - name         : Loading Custom Variable Vault
-      include_vars : "{{ item }}"
-      with_fileglob:
-        - "{{ vault }}"
-      tags: ['always']
-      when:
-        - vault != ""
+    mymac_profile : "{{ lookup('env', 'MYMAC_PROFILE')|default(omit) }}"
 
 
   # Run the profile
   tasks:
 
-    # Helper task to set the proper path to sed
-    - name          : --PREP-- sed location discovery
-      include_tasks : tasks/helpers/sed.yml
+    ### PREP AND SETUP ###############################################################################################
+
+    - name  : Setup
+      block :
+
+        # Ensure we are running on macOS
+        - name : Checking Operating System type
+          fail : msg="This installer is only supported by MacOSX, current operating system is \"{{ ansible_distribution }}\""
+          when : ansible_distribution != "MacOSX"
 
 
-    # MacOS compatibility checks
-    - name          : Checking MacOS version compatibility...
+        # Helper tasks that provide shared functionality for modules
+        - name          : Finding `sed` path
+          include_tasks : tasks/helpers/sed.yml
+
+
+        # If we have a profile set, load it
+        - include_tasks : tasks/helpers/load-profile.yml
+          vars:
+            profile : "{{ mymac_profile }}"
+            append  : false
+          when:
+            - mymac_profile is defined
+            - mymac_profile != ""
+
+
+        # Fail early if we don't have a profile
+        - name : No profile provided; exiting
+          fail : msg="No profile provided; exiting."
+          when : not mymac_profile or mymac_profile == ""
+
+
+    ### MODULES ######################################################################################################
+
+    - name          : Loading MacOS module (1 / 4)
       include_tasks : tasks/macos.yml
-      when:
-        - macos is defined
-        - macos != false
-        - macos != []
 
-
-    # Configure sudoers on the system
-    - name          : Configuring sudoers...
+    - name          : Loading Sudoers module (2 / 4)
       include_tasks : tasks/sudoers.yml
-      when:
-        - sudoers is defined
-        - sudoers != false
-        - sudoers != []
 
+    - name          : Loading Identity module (3 / 4)
+      include_tasks : tasks/identity.yml
 
-    # Install and configure Homebrew, XCode, XCode Command Line Tools, Git
-    - name          : Installing development tools...
-      include_tasks : tasks/devtools.yml
-      vars:
-        appstore_email    : appstore.email
-        appstore_password : appstore.password
-      when:
-        - devtools is defined
-        - devtools != false
+    - name          : Loading DevTools module (4 / 4)
+      include_tasks : tasks/dev-tools.yml

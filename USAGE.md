@@ -2,53 +2,12 @@
 
 This file contains details on how to prepare a profile for use with this playbook.  Provided examples include:
 
-* `profiles/noop.yml` - prevents all operations from performing
-* `profiles/personal.yml` - Andrew's personal settings used for his personal computers
+* `profiles/noop.yml` - prevents all operations from performing (default)
+* `profiles/personal.yml` - Andrew's settings he uses for his personal computers
 
-Each of these profiles is documented for others to potentially use to their beneift.
+These profiles can be referred to, in combination with this document, to create a custom MyMac profile.  For details
+on how to run a profile, please refer to the [readme](README.md)
 
-## Running Scripts
-
-MyMac provides two options for running profiles, a recommended online installer, which can be run from the terminal
-and manages all dependencies, or from Ansible directly, which is intended for advanced users.
-
-### Running with the Online Installer
-
-To run a profile from the online installer's latest release, simply provide the profile in the `MYMAC_PROFILE`
-environment variable and invoke the online script, such as:
-
-```bash
-MYMAC_PROFILE="~/mymac.yml" /bin/bash <(curl -fsSL https://raw.githubusercontent.com/andrewvaughan/mymac/master/install)
-```
-
-Alternatively, the development release of MyMac can be run by using the `-m` flag:
-
-```bash
-MYMAC_PROFILE="~/mymac.yml" /bin/bash <(curl -fsSL https://raw.githubusercontent.com/andrewvaughan/mymac/master/install) -m
-```
-
-### Running directly with Ansible
-
-Advanced users may wish to run their profile directly with Ansible.  In this case, download the repository and, within
-the root folder, run the Ansible playbook:
-
-```bash
-MYMAC_PROFILE="~/mymac.yml" ansible-playbook playbook.yml
-```
-
-## Creating a Custom Profile
-
-To create a custom profile, create a YML file in the format similar to one of the examples in the `profiles` folder
-and include that as the `MYMAC_PROFILE` environment variable when starting.  The files do _not_ have to be in the
-`profiles` folder to work.  For example, to run this playbook with a configuration profile located at
-`~/myprofile.yml`:
-
-```bash
-MYMAC_PROFILE="~/myprofile.yml" ansible-playbook playbook.yml
-```
-
-This will load the configuration from the `~/myprofile.yml` file and will run the playbook accordingly.  By default,
-any sections that are omitted are skipped from execution.
 
 > ***NOTE:*** This playbook has the ability to cause significant harm to your system.  This software is provided "as
 > is", without warranty of any kind, express or implied.  The authors and maintainers provide no warranty of any kind,
@@ -59,43 +18,74 @@ any sections that are omitted are skipped from execution.
 > COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 > OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-## Configurations
+## Quick-Reference
 
-Numerous configurations and installations are made when running this script.  Each is defined by a configuration
-variable in a profile.
+The following are modules available in MyMac by default:
+
+| Module                  | Description                                                              |
+|:-----------------------:|--------------------------------------------------------------------------|
+| [macos](#macos)         | Checks the system for compatibility and, optionally, upgrades the system |
+| [sudoers](#sudoers)     | Adds user and alias configurations for sudo                              |
+| [identity](#identity)   | Sets the computer and user's identity, including encryption keys         |
+| [dev_tools](#dev_tools) | Installs developer tools, such as XCode and Command Line Tools           |
+| [app_store](#app_store) | Installs applications from the Apple AppStore                            |
+
+## Using Profiles
+
+Profiles are [YAML][yaml-url] files that configure various modules and options in MyMac.  This file describes each
+module in detail, including all available options.  This file should be set as the `MYMAC_PROFILE` environment
+variable before or during execution.  Optionally, the included file can be encrypted using
+[Ansible Vault][ansible-vault-url] to prevent sensitive information from being exposed or committed.
+
+## Creating a Custom Profile
+
+To create a custom profile, create a YML file in a format similar to one of the examples in the
+[profiles][profiles-url].  Any sections that are not included or explicitly set to `false`, as shown in the
+[no-op profile][no-op-url], will be skipped during setup.
+
+### Running a Local Profile
+
+Common practice is to create a file called `.mymac.yml` in the main user's home directory, which would be included as
+follows:
+
+```bash
+MYMAC_PROFILE=~/.mymac.yml /bin/bash <(curl -fsSL https://raw.githubusercontent.com/andrewvaughan/mymac/master/install)
+```
+
+Alternatively, a GitHub project can be created that includes this profile and a bash script to call MyMac from above.
+
+### Running a Remote Profile
+
+Alternatively, a URL can be provided as the profile, such as a raw [GitHub gist][gist-url] file,:
+
+```bash
+export MYMAC_PROFILE=http://bit.do/mymacprofile
+/bin/bash <(curl -fsSL https://raw.githubusercontent.com/andrewvaughan/mymac/master/install)
+```
+
+As given by the example above, all redirects will be honored.  Profiles are not cached; the profile will be
+downloaded at the beginning of each launch.  These profiles can also be encrypted using Ansible Vault.
+
+## Profile Options
+
+Each of the following are modules available to configure a Mac using the MyMac system.  If a section is omitted, it
+will be skipped entirely.  Unless otherwise noted, any sections or options can be explicitly skipped by setting the
+value to `false`.
 
 ### macos
 
-The MacOS module performs checks to ensure that the configuration script is working on a supported platform.  
-Additionally, it can upgrade the macOS version to the latest version, if requested.  The `macos` section has two
-variables:
+The MacOS module checks for version compatibility and updates the system.
 
 ```yml
-# Example...
 macos:
   version_check : 10.13
-  update        : true
+  system_update : true
 ```
 
-To skip compatibility and version checks and updates entirely, disable the entire block:
+#### macos.version_check
 
-```yml
-macos: false
-```
-
-#### version_check
-
-The `version_check` parameter sets the minimum version that must be installed for the application to proceed.  Only
-the Major and Minor revisions are supported at this time.  For instance, to support OSX "El Capitan" and later:
-
-```yml
-macos:
-  version_check: 10.13
-```
-
-_Note: Reversion version checks are not supported at this time._
-
-For reference, the labeled versions of OSX and macOS releases are as follows:
+If `version_check` is set, the script will not run unless the system is, at least, the version specified.  For
+reference, these are the versions of macOS and OSX at the time of this writing:
 
 | Version | Codename      | Released   |
 |:-------:|:-------------:|------------|
@@ -114,33 +104,26 @@ For reference, the labeled versions of OSX and macOS releases are as follows:
 | `10.1`  | Puma          |  9/24/2001 |
 | `10.0`  | Cheetah       |  3/24/2001 |
 
-To skip compatibility checks, you can also set the `version_check` option to `false`:
+**Note** that the `version_check` must match one of the major and minor revision pairs from the table above.
 
-```yml
-macos:
-  version_check: false
-```
+#### macos.system_update
 
-#### update
-
-The `update` option is a boolean metric that will update the macOS version to it's latest version if set to `true`.
-By default, this is not enabled, due to the number of restarts often required with system updates:
-
-```yml
-macos:
-  update: true
-```
+Setting `system_update` to `true` will install any system updates that are outstanding for the system, bringing it to
+the latest version available.  This can take some time, with minimal output on the display, as many updates can be
+large in size.
 
 **Note** that this does *not* update App Store items or any other software, just the base operating system.  To update
-other applications, see the [#appstore](appstore) option.
+other applications, see the [appstore](#appstore) option.
+
+**Note** that most updates require a system restart (sometimes several) to be effective.  Because of this, the
+version check may fail, even if the `system_update` command is set to true.  If your version check fails with
+`system_update` enabled, you should restart your computer and run the profile again.
 
 ### sudoers
 
-The system's [sudo functionality][apple-sudo], including permissions and aliases, can be configured using this
-playbook.  The existing `sudoers` file is not modified, rather, an additional MyMac configuration is placed in a
-dependency folder.
-
-This is done with the `sudoers` configuration variable in a profile:
+The Sudoers module adds aliases and user configurations for the system's [sudo functionality][apple-sudo].  The
+existing `sudoers` file is not modified.  These configurations are included after the main `sudoers` file, meaning
+it will append or override those settings.
 
 ```yml
 sudoers:
@@ -157,13 +140,10 @@ sudoers:
     - "%group  ALL = (ALL) ALL"
 ```
 
-Alternatively, only portions of these variables can be set, if needed:
+Any sections that are omitted or set explicitly to `false` will be skipped in the configuration.
 
-```yml
-sudoers:
-  users:
-    - "sally   ALL = (ALL) ALL"
-```
+**Note** setting this section to `false` or omitting the section will *remove* any previously-configured `sudoers`
+configurations by MyMac, instead of skipping over the section as per usual.
 
 #### user_aliases
 
@@ -215,21 +195,94 @@ root    ALL = (ALL) ALL
 
 More details can be found [here](https://help.ubuntu.com/community/Sudoers#User_Specifications).
 
-### devtools
+### identity
 
-The `devtools` option will take care of installing Homebrew (as a dependency), XCode, and the XCode Command Line
-Tools.  You will likely get a popup, if Command Line Tools has not been installed, that you will b required to
-interact with along the process.  Failure to react to this modal may cause the script to exit prematurely.
+The Identity module sets the computer and user's identities.  It also will setup and distribute SSH and GPG keys to
+services that need it.  All changes happen to the user who is running the script.
 
-All that is needed to ensure `devtools` are created is to set the value to `true` in the profile:
-
-```yaml
-devtools: true
+```yml
+identity:
+  ssh_key:
+    bits     : 4096
+    comment  : Andrew Vaughan's Personal MacBook <hello@andrewvaughan.io>
+    password : !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          33313034646564636330326338356565306336373065623439616539373938613832356665613338
+          3862383938383732366262353335643461646130363832310a613231376637623065326235383133
+          37353766343438626639333262663261623565383430306338303865343833633266643263303032
+          3330656539306439360a633534383538393466363930386563363366656233336530316330656264
+          3530
 ```
 
-This is highly recommended, as many other platforms rely on `devtools` to be installed.  An error will be thrown at a
-later point in the script if any portion of the configuration relies on `devtools` and it has not been enabled.
+#### bits
+
+The number of bits for the RSA algorithm when generating the SSH key.  By default, the value is `4096`.  RSA keys have
+a minimum of `1024` bits, and need to be a factor of 2, but this is not checked by the system.  The underlying
+software may or may not throw an error if these are malformed.
+
+#### comment
+
+The comment to include at the end of the SSH key.  This is often useful to distinguish the SSH key when multiple are
+placed on external services or servers.  If omitted, no comment will be included.
+
+#### password
+
+The password for the SSH key.  If omitted, the SSH key will be generated without a password; however, this is usually
+not recommended for security reasons.
+
+**Note** it is recommended to use [Ansible Vault][ansible-vault-url] to encrypt the `password` string so it does not
+sit in plain text.
+
+### dev_tools
+
+Installs a number of development tools on the system, including Homebrew, MAS, XCode, and XCode Command Line Tools.
+
+```yml
+dev_tools: true
+```
+
+**Note** there are no options for the `dev_tools` module.
+
+**Note** that this module relies on Homebrew and the AppStore to install development tools.  While credentials for the
+App Store do not need to be configured, you may experience a failure if you are not currently logged into the AppStore
+without them.
+
+### app_store
+
+Installs and updates applications that are managed via the Apple AppStore.
+
+```yml
+app_store:
+  email    : andrew@undoubtedly.me
+  password : !vault |
+        $ANSIBLE_VAULT;1.1;AES256
+        37636666386265393735656530376232353039616132393363616339383037353965666664616635
+        3765613831393663333766366533343936323434393463350a363661623265616534343963383634
+        32643337333561623664623165653562643631313365663930623533653633303133653530366264
+        3561343830303661310a333738616437623035666239336339343131616661396464656633666666
+        3363
+```
+
+#### email
+
+This is the email used to login to the Apple AppStore.  This is an optional field - if the user is already logged in
+to the AppStore, the credentials will not be used.
+
+#### password
+
+This is the password used to login to the Apple AppStore.  This is an optional field - if the user is already logged
+in to the AppStore, the credentials will not be used.
+
+**Note** it is recommended to use [Ansible Vault][ansible-vault-url] to encrypt the `password` string so it does not
+sit in plain text.
 
 
+
+[yaml-url]:          http://yaml.org/
+[ansible-vault-url]: https://docs.ansible.com/ansible/latest/vault.html
+[gist-url]:          https://gist.github.com/
+
+[profiles-url]:      https://github.com/andrewvaughan/mymac/tree/latest/profiles
+[no-op-url]:         https://github.com/andrewvaughan/mymac/tree/latest/profiles/noop.yml
 
 [apple-sudo]:   https://developer.apple.com/legacy/library/documentation/Darwin/Reference/ManPages/man8/sudo.8.html

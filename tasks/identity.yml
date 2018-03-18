@@ -1,0 +1,36 @@
+#
+# Configures identity and encryption on the system for the current user.
+#
+# Options:
+#   - ssh_key
+#       - bits - how many bits to use for the SSH key (defaults to 4096)
+#       - comment - the comment to include with the SSH key (defaults to user@hostname)
+#       - password - the SSH key password (default none)
+#
+---
+- name  : Identity
+  block :
+
+    # Generate SSH key
+    - name: "Generating SSH key for user {{ ansible_user_id }}"
+      user:
+        name               : "{{ ansible_user_id }}"
+        ssh_key_bits       : "{{ identity.ssh_key.bits|default(4096) }}"
+        ssh_key_comment    : "{{ identity.ssh_key.comment|default(omit) }}"
+        ssh_key_passphrase : "{{ identity.ssh_key.password|default(omit) }}"
+        generate_ssh_key   : yes
+      when:
+        - identity.ssh_key is defined
+        - identity.ssh_key != false
+
+
+    # Mark this script complete in case others need to reference it
+    - name: Done
+      set_fact:
+        mymac : "{{ mymac|default([]) + [{ 'identity': true }] }}"
+
+
+  when:
+    - identity is defined
+    - identity != false
+    - identity != []

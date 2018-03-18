@@ -11,48 +11,29 @@ This tool configures macOS to the default environment used by Andrew Vaughan on 
   or using this software, you agree to take ownership of all liability and changes to your system.  You own your
   device, and you should fully understand the changes this tool performs on your system prior to execution.
 
-This tool is automatically tested on the following macOS and Xcode combinations:
-
-| macOS Version | macOS Release | Xcode Version |
-|:-------------:|:-------------:|:-------------:|
-| 10.13         | High Sierra   | 9             |
-| 10.12         | Sierra        | 8.3           |
-| 10.12         | Sierra        | 8.2           |
-| 10.12         | Sierra        | 8.1           |
-| 10.11         | El Capitan    | 8             |
-| 10.11         | El Capitan    | 7.3           |
-
 ## Quick Start
 
-A remote install script is available to install all required dependencies and execute the standard Ansible playbook:
+A remote install script is available to install all required dependencies and execute the standard Ansible playbook.
+This is intended to be run from a fresh installation of macOS, so no prior installations are required:
 
 ```bash
 /bin/bash <(curl -fsSL https://raw.githubusercontent.com/andrewvaughan/mymac/master/install)
 ```
 
-Optionally, a customized profile can be provided that customizes the settings that the Ansible script executes.  This
-file should follow the format explained in the provided [config.yml](defaults/config.yml) file.  To run the custom
-file, the `MYMAC_PROFILE` environment variable should be set to the profile's location before running.  One way of
-doing this is by prepending it to the execution.
-
-Additionally, a vault file can be included to provide sensitive information in the same manner.  The environment
-variable to do so is `MYMAC_VAULT`.  An example of this file, unencrypted, looks akin to:
-
-```yml
-# AppStore Credentials
-appstore:
-  email : your@appstore.email
-  pass  : yourappstorepassword
-```
-
-And the command to run these configurations would be:
+By default, no actions are performed.  In order to perform setup, you must supply a profile.  This is done by creating
+a file and passing it's location in as the `MYMAC_PROFILE` environment variable.  For instance:
 
 ```bash
-MYMAC_PROFILE="~/mymac.yml" MYMAC_VAULT="~/mymac.vault.yml" /bin/bash <(curl -fsSL https://raw.githubusercontent.com/andrewvaughan/mymac/master/install)
+MYMAC_PROFILE=~/.mymac.yml /bin/bash <(curl -fsSL https://raw.githubusercontent.com/andrewvaughan/mymac/master/install)
 ```
 
-Additional options are available in the script to modify things such as debugging and verbosity.  A complete list of
-these can be found by adding the `-h` argument to the end of the script call:
+For information on creating a profile file, see the [usage documentation](USAGE.md).
+
+If using a profile that has been encrypted using [Ansible Vault][vault-url], the `-e` parameter must be attached to
+the end of the command.  This will have the system ask for a vault password before starting.
+
+There are a number of options, including debugging and verbosity, that can be run with the installer.  To see all
+possible commands, place the `-h` argument at the end of the script:
 
 ```bash
 /bin/bash <(curl -fsSL https://raw.githubusercontent.com/andrewvaughan/mymac/master/install) -h
@@ -67,20 +48,16 @@ these can be found by adding the `-h` argument to the end of the script call:
 Alternatively, the playbook can be run directly from [Ansible][ansible-url], assuming it has been installed:
 
 ```bash
-MYMAC_PROFILE=custom.yml ansible-playbook -K playbook.yml
+MYMAC_PROFILE=~/.mymac.yml ansible-playbook -K playbook.yml
 ```
+
+The `-K` option must be included, as some installations require `sudo` access.
 
 The playbook can, additionally, be run in debug-mode by changing the strategy and increasing verbosity:
 
 ```bash
-MYMAC_PROFILE=custom.yml MYMAC_VAULT=vault.yml ANSIBLE_STRATEGY=debug ansible-playbook -K -vv playbook.yml
+MYMAC_PROFILE=~/.mymac.yml ANSIBLE_STRATEGY=debug ansible-playbook -K -vv playbook.yml
 ```
-
-## Configuration
-
-A number of configurations and installations are available using this script.  All are designed to be customized,
-overridden, or disabled in a profile's configuration file.  More information can be found in the
-[usage documentation](USAGE.md).
 
 ## License
 
