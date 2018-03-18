@@ -6,8 +6,10 @@ This file contains details on how to prepare a profile for use with this playboo
 * `profiles/personal.yml` - Andrew's settings he uses for his personal computers
 
 These profiles can be referred to, in combination with this document, to create a custom MyMac profile.  For details
-on how to run a profile, please refer to the [readme](README.md)
+on how to run a profile, please refer to the [readme](README.md).
 
+**Note** when using encryption either in files or for strings, it is important that the same Vault Password be used
+for each encryption.  At this time, multiple vault IDs are not supported.
 
 > ***NOTE:*** This playbook has the ability to cause significant harm to your system.  This software is provided "as
 > is", without warranty of any kind, express or implied.  The authors and maintainers provide no warranty of any kind,
@@ -227,6 +229,12 @@ identity:
           37353766343438626639333262663261623565383430306338303865343833633266643263303032
           3330656539306439360a633534383538393466363930386563363366656233336530316330656264
           3530
+
+  gpg_key:
+    id            : E2FF2F42817D427CC18D1D793DCB06CACAFD44DC
+    files:
+      public_key  : ./profiles/keys/personal/gpg.pub.asc
+      private_key : ./profiles/keys/personal/gpg.asc
 ```
 
 #### names.computer
@@ -261,6 +269,38 @@ not recommended for security reasons.
 
 **Note** it is recommended to use [Ansible Vault][ansible-vault-url] to encrypt the `password` string so it does not
 sit in plain text.
+
+#### gpg_key.id
+
+The long-format ID of the GPG key being copied.  This can be found on a computer with the existing key by entering
+the following command:
+
+```bash
+gpg --list-secret-keys --keyid-format LONG
+```
+
+#### gpg_key.files.public_key
+
+The location of the public key data for the GPG key being installed.  This file can, optionally, be encrypted by
+[Ansible Vault][ansible-vault-url].  To export a GPG public key on an existing machine, use the following command:
+
+```bash
+gpg --export -a [YOUR_KEY_ID] > gpg.pub.asc
+```
+
+#### gpg_key.files.private_key
+
+The location of the private key data for the GPG key being installed.  To export a GPG private key on an existing
+machine, and encrypt it using Ansible Vault, use the following commands:
+
+```bash
+gpg --export-secret-keys -a [YOUR_KEY_ID] > gpg.asc
+ansible-vault encrypt gpg.asc
+```
+
+**Note** it is recommended to use [Ansible Vault][ansible-vault-url] to encrypt the private key file so this
+sensitive data does not get stored in plain-text.  The configuration agent will automatically decrypt this file when
+it is found.
 
 ### dev_tools
 

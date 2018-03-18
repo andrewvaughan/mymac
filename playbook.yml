@@ -19,6 +19,13 @@
     - name  : Setup
       block :
 
+        # Check that our sudo password is correct
+        - name         : Checking sudo password
+          become       : true
+          shell        : /usr/bin/true
+          changed_when : false
+
+
         # Ensure we are running on macOS
         - name : Checking Operating System type
           fail : msg="This installer is only supported by MacOSX, current operating system is \"{{ ansible_distribution }}\""

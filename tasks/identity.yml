@@ -9,6 +9,11 @@
 #       - bits - how many bits to use for the SSH key (defaults to 4096)
 #       - comment - the comment to include with the SSH key (defaults to user@hostname)
 #       - password - the SSH key password (default none)
+#   - gpg_key
+#       - id - the ID of the key
+#       - files
+#           - private_key - the location of the private key file, as exported by gpg
+#           - public_key - the location of the public key file, as exported by gpg
 #
 ---
 - name  : Identity
@@ -123,6 +128,96 @@
       when:
         - identity.ssh_key is defined
         - identity.ssh_key != false
+
+    - block:
+
+        # Install GPG, if missing
+        # @TODO
+
+
+        # Check if the GPG key is installed
+        - name         : Checking if GPG public key exists on current machine
+          shell        : gpg --list-keys --keyid-format LONG
+          register     : check_public
+          changed_when : false
+
+
+        - name         : Checking if GPG private key exists on current machine
+          shell        : gpg --list-secret-keys --keyid-format LONG
+          register     : check_private
+          changed_when : false
+
+
+        # Install public key if missing
+        - block:
+
+            - name: Reserving temporary file
+              tempfile:
+                state  : file
+                prefix : gpg.pub.
+                suffix : .asc
+              register : temp_pub_key
+
+            - name: Copying and decrypting key to temporary file
+              copy:
+                src     : "{{ identity.gpg_key.files.public_key }}"
+                dest    : "{{ temp_pub_key.path }}"
+                mode    : 0600
+                decrypt : true
+
+            - name     : Importing public key into GPG
+              shell    : "gpg --import \"{{ temp_pub_key.path }}\""
+
+            - name: Deleting decrypted temporary key
+              file:
+                state : absent
+                path  : "{{ temp_pub_key.path }}"
+
+          when:
+            - identity.gpg_key.id not in check_public.stdout
+
+
+        # Install private key if missing
+        - block:
+
+            - name: Reserving temporary file
+              tempfile:
+                state  : file
+                prefix : gpg.priv.
+                suffix : .asc
+              register : temp_priv_key
+
+            - name: Copying and decrypting key to temporary file
+              copy:
+                src     : "{{ identity.gpg_key.files.private_key }}"
+                dest    : "{{ temp_priv_key.path }}"
+                mode    : 0600
+                decrypt : true
+
+            - name : Importing private key into GPG
+              shell : "gpg --import \"{{ temp_priv_key.path }}\""
+
+            - name: Deleting decrypted temporary key
+              file:
+                state : absent
+                path  : "{{ temp_priv_key.path }}"
+
+          when:
+            - identity.gpg_key.id not in check_private.stdout
+
+      when:
+        - identity.gpg_key is defined
+        - identity.gpg_key != false
+        - identity.gpg_key.id is defined
+        - identity.gpg_key.id != false
+        - identity.gpg_key.id != ""
+        - identity.gpg_key.files is defined
+        - identity.gpg_key.files.public_key is defined
+        - identity.gpg_key.files.public_key != false
+        - identity.gpg_key.files.public_key != ""
+        - identity.gpg_key.files.private_key is defined
+        - identity.gpg_key.files.private_key != false
+        - identity.gpg_key.files.private_key != ""
 
 
     # Mark this script complete in case others need to reference it
