@@ -1,0 +1,27 @@
+#
+# Sets default configurations for a number of MacOSX settings.
+#
+# Variables come from a number of different sources.  See USAGE.md for details.
+#
+---
+
+- name : Defaults
+  block:
+
+    - name : MacOS
+      block:
+
+        - name     : Setting frequency for automatic updates
+          osx_defaults:
+            domain : com.apple.SoftwareUpdate
+            key    : ScheduleFrequency
+            type   : int
+            value  : "{{ macos.defaults.update_frequency|default(1) }}"
+
+      when:
+        - macos is defined
+        - macos != false
+        - macos != []
+        - macos.defaults is defined
+        - macos.defaults != false
+        - macos.defaults != []
