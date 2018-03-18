@@ -1,22 +1,57 @@
 #
 # Configures the sudoers file on the system.
 #
+# Options:
+#   - user_aliases
+#   - runas_aliases
+#   - host_aliases
+#   - cmnd_aliases
+#   - users
+#
+# Any option can be set to `false`, [], or left undefined to skip it
+#
 ---
+- name  : Sudoers
+  block :
 
-- name: Configuring sudoers
-  become: yes
-  template:
-    src      : templates/private/etc/sudoers.d/mymac.j2
-    dest     : /private/etc/sudoers.d/mymac
-    mode     : 0440
-    validate : 'visudo -cf %s'
-  tags: [print_action]
+    # Adds a templated sudoers file to an include area; does not modify the direct visudo
+    - name   : Configuring sudoers
+      become : yes
+      template:
+        src      : templates/private/etc/sudoers.d/mymac.j2
+        dest     : /private/etc/sudoers.d/mymac
+        mode     : 0440
+        validate : 'visudo -cf %s'
 
-- debug:
-    msg       : Sudoer configuration complete. Created and validated /private/etc/sudoers.d/mymac from templates/private/etc/sudoers.d/mymac.j2
-    verbosity : 2
 
-# Mark this script complete in case others need to reference it
-- name: Sudoers configuration complete
-  set_fact:
-    mymac: "{{ mymac|default([]) + [{ 'sudoers': true }] }}"
+    - debug:
+        msg       : Sudoer configuration complete. Created and validated /private/etc/sudoers.d/mymac from templates/private/etc/sudoers.d/mymac.j2
+        verbosity : 2
+
+
+    # Mark this script complete in case others need to reference it
+    - name : Sudoers configuration complete
+      set_fact:
+        mymac : "{{ mymac|default([]) + [{ 'sudoers': true }] }}"
+
+
+  when:
+    - sudoers is defined
+    - sudoers != false
+    - sudoers != []
+
+
+#
+# Disabled cleanup routine
+#
+- name   : Sudoers
+  become : true
+  block:
+
+    # Clean up the Sudoers file from previous configurations
+    - name: Removing configurations
+      file:
+        state : absent
+        path  : /private/etc/sudoers.d/mymac
+
+  when : sudoers is not defined or sudoers == false

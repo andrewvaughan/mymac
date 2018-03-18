@@ -1,58 +1,69 @@
 #
 # Configures macOS basic settings
 #
+# Options:
+#   - update - set to true to upate the system to the latest version
+#   - version_check - the major and minor version (e.g., 10.13) minimum to run this script
+#
+# Any option can be set to `false` or left undefined to skip it
+#
 ---
+- name  : MacOS
+  block :
 
-# Ensure we are running on macOS
-- name: Checking operating system type
-  fail:
-    msg : "This installer is only supported by macOS, current operating system is \"{{ ansible_distribution }}\""
+    # Update the operating system if `update` is set
+    - name          : Updating operating system to latest version
+      become        : yes
+      shell         : softwareupdate -i -a
+      register      : os_update
+      changed_when  : os_update.stderr.find("No updates are available") == -1
+      when          : macos.update is defined and macos.update
+
+
+    - debug:
+        var       : os_update
+        verbosity : 2
+
+
+    # Check the operating system version number
+    - name : Looking up MacOSX version
+      set_fact:
+        version_check:
+          os:
+            major : "{{ ansible_distribution_version.split('.')[0]|int }}"
+            minor : "{{ ansible_distribution_version.split('.')[1]|int }}"
+          target:
+            major : "{{ (macos.version_check|string).split('.')[0]|int }}"
+            minor : "{{ (macos.version_check|string).split('.')[1]|int }}"
+
+
+    - debug:
+        var       : version_check
+        verbosity : 1
+
+
+    - name: Checking for version support
+      fail:
+        msg : "This installer requires macOS version {{ macos.version_check }} or above. Current version is {{ ansible_distribution_version }}.  If running a system update as part of this profile, try restarting your computer and running this script again."
+      when: >
+        (version_check.os.major < version_check.target.major) or
+        (version_check.os.major == version_check.target.major and version_check.os.minor < version_check.target.minor)
+
+
+    - debug:
+        msg : "Warning, operating system version higher than tested.  Unexpected results may occur."
+      when: >
+        (version_check.os.major > version_check.target.major) or
+        (version_check.os.major == version_check.target.major and version_check.os.minor > version_check.target.minor)
+
+
+    # Mark this script complete in case others need to reference it
+    - name    : Done
+      set_fact:
+        mymac : "{{ mymac|default([]) + [{ 'macos': true }] }}"
+
+
   when:
-    - ansible_distribution != "MacOSX"
-
-
-# Check the operating system version number
-- set_fact:
-    version_check:
-      os:
-        major : "{{ ansible_distribution_version.split('.')[0]|int }}"
-        minor : "{{ ansible_distribution_version.split('.')[1]|int }}"
-      target:
-        major : "{{ (macos.version_check|string).split('.')[0]|int }}"
-        minor : "{{ (macos.version_check|string).split('.')[1]|int }}"
-
-- debug:
-    var       : version_check
-    verbosity : 2
-
-- name: Checking macOS version
-  fail:
-    msg : "This installer requires macOS version {{ macos.version_check }} or above. Current version is {{ ansible_distribution_version }}"
-  when: >
-    (version_check.os.major < version_check.target.major) or
-    (version_check.os.major == version_check.target.major and version_check.os.minor < version_check.target.minor)
-
-- debug:
-    msg : "Warning, operating system version higher than tested.  Unexpected results may occur."
-  when: >
-    (version_check.os.major > version_check.target.major) or
-    (version_check.os.major == version_check.target.major and version_check.os.minor > version_check.target.minor)
-
-
-# Update the operating system if `update` is set
-- name: Updating operating system to latest version
-  become        : yes
-  shell         : softwareupdate -i -a
-  register      : os_update
-  changed_when  : os_update.stderr.find("No updates are available") == -1
-  when          : macos.update is defined and macos.update
-
-- debug:
-    var       : os_update
-    verbosity : 2
-
-
-# Mark this script complete in case others need to reference it
-- name: macOS version compatibility check complete
-  set_fact:
-    mymac: "{{ mymac|default([]) + [{ 'macos': true }] }}"
+    - macos is defined
+    - macos != false
+    - macos != []

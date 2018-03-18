@@ -1,19 +1,26 @@
 # Fixes the path to sed, which differs if installed via Homebrew.
 ---
-- name         : --PREP-- Looking Up Path to sed
-  command      : which sed
-  register     : sed_which_result
-  changed_when : false
-  when:
-    - sed_path is undefined
+- name  : Sed
+  block :
 
-- name: --PREP-- Defining sed Path
-  set_fact:
-    sed_path : "{{ sed_which_result.stdout }}"
-  when:
-    - sed_path is undefined
+    - name         : Looking up path
+      command      : which sed
+      register     : sed_which_result
+      changed_when : false
+      when         : sed_path is undefined
 
-- name: --PREP-- Path Resolution
-  debug:
-    var       : sed_path
-    verbosity : 2
+
+    - name       : Storing binary location
+      set_fact:
+        sed_path : "{{ sed_which_result.stdout }}"
+      when       : sed_path is undefined
+
+
+    - debug:
+        var       : sed_path
+        verbosity : 2
+
+
+    # Done!
+    - name  : Done
+      debug : msg="Sed discovery complete"
