@@ -80,6 +80,7 @@ The MacOS module checks for version compatibility and updates the system.
 macos:
   version_check : 10.13
   system_update : true
+  filevault     : true
 ```
 
 #### macos.version_check
@@ -119,6 +120,16 @@ other applications, see the [appstore](#appstore) option.
 version check may fail, even if the `system_update` command is set to true.  If your version check fails with
 `system_update` enabled, you should restart your computer and run the profile again.
 
+#### filevault
+
+The `filevault` parameter can be either set to `true`, `false`, or omitted.  If omitted, the state of FileVault will
+not be changed on the system.  However, if the parameter is set to either `true` or `false`, the system will either
+enable or disable FileVault on the system, respectively.
+
+**Note** that encrypting the disk with FileVault can take some time.  Instead of waiting for the disk to encrypt, a
+flag will be set to enable FileVault the next time you restart your computer.  Because of this, you will likely be
+asked to enter your computer's password upon your next restart.
+
 ### sudoers
 
 The Sudoers module adds aliases and user configurations for the system's [sudo functionality][apple-sudo].  The
@@ -142,8 +153,8 @@ sudoers:
 
 Any sections that are omitted or set explicitly to `false` will be skipped in the configuration.
 
-**Note** setting this section to `false` or omitting the section will *remove* any previously-configured `sudoers`
-configurations by MyMac, instead of skipping over the section as per usual.
+**Note** setting this section to `false` will *remove* any previously-configured `sudoers` configurations by MyMac.
+Only by omitting the section entirely will no action be taken.
 
 #### user_aliases
 

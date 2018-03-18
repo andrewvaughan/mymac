@@ -54,4 +54,6 @@
         state : absent
         path  : /private/etc/sudoers.d/mymac
 
-  when : sudoers is not defined or sudoers == false
+  when:
+    - sudoers is defined
+    - sudoers == false

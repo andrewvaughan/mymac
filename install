@@ -39,6 +39,7 @@ cleanup() {
 
   unset ANSIBLE_STRATEGY
   unset ANSIBLE_PARAM
+  unset ANSIBLE_DEBUG_PARAM
   unset DEBUG_PARAM
   unset GITHUB_BRANCH
 }
@@ -46,6 +47,7 @@ cleanup() {
 # Argument Defaults
 ANSIBLE_STRATEGY=""
 ANSIBLE_PARAM="--ask-become-pass"
+ANSIBLE_DEBUG_PARAM=""
 DEBUG_PARAM=""
 GITHUB_BRANCH="latest"
 
@@ -66,13 +68,13 @@ while getopts ":meldvh" opt; do
 
     d)
       ANSIBLE_STRATEGY=debug
-      ANSIBLE_PARAM="${ANSIBLE_PARAM} -v"
+      ANSIBLE_DEBUG_PARAM="-v"
       DEBUG_PARAM="-v"
       ;;
 
     v)
       ANSIBLE_STRATEGY=debug
-      ANSIBLE_PARAM="${ANSIBLE_PARAM} -vvv"
+      ANSIBLE_DEBUG_PARAM="-vvv"
       DEBUG_PARAM="-v"
       ;;
 
@@ -166,8 +168,15 @@ if [ -z "${NO_DOWNLOAD}" ]; then
 
 fi
 
+# Install ansible-galaxy dependencies
+echo "Installing dependencies..."
+echo
+ansible-galaxy install -r ${ANSIBLE_DEBUG_PARAM} requirements.yml
+echo
+
 # Run ansible with our provided debug mode
-ansible-playbook ${ANSIBLE_PARAM} playbook.yml
+ansible-playbook ${ANSIBLE_PARAM} ${ANSIBLE_DEBUG_PARAM} playbook.yml
+echo
 
 # Cleanup and exit
 cleanup

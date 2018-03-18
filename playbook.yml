@@ -2,6 +2,10 @@
 - hosts      : all
   connection : local
 
+  roles:
+    #- roliver.filevault
+    - ansible-role-filevault
+
   # If a profile is provided, load it from the environment
   vars:
     mymac_profile : "{{ lookup('env', 'MYMAC_PROFILE')|default(omit) }}"

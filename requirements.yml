@@ -1,0 +1,8 @@
+# Dependencies and roles used by MyMac
+# @see https://galaxy.ansible.com/
+---
+
+# Manages FileVault settings for MacOSX platforms
+# @see https://github.com/roliver/ansible-role-filevault/
+#- name : roliver.filevault
+- src : https://github.com/andrewvaughan/ansible-role-filevault
