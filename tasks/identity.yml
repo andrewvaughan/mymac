@@ -2,6 +2,9 @@
 # Configures identity and encryption on the system for the current user.
 #
 # Options:
+#   - names
+#       - computer - the name of this computer when used on the network, etc
+#       - host - the hostname for the computer (without a .local suffix)
 #   - ssh_key
 #       - bits - how many bits to use for the SSH key (defaults to 4096)
 #       - comment - the comment to include with the SSH key (defaults to user@hostname)
@@ -10,6 +13,104 @@
 ---
 - name  : Identity
   block :
+
+    # Hostnames
+    - block:
+
+        # Primary Hostname (with .local)
+        - name         : Checking primary hostname
+          become       : true
+          shell        : scutil --get HostName
+          register     : check_result
+          changed_when : false
+
+        - debug:
+            var       : check_result
+            verbosity : 2
+
+
+        - name         : Setting primary hostname
+          become       : true
+          shell        : "scutil --set HostName \"{{ identity.names.host }}\".local"
+          register     : set_result
+          changed_when : set_result.rc == 0
+          when:
+            - check_result.stdout != identity.names.host + '.local'
+
+        - debug:
+            var       : set_result
+            verbosity : 2
+          when:
+            - set_result is defined
+
+
+        # Bonjour Hostname (without .local)
+        - name         : Checking bonjour hostname
+          become       : true
+          shell        : scutil --get LocalHostName
+          register     : check_result
+          changed_when : false
+
+        - debug:
+            var       : check_result
+            verbosity : 2
+
+
+        - name         : Setting bonjour hostname
+          become       : true
+          shell        : "scutil --set LocalHostName \"{{ identity.names.host }}\""
+          register     : set_result
+          changed_when : set_result.rc == 0
+          when:
+            - check_result.stdout != identity.names.host
+
+        - debug:
+            var       : set_result
+            verbosity : 2
+          when:
+            - set_result is defined
+
+      when:
+        - identity.names is defined
+        - identity.names.host is defined
+        - identity.names.host != ""
+
+
+    # Computer Name
+    - block:
+
+        - name         : Checking computer name
+          become       : true
+          shell        : scutil --get ComputerName
+          register     : check_result
+          changed_when : false
+
+        - name         : Setting computer name
+          become       : true
+          shell        : "scutil --set ComputerName \"{{ identity.names.computer }}\""
+          register     : set_result
+          changed_when : set_result.rc == 0
+          when:
+            - check_result.stdout != identity.names.computer
+
+        - debug:
+            var       : set_result
+            verbosity : 2
+          when:
+            - set_result is defined
+
+      when:
+        - identity.names is defined
+        - identity.names.computer is defined
+        - identity.names.computer != ""
+
+
+    # Flush the cache to apply any changes
+    - name         : Flushing DNS cache
+      become       : true
+      shell        : dscacheutil -flushcache
+      changed_when : false
+
 
     # Generate SSH key
     - name: "Generating SSH key for user {{ ansible_user_id }}"
