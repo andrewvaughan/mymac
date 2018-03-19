@@ -66,8 +66,8 @@ project is made available.
 
 
 
-[version-image]:  https://img.shields.io/badge/Version-0.1.0-blue.svg?style=flat
-[version-url]:    https://github.com/andrewvaughan/mymac/releases/tag/0.1.0
+[version-image]:  https://img.shields.io/badge/Version-0.2.0-blue.svg?style=flat
+[version-url]:    https://github.com/andrewvaughan/mymac/releases/tag/0.2.0
 [codename-image]: https://img.shields.io/badge/macOS-High_Sierra-blue.svg?style=flat
 [codename-url]:   https://www.apple.com/macos/high-sierra/
 [license-image]:  https://img.shields.io/badge/License-MIT-orange.svg?style=flat
