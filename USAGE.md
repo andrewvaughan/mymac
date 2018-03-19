@@ -24,13 +24,14 @@ for each encryption.  At this time, multiple vault IDs are not supported.
 
 The following are modules available in MyMac by default:
 
-| Module                  | Description                                                              |
-|:-----------------------:|--------------------------------------------------------------------------|
-| [macos](#macos)         | Checks the system for compatibility and, optionally, upgrades the system |
-| [sudoers](#sudoers)     | Adds user and alias configurations for sudo                              |
-| [identity](#identity)   | Sets the computer and user's identity, including encryption keys         |
-| [dev_tools](#dev_tools) | Installs developer tools, such as XCode and Command Line Tools           |
-| [app_store](#app_store) | Installs applications from the Apple AppStore                            |
+| Module                        | Description                                                              |
+|:-----------------------------:|--------------------------------------------------------------------------|
+| [macos](#macos)               | Checks the system for compatibility and, optionally, upgrades the system |
+| [sudoers](#sudoers)           | Adds user and alias configurations for sudo                              |
+| [identity](#identity)         | Sets the computer and user's identity, including encryption keys         |
+| [dev_tools](#dev_tools)       | Installs developer tools, such as XCode and Command Line Tools           |
+| [app_store](#app_store)       | Installs applications from the Apple AppStore                            |
+| [time_machine](#time_machine) | Configures TimeMachine backups for the computer                          |
 
 ## Using Profiles
 
@@ -356,6 +357,57 @@ in to the AppStore, the credentials will not be used.
 **Note** it is recommended to use [Ansible Vault][ansible-vault-url] to encrypt the `password` string so it does not
 sit in plain text.
 
+### time_machine
+
+Manages and configures Time Machine backups for the computer:
+
+```yml
+time_machine:
+  connection_prompts : false
+  backup_interval    : 3600
+  volumes:
+    - /Volumes/FandomHD
+  exclude:
+    - /Users/Shared/adi
+    - ~/Downloads
+    - ~/Dropbox
+```
+
+**Note** if the `time_machine` setting is set to `false`, the Time Machine will be disabled.  To prevent updating of
+any Time Machine settings, simply omit this configuration entirely.
+
+**Note** that the ability to turn off local snapshots was removed in High Sierra (10.13), and thus was removed from
+MyMac.
+
+#### time_machine.connection_prompts
+
+This is a boolean that tells the system whether it should prompt the user about making a drive a Time Machine disk
+when it is connected for the first time.  The default for this is set to `true`.
+
+#### time_machine.backup_interval
+
+The backup interval is the amount of time, in seconds, to wait before starting a new backup.  By default on the
+system, the backup interval is `3600` seconds, or a backup every hour.
+
+**Note** this configuration can only be changed if [System Integrity Protection][spi-url] is turned off.  This can be
+done by entering the terminal in Recovery Mode and typing:
+
+```bash
+csrutil disable
+```
+
+A warning will be displayed if SPI has not been disabled; however, the configuration script will not halt.
+
+#### time_machine.volumes
+
+This is a list of Volumes to set as backup destinations for Time Machine.  The volumes must already be mounted before
+running the Time Machine configuration.
+
+#### time_machine.exclude
+
+This is a list of directories and/or files that Time Machine should exclude when making backups.  Common
+configurations for this are download folders, Dropbox, etc...
+
 
 
 [yaml-url]:          http://yaml.org/
@@ -365,4 +417,5 @@ sit in plain text.
 [profiles-url]:      https://github.com/andrewvaughan/mymac/tree/latest/profiles
 [no-op-url]:         https://github.com/andrewvaughan/mymac/tree/latest/profiles/noop.yml
 
-[apple-sudo]:   https://developer.apple.com/legacy/library/documentation/Darwin/Reference/ManPages/man8/sudo.8.html
+[apple-sudo]:        https://developer.apple.com/legacy/library/documentation/Darwin/Reference/ManPages/man8/sudo.8.html
+[spi-url]:           http://osxdaily.com/2015/10/05/disable-rootless-system-integrity-protection-mac-os-x/

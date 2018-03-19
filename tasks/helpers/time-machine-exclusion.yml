@@ -1,0 +1,12 @@
+#
+# Helps Time Machine generate exclusions.  Must be provided the `exclude` variable.
+#
+---
+- name         : "Checking if \"{{ exclude }}\" is excluded"
+  shell        : "tmutil isexcluded \"{{ exclude }}\""
+  register     : is_excluded
+  changed_when : false
+
+- name   : "Adding \"{{ exclude }}\" to exclusions list"
+  shell  : "tmutil addexclusion \"{{ exclude }}\""
+  when   : is_excluded.stdout.find("Excluded") == -1

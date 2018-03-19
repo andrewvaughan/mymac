@@ -22,3 +22,7 @@ dev_tools : false
 # Manages the Mac AppStore and any applications installed with it
 # @see https://github.com/andrewvaughan/mymac/blob/master/USAGE.md#app_store
 app_store : false
+
+# Manages TimeMachine on MacOSX
+# @see https://github.com/andrewvaughan/mymac/blob/master/USAGE.md#time_machine
+#time_machine: false

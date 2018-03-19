@@ -67,3 +67,16 @@ app_store:
         32643337333561623664623165653562643631313365663930623533653633303133653530366264
         3561343830303661310a333738616437623035666239336339343131616661396464656633666666
         3363
+
+
+# Manages TimeMachine on MacOSX
+# @see https://github.com/andrewvaughan/mymac/blob/master/USAGE.md#time_machine
+time_machine:
+  connection_prompts : false
+  backup_interval    : 86400
+  volumes:
+    - /Volumes/FantomHD
+  exclude:
+    - /Users/Shared/adi
+    - ~/Downloads
+    - ~/Dropbox

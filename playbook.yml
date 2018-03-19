@@ -55,17 +55,31 @@
 
     ### MODULES ######################################################################################################
 
-    - name          : Loading MacOS module (1 / 5)
+    - name          : Loading MacOS module (1 / 6)
       include_tasks : tasks/macos.yml
 
-    - name          : Loading Sudoers module (2 / 5)
+    - name          : Loading Sudoers module (2 / 6)
       include_tasks : tasks/sudoers.yml
 
-    - name          : Loading Identity module (3 / 5)
+    - name          : Loading Identity module (3 / 6)
       include_tasks : tasks/identity.yml
 
-    - name          : Loading DevTools module (4 / 5)
+    - name          : Loading DevTools module (4 / 6)
       include_tasks : tasks/dev-tools.yml
 
-    - name          : Loading Defaults module (5 / 5)
+    - name          : Loading Defaults module (5 / 6)
       include_tasks : tasks/defaults.yml
+
+    - name          : Loading Time Machine module (6 / 6)
+      include_tasks : tasks/time-machine.yml
+
+
+    ### RESTART ######################################################################################################
+
+    - name : RESTARTING IN 10 SECONDS
+      pause:
+        seconds : 10
+
+    - name   : RESTARTING
+      become : true
+      shell  : shutdown -r now
