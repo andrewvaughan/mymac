@@ -16,20 +16,24 @@
   block :
 
     # Install Homebrew MAS to install XCode
-    - name: Upgrading Homebrew and MAS to latest version(s)
-      homebrew:
+    - name     : Upgrading Homebrew and MAS to latest version(s)
+      homebrew :
         name            : mas
         state           : latest
         update_homebrew : yes
+      register : homebrew_mas
+
+    - debug:
+       var: homebrew_mas
 
 
     # Install XCode from the Mac AppStore
     - name          : Updating XCode to latest version
       include_tasks : installers/app-store.yml
-      vars:
-        email    : "{{ app_store.email|default('') }}"
-        password : "{{ app_store.password|default('') }}"
-        apps:
+      vars :
+        email       : "{{ app_store.email|default('') }}"
+        password    : "{{ app_store.password|default('') }}"
+        apps :
           - { id: '497799835', name: 'Xcode (9.2)' }
 
 
@@ -47,9 +51,9 @@
 
 
     # Mark this script complete in case others need to reference it
-    - name: Done
-      set_fact:
-        mymac: "{{ mymac|default([]) + [{ 'dev_tools': true }] }}"
+    - name     : Done
+      set_fact :
+        mymac  : "{{ mymac|default([]) + [{ 'dev_tools': true }] }}"
 
 
   when:

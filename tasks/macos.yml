@@ -12,36 +12,6 @@
 - name : MacOS
   block:
 
-    # Setup .bash_profile
-    - name : Adding exports to .bash_profile
-      blockinfile:
-        path         : ~/.bash_profile
-        create       : yes
-        follow       : yes
-        marker       : "### {mark} MYMAC MANAGED - MacOS MODULE"
-        backup       : yes
-        block        : "{{ lookup('template', 'templates/.bash_profile.j2') }}"
-      register : bash_profile
-      when:
-        - macos.bash_profile is defined
-        - macos.bash_profile != false
-        - macos.bash_profile != []
-
-    - name  : Sourcing .bash_profile
-      shell : source ~/.bash_profile
-      when  : bash_profile|changed
-
-
-    # Load custom scripts
-    - name : Copying custom scripts
-      template:
-        src  : "templates/usr/local/bin/{{ item }}.j2"
-        dest : "/usr/local/bin/{{ item }}"
-        mode : u=rwx,g=rwx,o=rx
-      with_items:
-        - VolumeOfFile
-
-
     # Update the operating system if `update` is set
     - name          : Updating operating system to latest version
       become        : yes
@@ -83,22 +53,220 @@
         (version_check.os.major == version_check.target.major and version_check.os.minor > version_check.target.minor)
 
 
-    # Enable or disable FileVault, if the configuration is set
-    - name   : Enabling FileVault
-      become : true
-      filevault:
-        enabled : True
-      when:
-        - macos.filevault is defined
-        - macos.filevault == true
+    # Setup .bash_profile
+    - block:
 
-    - name   : Disabling FileVault
-      become : true
-      filevault:
-        enabled : False
+        - name           : Adding exports to .bash_profile
+          blockinfile:
+            path         : ~/.bash_profile
+            create       : yes
+            follow       : yes
+            marker       : "### {mark} MYMAC MANAGED - MacOS MODULE"
+            backup       : yes
+            block        : "{{ lookup('template', 'templates/.bash_profile.j2') }}"
+          register : bash_profile
+
+        - name  : Sourcing .bash_profile
+          shell : source ~/.bash_profile
+          when  : bash_profile|changed
+
+      when:
+        - macos.bash_profile is defined
+        - macos.bash_profile != false
+        - macos.bash_profile != []
+
+
+    # Load custom scripts
+    - name   : Copying custom scripts
+      template:
+        src  : "templates/usr/local/bin/{{ item }}.j2"
+        dest : "/usr/local/bin/{{ item }}"
+        mode : u=rwx,g=rwx,o=rx
+      with_items:
+        - VolumeOfFile
+
+
+    # Enable or disable FileVault, if the configuration is set
+    - block:
+
+        - name      : Enabling FileVault
+          become    : true
+          filevault:
+            enabled : True
+          when:
+            - macos.filevault == true
+
+        - name   : Disabling FileVault
+          become : true
+          filevault:
+            enabled : False
+          when:
+            - macos.filevault == false
+
       when:
         - macos.filevault is defined
-        - macos.filevault == false
+
+
+    # Configure Finder
+    - name  : Finder
+      block :
+
+        # Auto-open when new drive is connected
+        - block:
+
+            - name     : Setting functionality when new drive is mounted (1 / 3)
+              osx_defaults:
+                domain : com.apple.frameworks.diskimages
+                key    : auto-open-ro-root
+                type   : boolean
+                value  : "{{ macos.finder.open_on_mount == true }}"
+
+            - name     : Setting functionality when new drive is mounted (2 / 3)
+              osx_defaults:
+                domain : com.apple.frameworks.diskimages
+                key    : auto-open-rw-root
+                type   : boolean
+                value  : "{{ macos.finder.open_on_mount == true }}"
+
+            - name     : Setting functionality when new drive is mounted (3 / 3)
+              osx_defaults:
+                domain : com.apple.finder
+                key    : OpenWindowForNewRemovableDisk
+                type   : boolean
+                value  : "{{ macos.finder.open_on_mount == true }}"
+
+          when:
+            - macos.finder.open_on_mount is defined
+
+
+        # Show hidden Files
+        - name     : Setting hidden file functionality
+          osx_defaults:
+            domain : com.apple.finder
+            key    : AppleShowAllFiles
+            type   : boolean
+            value  : "{{ macos.finder.show_hidden_files == true }}"
+          when:
+            - macos.finder.show_hidden_files is defined
+
+
+        # Hide desktop files
+        - name     : Setting desktop file visibility
+          osx_defaults:
+            domain : com.apple.finder
+            key    : CreateDesktop
+            type   : boolean
+            value  : "{{ macos.finder.hide_desktop_files == true }}"
+          when:
+            - macos.finder.hide_desktop_files is defined
+
+
+        # Show file extensions
+        - name     : Setting file extension visibility
+          osx_defaults:
+            domain : NSGlobalDomain
+            key    : AppleShowAllExtensions
+            type   : boolean
+            value  : "{{ macos.finder.show_extensions == true }}"
+          when:
+            - macos.finder.show_extensions is defined
+
+
+        # Enable file extension change warning
+        - name     : Setting file extension change warning
+          osx_defaults:
+            domain : com.apple.finder
+            key    : FXEnableExtensionChangeWarning
+            type   : boolean
+            value  : "{{ macos.finder.extension_change_warning == true }}"
+          when:
+            - macos.finder.extension_change_warning is defined
+
+
+        # Allow Finder to close like an app
+        - name     : Setting file extension visibility
+          osx_defaults:
+            domain : com.apple.finder
+            key    : QuitMenuItem
+            type   : boolean
+            value  : "{{ macos.finder.quit_menu_item == true }}"
+          when:
+            - macos.finder.quit_menu_item is defined
+
+
+        # Show POSIX path in Finder title
+        - name     : Setting file extension visibility
+          osx_defaults:
+            domain : com.apple.finder
+            key    : _FXShowPosixPathInTitle
+            type   : boolean
+            value  : "{{ macos.finder.posix_title == true }}"
+          when:
+            - macos.finder.posix_title is defined
+
+
+        # Which view to use by default (options "cover", "list", "column", "icon")
+        - block:
+
+            - name     : Setting default view to "cover"
+              osx_defaults:
+                domain : com.apple.finder
+                key    : FXPreferredViewStyle
+                type   : string
+                value  : "Flwv"
+              when:
+                - macos.finder.default_view == "cover"
+
+            - name     : Setting default view to "list"
+              osx_defaults:
+                domain : com.apple.finder
+                key    : FXPreferredViewStyle
+                type   : string
+                value  : "Nlsv"
+              when:
+                - macos.finder.default_view == "list"
+
+            - name     : Setting default view to "column"
+              osx_defaults:
+                domain : com.apple.finder
+                key    : FXPreferredViewStyle
+                type   : string
+                value  : "clmv"
+              when:
+                - macos.finder.default_view == "column"
+
+            - name     : Setting default view to "icon"
+              osx_defaults:
+                domain : com.apple.finder
+                key    : FXPreferredViewStyle
+                type   : string
+                value  : "icnv"
+              when:
+                - macos.finder.default_view == "icon"
+
+          when:
+            - macos.finder.default_view is defined
+
+
+        # Show or hide user library
+        - block:
+
+            - name  : Setting user Library path visibility
+              shell : chflags nohidden ~/Library/
+              when  : macos.finder.show_user_library == true
+
+            - name  : Setting user Library path visibility
+              shell : chflags hidden ~/Library/
+              when  : macos.finder.show_user_library == false
+
+          when:
+            - macos.finder.show_user_library is defined
+
+
+      when:
+        - macos.finder is defined
+        - macos.finder != false
+        - macos.finder != []
 
 
     # Mark this script complete in case others need to reference it

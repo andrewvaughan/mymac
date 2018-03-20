@@ -87,6 +87,24 @@ macos:
 
   defaults:
     update_frequency : 1
+
+  bash_profile:
+    exports:
+      EDITOR : /usr/bin/vi
+
+    aliases:
+      ll : 'ls -GFalh'
+
+  finder:
+    open_on_mount            : true     # Open Finder when a drive is connected
+    show_hidden_files        : true     # Show hidden files in Finder
+    hide_desktop_files       : false    # Show files on the desktop
+    show_extensions          : true     # Show file extensions in Finder
+    extension_change_warning : false    # Suppress the file-extension change warning
+    quit_menu_item           : true     # Allow Finder to close like a regular application
+    posix_title              : true     # Show POSIX path in Finder window title
+    default_view             : "column" # Which view to use by default (options "cover", "list", "column", "icon")
+    show_user_library        : true     # Show the user's ~/Library/ folder in Finder
 ```
 
 #### macos.version_check
@@ -136,13 +154,35 @@ enable or disable FileVault on the system, respectively.
 flag will be set to enable FileVault the next time you restart your computer.  Because of this, you will likely be
 asked to enter your computer's password upon your next restart.
 
-#### macos.defaults
+#### macos.bash_profile
 
-A number of configurations exist to customize the way MacOSX behaves.  The following are avaiable in this module:
+These are settings that will be inserted into the user's `~/.bash_profile` and loaded for every terminal.  This
+section provides two lists:
 
-| Name               | Default Value | Description                                       |
-|:------------------:|:-------------:|---------------------------------------------------|
-| `update_frequency` | `1`           | How often (in days) to check for software updates |
+`exports`
+
+The exports list is a set of key-value pairs that will be exported as environment variables.
+
+`aliases`
+
+The aliases list is a set of key-value pairs that will become commands in the terminal, acting as aliases in the
+system command prompt.
+
+#### macos.finder
+
+These are settings that effect the functionality of the included Finder application in MacOSX:
+
+| Feature                    | Options                             | Default | Description                                                                 |
+|:--------------------------:|:-----------------------------------:|:-------:|-----------------------------------------------------------------------------|
+| `open_on_mount`            | `true` or `false`                   | `true`  | Whether to open a new Finder window when a drive is connected to the system |
+| `show_hidden_files`        | `true` or `false`                   | `false` | Whether to show hidden files in Finder                                      |
+| `hide_desktop_files`       | `true` or `false`                   | `false` | Whether to hide the desktop files                                           |
+| `show_extensions`          | `true` or `false`                   | `false` | Whether show file extensions in Finder                                      |
+| `extension_change_warning` | `true` or `false`                   | `true`  | Whether to display a warning when an extension is being changed             |
+| `quit_menu_item`           | `true` or `false`                   | `false` | Whether to allow Finder to close like a normal application                  |
+| `posix_title`              | `true` or `false`                   | `false` | Whether to show the POSIX path in the Finder window title                   |
+| `default_view`             | `cover`, `list`, `column` or `icon` | `icon`  | Sets the default view for Finder                                            |
+| `show_user_library`        | `true` or `false`                   | `false` | Whether to show the `~/Library` folder in Finder                            |
 
 ### sudoers
 
@@ -334,8 +374,9 @@ Installs and updates applications that are managed via the Apple AppStore.
 
 ```yml
 app_store:
-  email    : andrew@undoubtedly.me
-  password : !vault |
+  update_frequency : 1
+  email            : andrew@undoubtedly.me
+  password         : !vault |
         $ANSIBLE_VAULT;1.1;AES256
         37636666386265393735656530376232353039616132393363616339383037353965666664616635
         3765613831393663333766366533343936323434393463350a363661623265616534343963383634
@@ -343,6 +384,10 @@ app_store:
         3561343830303661310a333738616437623035666239336339343131616661396464656633666666
         3363
 ```
+
+#### app_store.email
+
+This is a number that dictates, in days, the interval between checking for updates.  MacOSX defaults this to 7.
 
 #### app_store.email
 
