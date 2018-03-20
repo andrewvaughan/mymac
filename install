@@ -120,7 +120,7 @@ command -v ansible-playbook >/dev/null 2>&1 || {
   }
 
   echo "Installing Ansible..."
-  sudo pip install ${DEBUG_PARAM} ansible
+  pip install ${DEBUG_PARAM} ansible
 }
 
 

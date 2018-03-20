@@ -1,0 +1,11 @@
+{% if macos.bash_profile.exports is defined %}
+# Exports
+{% for key, value in macos.bash_profile.exports.items() %}
+export {{ key }}="{{ value }}"
+{% endfor %}{% endif %}
+
+{% if macos.bash_profile.aliases is defined %}
+# Aliases
+{% for key, value in macos.bash_profile.aliases.items() %}
+alias {{ key }}='{{ value }}'
+{% endfor %}{% endif %}

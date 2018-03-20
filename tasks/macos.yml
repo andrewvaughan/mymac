@@ -12,14 +12,20 @@
 - name : MacOS
   block:
 
-    # Set our configuration dot-files
-    - name       : Copying .bash_profile to home
-      template:
-        src      : templates/Users/home/.bash_profile.j2
-        dest     : ~/.bash_profile
-        mode     : u=rw,g=r,o=r
-        backup   : true
-      register   : bash_profile
+    # Setup .bash_profile
+    - name : Adding exports to .bash_profile
+      blockinfile:
+        path         : ~/.bash_profile
+        create       : yes
+        follow       : yes
+        marker       : "### {mark} MYMAC MANAGED - MacOS MODULE"
+        backup       : yes
+        block        : "{{ lookup('template', 'templates/.bash_profile.j2') }}"
+      register : bash_profile
+      when:
+        - macos.bash_profile is defined
+        - macos.bash_profile != false
+        - macos.bash_profile != []
 
     - name  : Sourcing .bash_profile
       shell : source ~/.bash_profile
