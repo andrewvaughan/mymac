@@ -67,11 +67,11 @@
     - name          : Loading DevTools module (4 / 6)
       include_tasks : tasks/dev-tools.yml
 
-    - name          : Loading Defaults module (5 / 6)
-      include_tasks : tasks/defaults.yml
-
-    - name          : Loading Time Machine module (6 / 6)
+    - name          : Loading Time Machine module (5 / 6)
       include_tasks : tasks/time-machine.yml
+
+    - name          : Loading App Store module (6 / 6)
+      include_tasks : tasks/app-store.yml
 
 
     ### RESTART ######################################################################################################

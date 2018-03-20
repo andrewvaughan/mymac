@@ -17,9 +17,6 @@ macos:
   update        : true
   filevault     : true
 
-  defaults:
-    update_frequency : 1
-
   bash_profile:
     exports:
 
@@ -34,6 +31,17 @@ macos:
     aliases:
       ls : 'ls -GFh'
       ll : 'ls -GFhal'
+
+  finder:
+    open_on_mount            : true     # Open Finder when a drive is connected
+    show_hidden_files        : true     # Show hidden files in Finder
+    hide_desktop_files       : false    # Show files on the desktop
+    show_extensions          : true     # Show file extensions in Finder
+    extension_change_warning : false    # Suppress the file-extension change warning
+    quit_menu_item           : true     # Allow Finder to close like a regular application
+    posix_title              : true     # Show POSIX path in Finder window title
+    default_view             : "column" # Which view to use by default (options "cover", "list", "column", "icon")
+    show_user_library        : true     # Show the user's ~/Library/ folder in Finder
 
 
 
@@ -75,8 +83,9 @@ dev_tools: true
 # Manages the Mac AppStore and any applications installed with it
 # @see https://github.com/andrewvaughan/mymac/blob/master/USAGE.md#app_store
 app_store:
-  email    : andrew@undoubtedly.me
-  password : !vault |
+  update_frequency : 1
+  email            : andrew@undoubtedly.me
+  password         : !vault |
         $ANSIBLE_VAULT;1.1;AES256
         37636666386265393735656530376232353039616132393363616339383037353965666664616635
         3765613831393663333766366533343936323434393463350a363661623265616534343963383634
