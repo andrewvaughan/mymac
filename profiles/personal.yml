@@ -20,6 +20,22 @@ macos:
   defaults:
     update_frequency : 1
 
+  bash_profile:
+    exports:
+
+      # Terminal Colors
+      PS1      : '\[\033[36m\]\u\[\033[m\]@\[\033[32m\]\h:\[\033[33;1m\]\w\[\033[m\]\$ '
+      CLICOLOR : 1
+      LSCOLORS : ExFxBxDxCxegedabagacad
+
+      # Default Editor
+      EDITOR   : /usr/bin/vi
+
+    aliases:
+      ls : 'ls -GFh'
+      ll : 'ls -GFhal'
+
+
 
 # System sudo configuration
 # @see https://github.com/andrewvaughan/mymac/blob/master/USAGE.md#sudoers
