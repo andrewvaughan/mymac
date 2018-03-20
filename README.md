@@ -76,3 +76,4 @@ project is made available.
 [build-url]:      https://travis-ci.org/andrewvaughan/mymac
 
 [ansible-url]:    https://www.ansible.com/
+[vault-url]:      https://docs.ansible.com/ansible/latest/vault.html
