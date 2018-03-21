@@ -289,6 +289,501 @@
         - macos.keyboard != []
 
 
+    - name  : Mouse
+      block :
+
+        # Set trackpad to register tap as a click
+        - block:
+
+            - name     : Setting trackpad tap-to-click functionality (1 / 2)
+              osx_defaults:
+                domain : com.apple.driver.AppleBluetoothMultitouch.trackpad
+                key    : Clicking
+                type   : boolean
+                value  : "{{ macos.mouse.tap_to_click == true }}"
+
+            - name     : Setting trackpad tap-to-click functionality (2 / 2)
+              osx_defaults:
+                domain : NSGlobalDomain
+                key    : com.apple.mouse.tapBehavior
+                type   : integer
+                value  : "{{ 1 if macos.mouse.tap_to_click == true else 0 }}"
+
+          when:
+            - macos.mouse.tap_to_click is defined
+
+
+        # Set hot-corners
+        - block:
+
+            # Top-Left
+            - block:
+
+                - name     : Setting top-left hot corner functionality (1 / 2)
+                  osx_defaults:
+                    domain : com.apple.dock
+                    key    : wvous-tl-modifier
+                    type   : integer
+                    value  : 0
+
+                # No-Op
+                - name     : Setting top-left hot corner functionality (2 / 2)
+                  osx_defaults:
+                    domain : com.apple.dock
+                    key    : wvous-tl-corner
+                    type   : integer
+                    value  : 0
+                  when:
+                    - macos.mouse.hot_corners.top_left == false
+
+                # Mission Control
+                - name     : Setting top-left hot corner functionality (2 / 2)
+                  osx_defaults:
+                    domain : com.apple.dock
+                    key    : wvous-tl-corner
+                    type   : integer
+                    value  : 2
+                  when:
+                    - macos.mouse.hot_corners.top_left == "Mission Control"
+
+                # Show Windows
+                - name     : Setting top-left hot corner functionality (2 / 2)
+                  osx_defaults:
+                    domain : com.apple.dock
+                    key    : wvous-tl-corner
+                    type   : integer
+                    value  : 3
+                  when:
+                    - macos.mouse.hot_corners.top_left == "Show Windows"
+
+                # Desktop
+                - name     : Setting top-left hot corner functionality (2 / 2)
+                  osx_defaults:
+                    domain : com.apple.dock
+                    key    : wvous-tl-corner
+                    type   : integer
+                    value  : 4
+                  when:
+                    - macos.mouse.hot_corners.top_left == "Desktop"
+
+                # Start Screen Saver
+                - name     : Setting top-left hot corner functionality (2 / 2)
+                  osx_defaults:
+                    domain : com.apple.dock
+                    key    : wvous-tl-corner
+                    type   : integer
+                    value  : 5
+                  when:
+                    - macos.mouse.hot_corners.top_left == "Start Screen Saver"
+
+                # Disable Screen Saver
+                - name     : Setting top-left hot corner functionality (2 / 2)
+                  osx_defaults:
+                    domain : com.apple.dock
+                    key    : wvous-tl-corner
+                    type   : integer
+                    value  : 6
+                  when:
+                    - macos.mouse.hot_corners.top_left == "Disable Screen Saver"
+
+                # Dashboard
+                - name     : Setting top-left hot corner functionality (2 / 2)
+                  osx_defaults:
+                    domain : com.apple.dock
+                    key    : wvous-tl-corner
+                    type   : integer
+                    value  : 7
+                  when:
+                    - macos.mouse.hot_corners.top_left == "Dashboard"
+
+                # Sleep
+                - name     : Setting top-left hot corner functionality (2 / 2)
+                  osx_defaults:
+                    domain : com.apple.dock
+                    key    : wvous-tl-corner
+                    type   : integer
+                    value  : 10
+                  when:
+                    - macos.mouse.hot_corners.top_left == "Sleep"
+
+                # Launchpad
+                - name     : Setting top-left hot corner functionality (2 / 2)
+                  osx_defaults:
+                    domain : com.apple.dock
+                    key    : wvous-tl-corner
+                    type   : integer
+                    value  : 11
+                  when:
+                    - macos.mouse.hot_corners.top_left == "Launchpad"
+
+                # Notification Center
+                - name     : Setting top-left hot corner functionality (2 / 2)
+                  osx_defaults:
+                    domain : com.apple.dock
+                    key    : wvous-tl-corner
+                    type   : integer
+                    value  : 12
+                  when:
+                    - macos.mouse.hot_corners.top_left == "Notification Center"
+
+              when:
+                - macos.mouse.hot_corners.top_left is defined
+
+
+            # Top-Right
+            - block:
+
+                - name     : Setting top-right hot corner functionality (1 / 2)
+                  osx_defaults:
+                    domain : com.apple.dock
+                    key    : wvous-tr-modifier
+                    type   : integer
+                    value  : 0
+
+                # No-Op
+                - name     : Setting top-right hot corner functionality (2 / 2)
+                  osx_defaults:
+                    domain : com.apple.dock
+                    key    : wvous-tr-corner
+                    type   : integer
+                    value  : 0
+                  when:
+                    - macos.mouse.hot_corners.top_right == false
+
+                # Mission Control
+                - name     : Setting top-right hot corner functionality (2 / 2)
+                  osx_defaults:
+                    domain : com.apple.dock
+                    key    : wvous-tr-corner
+                    type   : integer
+                    value  : 2
+                  when:
+                    - macos.mouse.hot_corners.top_right == "Mission Control"
+
+                # Show Windows
+                - name     : Setting top-right hot corner functionality (2 / 2)
+                  osx_defaults:
+                    domain : com.apple.dock
+                    key    : wvous-tr-corner
+                    type   : integer
+                    value  : 3
+                  when:
+                    - macos.mouse.hot_corners.top_right == "Show Windows"
+
+                # Desktop
+                - name     : Setting top-right hot corner functionality (2 / 2)
+                  osx_defaults:
+                    domain : com.apple.dock
+                    key    : wvous-tr-corner
+                    type   : integer
+                    value  : 4
+                  when:
+                    - macos.mouse.hot_corners.top_right == "Desktop"
+
+                # Start Screen Saver
+                - name     : Setting top-right hot corner functionality (2 / 2)
+                  osx_defaults:
+                    domain : com.apple.dock
+                    key    : wvous-tr-corner
+                    type   : integer
+                    value  : 5
+                  when:
+                    - macos.mouse.hot_corners.top_right == "Start Screen Saver"
+
+                # Disable Screen Saver
+                - name     : Setting top-right hot corner functionality (2 / 2)
+                  osx_defaults:
+                    domain : com.apple.dock
+                    key    : wvous-tr-corner
+                    type   : integer
+                    value  : 6
+                  when:
+                    - macos.mouse.hot_corners.top_right == "Disable Screen Saver"
+
+                # Dashboard
+                - name     : Setting top-right hot corner functionality (2 / 2)
+                  osx_defaults:
+                    domain : com.apple.dock
+                    key    : wvous-tr-corner
+                    type   : integer
+                    value  : 7
+                  when:
+                    - macos.mouse.hot_corners.top_right == "Dashboard"
+
+                # Sleep
+                - name     : Setting top-right hot corner functionality (2 / 2)
+                  osx_defaults:
+                    domain : com.apple.dock
+                    key    : wvous-tr-corner
+                    type   : integer
+                    value  : 10
+                  when:
+                    - macos.mouse.hot_corners.top_right == "Sleep"
+
+                # Launchpad
+                - name     : Setting top-right hot corner functionality (2 / 2)
+                  osx_defaults:
+                    domain : com.apple.dock
+                    key    : wvous-tr-corner
+                    type   : integer
+                    value  : 11
+                  when:
+                    - macos.mouse.hot_corners.top_right == "Launchpad"
+
+                # Notification Center
+                - name     : Setting top-right hot corner functionality (2 / 2)
+                  osx_defaults:
+                    domain : com.apple.dock
+                    key    : wvous-tr-corner
+                    type   : integer
+                    value  : 12
+                  when:
+                    - macos.mouse.hot_corners.top_right == "Notification Center"
+
+              when:
+                - macos.mouse.hot_corners.top_right is defined
+
+
+            # Bottom-Left
+            - block:
+
+                - name     : Setting bottom-left hot corner functionality (1 / 2)
+                  osx_defaults:
+                    domain : com.apple.dock
+                    key    : wvous-bl-modifier
+                    type   : integer
+                    value  : 0
+
+                # No-Op
+                - name     : Setting bottom-left hot corner functionality (2 / 2)
+                  osx_defaults:
+                    domain : com.apple.dock
+                    key    : wvous-bl-corner
+                    type   : integer
+                    value  : 0
+                  when:
+                    - macos.mouse.hot_corners.bottom_left == false
+
+                # Mission Control
+                - name     : Setting bottom-left hot corner functionality (2 / 2)
+                  osx_defaults:
+                    domain : com.apple.dock
+                    key    : wvous-bl-corner
+                    type   : integer
+                    value  : 2
+                  when:
+                    - macos.mouse.hot_corners.bottom_left == "Mission Control"
+
+                # Show Windows
+                - name     : Setting bottom-left hot corner functionality (2 / 2)
+                  osx_defaults:
+                    domain : com.apple.dock
+                    key    : wvous-bl-corner
+                    type   : integer
+                    value  : 3
+                  when:
+                    - macos.mouse.hot_corners.bottom_left == "Show Windows"
+
+                # Desktop
+                - name     : Setting bottom-left hot corner functionality (2 / 2)
+                  osx_defaults:
+                    domain : com.apple.dock
+                    key    : wvous-bl-corner
+                    type   : integer
+                    value  : 4
+                  when:
+                    - macos.mouse.hot_corners.bottom_left == "Desktop"
+
+                # Start Screen Saver
+                - name     : Setting bottom-left hot corner functionality (2 / 2)
+                  osx_defaults:
+                    domain : com.apple.dock
+                    key    : wvous-bl-corner
+                    type   : integer
+                    value  : 5
+                  when:
+                    - macos.mouse.hot_corners.bottom_left == "Start Screen Saver"
+
+                # Disable Screen Saver
+                - name     : Setting bottom-left hot corner functionality (2 / 2)
+                  osx_defaults:
+                    domain : com.apple.dock
+                    key    : wvous-bl-corner
+                    type   : integer
+                    value  : 6
+                  when:
+                    - macos.mouse.hot_corners.bottom_left == "Disable Screen Saver"
+
+                # Dashboard
+                - name     : Setting bottom-left hot corner functionality (2 / 2)
+                  osx_defaults:
+                    domain : com.apple.dock
+                    key    : wvous-bl-corner
+                    type   : integer
+                    value  : 7
+                  when:
+                    - macos.mouse.hot_corners.bottom_left == "Dashboard"
+
+                # Sleep
+                - name     : Setting bottom-left hot corner functionality (2 / 2)
+                  osx_defaults:
+                    domain : com.apple.dock
+                    key    : wvous-bl-corner
+                    type   : integer
+                    value  : 10
+                  when:
+                    - macos.mouse.hot_corners.bottom_left == "Sleep"
+
+                # Launchpad
+                - name     : Setting bottom-left hot corner functionality (2 / 2)
+                  osx_defaults:
+                    domain : com.apple.dock
+                    key    : wvous-bl-corner
+                    type   : integer
+                    value  : 11
+                  when:
+                    - macos.mouse.hot_corners.bottom_left == "Launchpad"
+
+                # Notification Center
+                - name     : Setting bottom-left hot corner functionality (2 / 2)
+                  osx_defaults:
+                    domain : com.apple.dock
+                    key    : wvous-bl-corner
+                    type   : integer
+                    value  : 12
+                  when:
+                    - macos.mouse.hot_corners.bottom_left == "Notification Center"
+
+              when:
+                - macos.mouse.hot_corners.bottom_left is defined
+
+
+            # Bottom-Right
+            - block:
+
+                - name     : Setting bottom-right hot corner functionality (1 / 2)
+                  osx_defaults:
+                    domain : com.apple.dock
+                    key    : wvous-br-modifier
+                    type   : integer
+                    value  : 0
+
+                # No-Op
+                - name     : Setting bottom-right hot corner functionality (2 / 2)
+                  osx_defaults:
+                    domain : com.apple.dock
+                    key    : wvous-br-corner
+                    type   : integer
+                    value  : 0
+                  when:
+                    - macos.mouse.hot_corners.bottom_right == false
+
+                # Mission Control
+                - name     : Setting bottom-right hot corner functionality (2 / 2)
+                  osx_defaults:
+                    domain : com.apple.dock
+                    key    : wvous-br-corner
+                    type   : integer
+                    value  : 2
+                  when:
+                    - macos.mouse.hot_corners.bottom_right == "Mission Control"
+
+                # Show Windows
+                - name     : Setting bottom-right hot corner functionality (2 / 2)
+                  osx_defaults:
+                    domain : com.apple.dock
+                    key    : wvous-br-corner
+                    type   : integer
+                    value  : 3
+                  when:
+                    - macos.mouse.hot_corners.bottom_right == "Show Windows"
+
+                # Desktop
+                - name     : Setting bottom-right hot corner functionality (2 / 2)
+                  osx_defaults:
+                    domain : com.apple.dock
+                    key    : wvous-br-corner
+                    type   : integer
+                    value  : 4
+                  when:
+                    - macos.mouse.hot_corners.bottom_right == "Desktop"
+
+                # Start Screen Saver
+                - name     : Setting bottom-right hot corner functionality (2 / 2)
+                  osx_defaults:
+                    domain : com.apple.dock
+                    key    : wvous-br-corner
+                    type   : integer
+                    value  : 5
+                  when:
+                    - macos.mouse.hot_corners.bottom_right == "Start Screen Saver"
+
+                # Disable Screen Saver
+                - name     : Setting bottom-right hot corner functionality (2 / 2)
+                  osx_defaults:
+                    domain : com.apple.dock
+                    key    : wvous-br-corner
+                    type   : integer
+                    value  : 6
+                  when:
+                    - macos.mouse.hot_corners.bottom_right == "Disable Screen Saver"
+
+                # Dashboard
+                - name     : Setting bottom-right hot corner functionality (2 / 2)
+                  osx_defaults:
+                    domain : com.apple.dock
+                    key    : wvous-br-corner
+                    type   : integer
+                    value  : 7
+                  when:
+                    - macos.mouse.hot_corners.bottom_right == "Dashboard"
+
+                # Sleep
+                - name     : Setting bottom-right hot corner functionality (2 / 2)
+                  osx_defaults:
+                    domain : com.apple.dock
+                    key    : wvous-br-corner
+                    type   : integer
+                    value  : 10
+                  when:
+                    - macos.mouse.hot_corners.bottom_right == "Sleep"
+
+                # Launchpad
+                - name     : Setting bottom-right hot corner functionality (2 / 2)
+                  osx_defaults:
+                    domain : com.apple.dock
+                    key    : wvous-br-corner
+                    type   : integer
+                    value  : 11
+                  when:
+                    - macos.mouse.hot_corners.bottom_right == "Launchpad"
+
+                # Notification Center
+                - name     : Setting bottom-right hot corner functionality (2 / 2)
+                  osx_defaults:
+                    domain : com.apple.dock
+                    key    : wvous-br-corner
+                    type   : integer
+                    value  : 12
+                  when:
+                    - macos.mouse.hot_corners.bottom_right == "Notification Center"
+
+              when:
+                - macos.mouse.hot_corners.bottom_right is defined
+
+
+          when:
+            - macos.mouse.hot_corners is defined
+            - macos.mouse.hot_corners != false
+            - macos.mouse.hot_corners != []
+
+
+      when:
+        - macos.mouse is defined
+        - macos.mouse != false
+        - macos.mouse != []
+
+
     # Mark this script complete in case others need to reference it
     - name    : Done
       set_fact:
