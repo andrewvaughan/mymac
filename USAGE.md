@@ -108,6 +108,14 @@ macos:
 
   keyboard:
     auto_correct             : false    # Turn off Apple's global auto-correct
+
+  mouse:
+    tap_to_click             : true     # Turn tapping on trackpad to click on
+    hot_corners:
+      top_left               : false
+      top_right              : false
+      bottom_left            : "Start Screen Saver"
+      bottom_right           : "Desktop"
 ```
 
 #### macos.version_check
@@ -189,11 +197,42 @@ These are settings that affect the functionality of the included Finder applicat
 
 #### macos.keyboard
 
-These are settings that affect the functionality of the MacOSX keyboard and interaction in MacOSX:
+These are settings that affect the functionality of the keyboard and interaction in MacOSX:
 
 | Feature                    | Options           | Default | Description                                           |
 |:--------------------------:|:-----------------:|:-------:|-------------------------------------------------------|
 | `auto_correct`             | `true` or `false` | `true`  | Whether to turn Apple's global auto-correct on or off |
+
+#### macos.mouse
+
+These are settings that affect the functionality of the mouse, trackpad, and their interaction with MacOSX:
+
+| Feature                    | Options           | Default | Description                                           |
+|:--------------------------:|:-----------------:|:-------:|-------------------------------------------------------|
+| `tap_to_click`             | `true` or `false` | `true`  | Whether to turn Apple's global auto-correct on or off |
+
+Additionally, there is a `hot_corners` option that has the following available sub-options, each of which corresponds
+to a corner of the screen:
+
+* `top_left`
+* `top_right`
+* `bottom_left`
+* `bottom_right`
+
+By setting any of these to `false`, their functionality will be actively removed.  If they are omitted, their
+functionality will not be changed.  Additionally the following options are also available for each Hot Corner:
+
+| Option                 | Description                           |
+|:----------------------:|---------------------------------------|
+| `Dashboard`            | Open the Dashboard utility            |
+| `Desktop`              | Hide all windows and show the Desktop |
+| `Disable Screen Saver` | Disabled the Screen Saver             |
+| `Launchpad`            | Open the Launchpad utility            |
+| `Mission Control`      | Open the Mission Control utility      |
+| `Notification Center`  | Open the Notification Center utility  |
+| `Show Windows`         | Show all application windows          |
+| `Sleep`                | Set the system to sleep               |
+| `Start Screen Saver`   | Start the Screen Saver                |
 
 ### sudoers
 

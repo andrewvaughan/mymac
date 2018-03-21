@@ -23,9 +23,6 @@
         update_homebrew : yes
       register : homebrew_mas
 
-    - debug:
-       var: homebrew_mas
-
 
     # Install XCode from the Mac AppStore
     - name          : Updating XCode to latest version
