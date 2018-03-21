@@ -20,13 +20,16 @@ macos:
   bash_profile:
     exports:
 
+      # MyMac Profile
+      MYMAC_PROFILE : ~/Repositories/mymac/profiles/personal.yml
+
       # Terminal Colors
       PS1      : '\[\033[36m\]\u\[\033[m\]@\[\033[32m\]\h:\[\033[33;1m\]\w\[\033[m\]\$ '
       CLICOLOR : 1
       LSCOLORS : ExFxBxDxCxegedabagacad
 
       # Default Editor
-      EDITOR   : /usr/bin/vi
+      EDITOR : /usr/bin/vi
 
     aliases:
       ls : 'ls -GFh'
@@ -43,6 +46,8 @@ macos:
     default_view             : "column" # Which view to use by default (options "cover", "list", "column", "icon")
     show_user_library        : true     # Show the user's ~/Library/ folder in Finder
 
+  keyboard:
+    auto_correct             : false    # Turn off Apple's global auto-correct
 
 
 # System sudo configuration

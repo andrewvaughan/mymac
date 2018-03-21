@@ -269,6 +269,26 @@
         - macos.finder != []
 
 
+    # Configure Keyboard
+    - name  : Keyboard
+      block :
+
+        # Enable or disable global auto-correct
+        - name     : Setting global AutoCorrect
+          osx_defaults:
+            domain : NSGlobalDomain
+            key    : NSAutomaticSpellingCorrectionEnabled
+            type   : boolean
+            value  : "{{ macos.keyboard.auto_correct == true }}"
+          when:
+            - macos.keyboard.auto_correct is defined
+
+      when:
+        - macos.keyboard is defined
+        - macos.keyboard != false
+        - macos.keyboard != []
+
+
     # Mark this script complete in case others need to reference it
     - name    : Done
       set_fact:

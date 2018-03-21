@@ -96,15 +96,18 @@ macos:
       ll : 'ls -GFalh'
 
   finder:
-    open_on_mount            : true     # Open Finder when a drive is connected
-    show_hidden_files        : true     # Show hidden files in Finder
-    hide_desktop_files       : false    # Show files on the desktop
-    show_extensions          : true     # Show file extensions in Finder
-    extension_change_warning : false    # Suppress the file-extension change warning
-    quit_menu_item           : true     # Allow Finder to close like a regular application
-    posix_title              : true     # Show POSIX path in Finder window title
     default_view             : "column" # Which view to use by default (options "cover", "list", "column", "icon")
+    extension_change_warning : false    # Suppress the file-extension change warning
+    hide_desktop_files       : false    # Show files on the desktop
+    open_on_mount            : true     # Open Finder when a drive is connected
+    posix_title              : true     # Show POSIX path in Finder window title
+    quit_menu_item           : true     # Allow Finder to close like a regular application
+    show_extensions          : true     # Show file extensions in Finder
+    show_hidden_files        : true     # Show hidden files in Finder
     show_user_library        : true     # Show the user's ~/Library/ folder in Finder
+
+  keyboard:
+    auto_correct             : false    # Turn off Apple's global auto-correct
 ```
 
 #### macos.version_check
@@ -170,19 +173,27 @@ system command prompt.
 
 #### macos.finder
 
-These are settings that effect the functionality of the included Finder application in MacOSX:
+These are settings that affect the functionality of the included Finder application in MacOSX:
 
 | Feature                    | Options                             | Default | Description                                                                 |
 |:--------------------------:|:-----------------------------------:|:-------:|-----------------------------------------------------------------------------|
-| `open_on_mount`            | `true` or `false`                   | `true`  | Whether to open a new Finder window when a drive is connected to the system |
-| `show_hidden_files`        | `true` or `false`                   | `false` | Whether to show hidden files in Finder                                      |
-| `hide_desktop_files`       | `true` or `false`                   | `false` | Whether to hide the desktop files                                           |
-| `show_extensions`          | `true` or `false`                   | `false` | Whether show file extensions in Finder                                      |
-| `extension_change_warning` | `true` or `false`                   | `true`  | Whether to display a warning when an extension is being changed             |
-| `quit_menu_item`           | `true` or `false`                   | `false` | Whether to allow Finder to close like a normal application                  |
-| `posix_title`              | `true` or `false`                   | `false` | Whether to show the POSIX path in the Finder window title                   |
 | `default_view`             | `cover`, `list`, `column` or `icon` | `icon`  | Sets the default view for Finder                                            |
+| `extension_change_warning` | `true` or `false`                   | `true`  | Whether to display a warning when an extension is being changed             |
+| `hide_desktop_files`       | `true` or `false`                   | `false` | Whether to hide the desktop files                                           |
+| `open_on_mount`            | `true` or `false`                   | `true`  | Whether to open a new Finder window when a drive is connected to the system |
+| `posix_title`              | `true` or `false`                   | `false` | Whether to show the POSIX path in the Finder window title                   |
+| `quit_menu_item`           | `true` or `false`                   | `false` | Whether to allow Finder to close like a normal application                  |
+| `show_extensions`          | `true` or `false`                   | `false` | Whether show file extensions in Finder                                      |
+| `show_hidden_files`        | `true` or `false`                   | `false` | Whether to show hidden files in Finder                                      |
 | `show_user_library`        | `true` or `false`                   | `false` | Whether to show the `~/Library` folder in Finder                            |
+
+#### macos.keyboard
+
+These are settings that affect the functionality of the MacOSX keyboard and interaction in MacOSX:
+
+| Feature                    | Options           | Default | Description                                           |
+|:--------------------------:|:-----------------:|:-------:|-------------------------------------------------------|
+| `auto_correct`             | `true` or `false` | `true`  | Whether to turn Apple's global auto-correct on or off |
 
 ### sudoers
 
