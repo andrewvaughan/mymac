@@ -85,8 +85,11 @@ macos:
   system_update : true
   filevault     : true
 
-  defaults:
-    update_frequency : 1
+  # Copy these files over to the user's home directory
+  home_files:
+    - ./profiles/files/.bashrc
+    - ./profiles/files/.inputrc
+    - ./profiles/files/.vimrc
 
   bash_profile:
     exports:
@@ -172,6 +175,10 @@ enable or disable FileVault on the system, respectively.
 **Note** that encrypting the disk with FileVault can take some time.  Instead of waiting for the disk to encrypt, a
 flag will be set to enable FileVault the next time you restart your computer.  Because of this, you will likely be
 asked to enter your computer's password upon your next restart.
+
+#### macos.home_files
+
+These are files that will be copied to the user's home directory.  Backups will be made if the files already exist.
 
 #### macos.bash_profile
 
