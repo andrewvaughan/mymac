@@ -4,29 +4,16 @@ language  : objective-c
 
 matrix:
   include:
+
+    # High Sierra
     - os        : osx
-      osx_image : xcode9
+      osx_image : xcode9.3beta
       xcode_sdk : macosx10.13
 
-    - os        : osx
-      osx_image : xcode8.3
-      xcode_sdk : macosx10.12
 
-    - os        : osx
-      osx_image : xcode8.2
-      xcode_sdk : macosx10.12
-
-    - os        : osx
-      osx_image : xcode8.1
-      xcode_sdk : macosx10.12
-
-    - os        : osx
-      osx_image : xcode8
-      xcode_sdk : macosx10.11
-
-    - os        : osx
-      osx_image : xcode7.3
-      xcode_sdk : macosx10.11
+# Set our test profile
+env:
+  - MYMAC_PROFILE="${TRAVIS_BUILD_DIR}/profiles/test.yml"
 
 # Uninstall the existing Homebrew installation that TravisCI sets up
 before_install:
@@ -37,20 +24,24 @@ before_install:
 
 # Install Ansible on the system using pip
 install:
-  - sudo easy_install pip
-  - sudo pip install ansible
+  - sudo -H easy_install pip
+  - sudo -H pip install --upgrade pip
+  - sudo -H pip install --ignore-installed six --upgrade ansible
 
 script:
 
-  # Check our syntax before beginning
-  - sudo ansible-playbook playbook.yml --syntax-check
+  # Run Ansible-Galaxy installation
+  - ansible-galaxy install -r requirements.yml
 
-  # Run the playbook, without sudoers, to see if it works
-  - "sudo ansible-playbook --extra-vars '{\"sudoers\" : false}' playbook.yml"
+  # Check our syntax before beginning
+  - ansible-playbook playbook.yml --syntax-check
+
+  # Run the playbook to see if it gets to the end
+  - ansible-playbook playbook.yml
 
   # Repeat the playbook to ensure that all changes were identified and skipped (idempotence test)
   - DIFFTEST=$(mktemp)
-  - "sudo ansible-playbook --extra-vars '{\"sudoers\": false}' playbook.yml | tee -a ${DIFFTEST}"
+  - ansible-playbook playbook.yml | tee -a ${DIFFTEST}
   - >
     cat ${DIFFTEST}
     | grep -q 'changed=0.*failed=0'

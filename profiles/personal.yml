@@ -10,6 +10,9 @@
 # @see https://github.com/andrewvaughan/mymac/blob/master/USAGE.md
 ---
 
+# Prevent restart after finishing - do this manually
+restart : false
+
 # Operating system checks and configurations
 # @see https://github.com/andrewvaughan/mymac/blob/master/USAGE.md#macos
 macos:
@@ -108,7 +111,6 @@ macos:
   system:
     battery:
       show_percent           : true       # Whether to show the battery percentage in the menu bar
-      show_time              : true       # Whether to show time remaining in the menu bar
     screenshots:
       location               : ~/Desktop  # The location to save screenshots to
       format                 : png        # The format to save screenshots as (png, jpg, gif, pdf, or tiff)
@@ -146,8 +148,7 @@ identity:
 
 # Whether to install development tools (Homebrew, XCode, XCode Command Line Tools, Git)
 # @see https://github.com/andrewvaughan/mymac/blob/master/USAGE.md#dev_tools
-dev_tools: true
-
+dev_tools : true
 
 # Manages the Mac AppStore and any applications installed with it
 # @see https://github.com/andrewvaughan/mymac/blob/master/USAGE.md#app_store
@@ -161,6 +162,20 @@ app_store:
         32643337333561623664623165653562643631313365663930623533653633303133653530366264
         3561343830303661310a333738616437623035666239336339343131616661396464656633666666
         3363
+
+
+# Configures Homebrew and installs it on the machine
+# @see https://github.com/andrewvaughan/mymac/blob/master/USAGE.md#homebrew
+homebrew:
+  install:
+    parent : /usr/local
+    dest   : /usr/local/Homebrew
+    bin    : /usr/local/bin
+    repo   : https://github.com/Homebrew/brew
+  update_homebrew : true
+  taps:
+    - homebrew/core
+    - caskroom/cask
 
 
 # Manages TimeMachine on MacOSX

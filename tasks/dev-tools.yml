@@ -12,6 +12,11 @@
 - name  : DevTools
   block :
 
+    # Make sure Homebrew is installed
+    - name          : Loading Homebrew Installer sub-module
+      include_tasks : _installers/manual/homebrew.yml
+
+
     # Install Homebrew MAS to install XCode
     - name     : Upgrading Homebrew and MAS to latest version(s)
       homebrew :

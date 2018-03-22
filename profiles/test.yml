@@ -1,0 +1,103 @@
+# Test Profile for TravisCI
+---
+
+restart : false
+
+macos:
+  version_check : 10.13
+  update        : true
+  filevault     : true
+
+  home_files:
+    - ./profiles/files/.bashrc
+    - ./profiles/files/.inputrc
+    - ./profiles/files/.vimrc
+
+  bash_profile:
+    exports:
+      EXPORT_TEST : test
+    aliases:
+      aliastest : ls
+
+  finder:
+    open_on_mount            : true
+    show_hidden_files        : true
+    hide_desktop_files       : false
+    show_extensions          : true
+    extension_change_warning : false
+    quit_menu_item           : true
+    posix_title              : true
+    default_view             : "column"
+    show_user_library        : true
+
+  keyboard:
+    auto_correct             : false
+
+  mouse:
+    tap_to_click             : true
+    hot_corners:
+      top_left               : false
+      top_right              : "Disable Screen Saver"
+      bottom_left            : "Start Screen Saver"
+      bottom_right           : "Desktop"
+
+  system:
+    battery:
+      show_percent           : true
+      show_time              : true
+    screenshots:
+      location               : ~/Desktop
+      format                 : png
+
+
+# Skipped in TravisCI tests for security reasons
+# sudoers : false
+
+
+identity:
+  names:
+    host     : travis-test
+    computer : TravisCI Test Host
+
+  ssh_key:
+    bits     : 4096
+    comment  : TravisCI Test SSH Key
+    password : abcd1234
+
+  gpg_key:
+    id            : C20B691014E0A954068E6633317405A866E68A89
+    files:
+      public_key  : ./profiles/keys/test/gpg.pub.asc
+      private_key : ./profiles/keys/test/gpg.asc
+
+
+dev_tools: true
+
+
+homebrew:
+  install:
+    parent : /usr/local
+    dest   : /usr/local/Homebrew
+    bin    : /usr/local/bin
+    repo   : https://github.com/Homebrew/brew
+  update_homebrew : true
+  taps:
+    - homebrew/core
+    - caskroom/cask
+
+
+app_store:
+  update_frequency : 1
+  #email            : andrew@undoubtedly.me
+  #password         : skipped-for-security
+
+
+time_machine:
+  connection_prompts : false
+  backup_interval    : 86400
+#  volumes:
+#    - /Volumes/FantomHD
+  exclude:
+    - /Users/Shared/adi
+    - ~/Downloads
+    - ~/Dropbox

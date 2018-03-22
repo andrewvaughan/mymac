@@ -31,7 +31,7 @@
 
         - name  : Sourcing .bash_profile
           shell : source ~/.bash_profile
-          when  : bash_profile|changed
+          when  : bash_profile is changed
 
       when :
         - macos.bash_profile is defined

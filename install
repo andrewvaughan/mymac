@@ -99,34 +99,33 @@ echo "      amount of time."
 echo
 
 
+# Is easy_install available?
+command -v easy_install >/dev/null 2>&1 || {
+  echo "*** Python easy_install is not availabe on this system.  Please ensure Python 2.7 is installed and try again." >&2
+  echo
+  exit 3
+}
+
+# Is pip installed?
+command -v pip >/dev/null 2>&1 || {
+  echo "*** Dependency pip not found... attempting install"
+  echo
+  sudo easy_install ${DEBUG_PARAM} pip
+}
+
 # Do we have access to ansible-playbook?
 command -v ansible-playbook >/dev/null 2>&1 || {
-  sudo -v
-
-  echo "Ansible not found... attempting install"
-
-  # Is pip installed?
-  command -v pip >/dev/null 2>&1 || {
-    echo "Dependency pip not found... attempting install"
-
-    # Is easy_install available?
-    command -v easy_install >/dev/null 2>&1 || {
-      echo "Python easy_install is not availabe on this system.  Please ensure Python 2.7 is installed and try again." >&2
-      exit 3
-    }
-
-    echo "Installing dependency pip..."
-    sudo easy_install ${DEBUG_PARAM} pip
-  }
-
-  echo "Installing Ansible..."
-  pip install ${DEBUG_PARAM} ansible
+  echo "*** Ansible not found... attempting install"
+  echo
+  sudo -H pip install ${DEBUG_PARAM} ansible
 }
 
 
 # Ensure Ansible is loaded and available
 command -v ansible-playbook >/dev/null 2>&1 || {
+  echo
   echo "Ansible did not install correctly. Exiting." >&2
+  echo
   exit 4
 }
 

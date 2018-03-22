@@ -19,6 +19,11 @@
     - name  : Setup
       block :
 
+        # This variable stores module names that have been completed, to implement single-use patterns where needed
+        - name     : Setting tracking variable
+          set_fact:
+            mymac  : []
+
         # Check that our sudo password is correct
         - name         : Checking sudo password
           become       : true
@@ -27,9 +32,10 @@
 
 
         # Ensure we are running on macOS
-        - name : Checking Operating System type
-          fail : msg="This installer is only supported by MacOSX, current operating system is \"{{ ansible_distribution }}\""
-          when : ansible_distribution != "MacOSX"
+        - name  : Ensuring that this is being run on a MacOSX operating system
+          fail:
+            msg : "This installer is only supported by MacOSX, current operating system is \"{{ ansible_distribution }}\""
+          when  : ansible_distribution != "MacOSX"
 
 
         # Helper tasks that provide shared functionality for modules
@@ -37,20 +43,22 @@
           include_tasks : tasks/_helpers/sed.yml
 
 
-        # If we have a profile set, load it
-        - include_tasks : tasks/_helpers/load-profile.yml
+        # Load the provided profile
+        - name          : Loading Profile loading module
+          include_tasks : tasks/_helpers/load-profile.yml
           vars:
-            profile : "{{ mymac_profile }}"
-            append  : false
+            profile     : "{{ mymac_profile }}"
+            append      : false
           when:
             - mymac_profile is defined
             - mymac_profile != ""
 
 
-        # Fail early if we don't have a profile
-        - name : No profile provided; exiting
-          fail : msg="No profile provided; exiting."
-          when : not mymac_profile or mymac_profile == ""
+        # Fail if a profiles has not been set
+        - name  : No profile provided; exiting
+          fail:
+            msg : "No profile provided; exiting."
+          when  : not mymac_profile or mymac_profile == ""
 
 
     ### MODULES ######################################################################################################
@@ -61,11 +69,11 @@
     - name          : Loading Sudoers module (2 / 6)
       include_tasks : tasks/sudoers.yml
 
-    - name          : Loading Identity module (3 / 6)
-      include_tasks : tasks/identity.yml
-
-    - name          : Loading DevTools module (4 / 6)
+    - name          : Loading DevTools module (3 / 6)
       include_tasks : tasks/dev-tools.yml
+
+    - name          : Loading Identity module (4 / 6)
+      include_tasks : tasks/identity.yml
 
     - name          : Loading Time Machine module (5 / 6)
       include_tasks : tasks/time-machine.yml
@@ -76,10 +84,16 @@
 
     ### RESTART ######################################################################################################
 
-    - name : RESTARTING IN 10 SECONDS
-      pause:
-        seconds : 10
+    - block :
 
-    - name   : RESTARTING
-      become : true
-      shell  : shutdown -r now
+        - name : RESTARTING IN 10 SECONDS
+          pause:
+            seconds : 10
+
+        - name   : RESTARTING
+          become : true
+          shell  : shutdown -r now
+
+      when:
+        - restart is defined
+        - restart == true

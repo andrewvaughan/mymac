@@ -16,10 +16,11 @@
 - name  : DMG
   block :
 
-    - name         : Checking if binary exists
-      shell        : "{{ bin_test }}"
-      register     : bin_check
-      changed_when : false
+    - name          : Checking if binary exists
+      shell         : "{{ bin_test }}"
+      register      : bin_check
+      changed_when  : false
+      ignore_errors : yes
       when :
         - bin_test is defined
         - bin_test != false

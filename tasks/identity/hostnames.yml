@@ -6,27 +6,29 @@
   block :
 
     # Primary Hostname (with .local)
-    - name         : Checking primary hostname
-      become       : true
-      shell        : scutil --get HostName
-      register     : check_result
-      changed_when : false
+    - name          : Checking primary hostname
+      become        : true
+      shell         : scutil --get HostName
+      register      : check_result
+      ignore_errors : yes
+      changed_when  : false
 
     - name         : Setting primary hostname
       become       : true
       shell        : "scutil --set HostName \"{{ identity.names.host }}\".local"
-      register     : set_result
-      changed_when : set_result.rc == 0
+      register     : primary_result
+      changed_when : primary_result.rc == 0
       when :
-        - check_result.stdout != identity.names.host + '.local'
+        - check_result.rc != 0 or check_result.stdout != identity.names.host + '.local'
 
 
     # Bonjour Hostname (without .local)
-    - name         : Checking bonjour hostname
-      become       : true
-      shell        : scutil --get LocalHostName
-      register     : check_result
-      changed_when : false
+    - name          : Checking bonjour hostname
+      become        : true
+      shell         : scutil --get LocalHostName
+      register      : check_result
+      ignore_errors : yes
+      changed_when  : false
 
     - name         : Setting bonjour hostname
       become       : true
@@ -34,5 +36,5 @@
       register     : set_result
       changed_when : set_result.rc == 0
       when :
-        - check_result.stdout != identity.names.host
-        - set_result is defined
+        - check_result.rc != 0 or check_result.stdout != identity.names.host
+        - primary_result is defined

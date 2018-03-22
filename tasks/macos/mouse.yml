@@ -17,8 +17,8 @@
       with_items :
         - domain : com.apple.driver.AppleBluetoothMultitouch.trackpad
           key    : Clicking
-          type   : boolean
-          value  : "{{ macos.mouse.tap_to_click == true }}"
+          type   : integer
+          value  : "{{ 1 if macos.mouse.tap_to_click == true else 0 }}"
         - domain : NSGlobalDomain
           key    : com.apple.mouse.tapBehavior
           type   : integer

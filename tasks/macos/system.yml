@@ -18,14 +18,15 @@
             - macos.system.battery.show_percent is defined
 
 
-        - name     : Setting time visibility in menu
-          osx_defaults :
-            domain : com.apple.menuextra.battery
-            key    : ShowTime
-            type   : string
-            value  : "{{ 'YES' if macos.system.battery.show_time == true else 'NO' }}"
-          when :
-            - macos.system.battery.show_time is defined
+        # # Seems to be problematic in High Sierra
+        # - name     : Setting time visibility in menu
+        #   osx_defaults :
+        #     domain : com.apple.menuextra.battery
+        #     key    : ShowTime
+        #     type   : string
+        #     value  : "{{ 'YES' if macos.system.battery.show_time == true else 'NO' }}"
+        #   when :
+        #     - macos.system.battery.show_time is defined
 
       when :
         - macos.system.battery is defined

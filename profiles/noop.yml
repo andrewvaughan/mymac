@@ -23,6 +23,10 @@ dev_tools : false
 # @see https://github.com/andrewvaughan/mymac/blob/master/USAGE.md#app_store
 app_store : false
 
+# Configures Homebrew and installs it on the machine
+# @see https://github.com/andrewvaughan/mymac/blob/master/USAGE.md#homebrew
+homebrew : false
+
 # Manages TimeMachine on MacOSX
 # @see https://github.com/andrewvaughan/mymac/blob/master/USAGE.md#time_machine
 #time_machine: false

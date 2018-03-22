@@ -5,14 +5,15 @@
 - name  : GPG Key
   block :
 
+    # Make sure Homebrew is installed
+    - name          : Loading Homebrew Installer sub-module
+      include_tasks : ../_installers/manual/homebrew.yml
+
     # Install GPG, if missing
-    - name          : Installing GPG Suite via DMG Installer sub-module
-      include_tasks : ../_installers/dmg.yml
-      vars :
-        url         : https://releases.gpgtools.org/GPG_Suite-2018.1.dmg
-        checksum    : sha256:f2be13ca1aeb7d29ba46134d1d38f88de9c52eb1270ac00fd5f1bc305fd5921e
-        pkg         : Install.pkg
-        bin_test    : gpg --version
+    - name    : Installing GPG
+      homebrew :
+        name  : gnupg
+        state : present
 
 
     # Check if the GPG key is installed

@@ -19,6 +19,11 @@
 - name  : AppStore
   block :
 
+    # Make sure Homebrew is installed
+    - name          : Loading Homebrew Installer sub-module
+      include_tasks : manual/homebrew.yml
+
+
     # Ensure MAS is installed from Homebrew before continuing
     - name    : Checking prerequisites
       homebrew :
@@ -38,52 +43,57 @@
 
 
     # Attempt to login to the AppStore, if needed
-    - name     : Attempting sign-in
-      shell    : 'mas signin "{{ email }}" "{{ password }}"'
-      register : mas_signin_result
-      when :
-        - mas_account_result.rc == 1
-        - email is defined
-        - email != ''
-        - password is defined
-        - password != ''
+    - block:
+
+        - name     : Attempting sign-in
+          shell    : 'mas signin "{{ email }}" "{{ password }}"'
+          register : mas_signin_result
+          when:
+            - email is defined
+            - email != ''
+            - password is defined
+            - password != ''
 
 
-    - name     : Attempting Apple AppStore login using dialog and two-factor authentication
-      shell    : 'mas signin "{{ email }}" "{{ password }}" --dialog'
-      register : mas_signin_result
-      when :
-        - mas_signin_result.skipped
-        - mas_account_result.rc == 1
-        - email is defined
-        - email != ''
-        - password is defined
-        - password != ''
+        - name     : Attempting Apple AppStore login using dialog and two-factor authentication
+          shell    : 'mas signin "{{ email }}" "{{ password }}" --dialog'
+          register : mas_signin_result
+          when:
+            - mas_signin_result.skipped or mas_signin_result.failed
+
+      when:
+        - mas_account_result.rc != 0
 
 
     # Load any existing apps (if apps list set)
-    - name         : Loading currently installed Apple AppStore application(s)
-      command      : 'mas list'
-      register     : mas_list
-      when         : apps is defined
-      check_mode   : no
-      changed_when : false
+    - block:
+
+        - name         : Loading currently installed Apple AppStore application(s)
+          command      : 'mas list'
+          register     : mas_list
+          when         : apps is defined
+          check_mode   : no
+          changed_when : false
 
 
-    # Install the applications listed (if apps list set)
-    - name       : Installing application(s) not currently installed in Apple AppStore
-      command    : "mas install {{ item.id }}"
-      with_items : "{{ apps }}"
-      when :
-        - apps is defined
-        - mas_list is defined
-        - mas_list.stdout is defined
-        - item.id not in mas_list.stdout
+        # Install the applications listed (if apps list set)
+        - name       : Installing application(s) not currently installed in Apple AppStore
+          command    : "mas install {{ item.id }}"
+          with_items : "{{ apps }}"
+          when :
+            - apps is defined
+            - mas_list is defined
+            - mas_list.stdout is defined
+            - item.id not in mas_list.stdout
 
 
-    # Upgrade all AppStore apps to their latest (if upgrade_apps set)
-    - name    : Upgrading existing Apple AppStore application(s)
-      command : mas upgrade
-      when :
-        - upgrade_apps is defined
-        - upgrade_apps
+        # Upgrade all AppStore apps to their latest (if upgrade_apps set)
+        - name    : Upgrading existing Apple AppStore application(s)
+          command : mas upgrade
+          when :
+            - upgrade_apps is defined
+            - upgrade_apps
+
+      when:
+        - (mas_account_result.result == 0) or
+          (not mas_signin_result.skipped and mas_signin_result.rc == 0)
