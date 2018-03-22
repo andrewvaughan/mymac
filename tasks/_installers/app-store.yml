@@ -20,32 +20,28 @@
   block :
 
     # Ensure MAS is installed from Homebrew before continuing
-    - name: Checking prerequisites
-      homebrew:
+    - name    : Checking prerequisites
+      homebrew :
         name  : mas
         state : present
-      when: >
+      when : >
         macos.devtools is not defined or
         not macos.devtools
 
 
     # Check if we're already logged in
-    - name: Checking authentication
+    - name         : Checking authentication
       shell        : 'mas account'
       register     : mas_account_result
       failed_when  : mas_account_result.rc > 1
       changed_when : false
-
-    - debug:
-        var       : mas_account_result
-        verbosity : 2
 
 
     # Attempt to login to the AppStore, if needed
     - name     : Attempting sign-in
       shell    : 'mas signin "{{ email }}" "{{ password }}"'
       register : mas_signin_result
-      when:
+      when :
         - mas_account_result.rc == 1
         - email is defined
         - email != ''
@@ -53,26 +49,16 @@
         - password != ''
 
 
-    - debug:
-        var       : mas_signin_result
-        verbosity : 2
-
-
     - name     : Attempting Apple AppStore login using dialog and two-factor authentication
       shell    : 'mas signin "{{ email }}" "{{ password }}" --dialog'
       register : mas_signin_result
-      when:
+      when :
         - mas_signin_result.skipped
         - mas_account_result.rc == 1
         - email is defined
         - email != ''
         - password is defined
         - password != ''
-
-
-    - debug:
-        var       : mas_signin_result
-        verbosity : 2
 
 
     # Load any existing apps (if apps list set)
@@ -84,16 +70,11 @@
       changed_when : false
 
 
-    - debug:
-        var       : mas_list
-        verbosity : 2
-
-
     # Install the applications listed (if apps list set)
     - name       : Installing application(s) not currently installed in Apple AppStore
       command    : "mas install {{ item.id }}"
       with_items : "{{ apps }}"
-      when:
+      when :
         - apps is defined
         - mas_list is defined
         - mas_list.stdout is defined
@@ -103,6 +84,6 @@
     # Upgrade all AppStore apps to their latest (if upgrade_apps set)
     - name    : Upgrading existing Apple AppStore application(s)
       command : mas upgrade
-      when:
+      when :
         - upgrade_apps is defined
         - upgrade_apps

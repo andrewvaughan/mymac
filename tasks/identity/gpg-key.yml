@@ -1,0 +1,86 @@
+#
+# Configures the GPG key.
+#
+---
+- name  : GPG Key
+  block :
+
+    # Install GPG, if missing
+    - name          : Installing GPG Suite via DMG Installer sub-module
+      include_tasks : ../_installers/dmg.yml
+      vars :
+        url         : https://releases.gpgtools.org/GPG_Suite-2018.1.dmg
+        checksum    : sha256:f2be13ca1aeb7d29ba46134d1d38f88de9c52eb1270ac00fd5f1bc305fd5921e
+        pkg         : Install.pkg
+        bin_test    : gpg --version
+
+
+    # Check if the GPG key is installed
+    - name         : Checking if GPG public key exists on current machine
+      shell        : gpg --list-keys --keyid-format LONG
+      register     : check_public
+      changed_when : false
+
+
+    - name         : Checking if GPG private key exists on current machine
+      shell        : gpg --list-secret-keys --keyid-format LONG
+      register     : check_private
+      changed_when : false
+
+
+    # GPG Public Key
+    - block :
+
+        - name     : Reserving temporary file
+          tempfile :
+            state  : file
+            prefix : gpg.pub.
+            suffix : .asc
+          register : temp_pub_key
+
+        - name      : Copying and decrypting key to temporary file
+          copy :
+            src     : "{{ identity.gpg_key.files.public_key }}"
+            dest    : "{{ temp_pub_key.path }}"
+            mode    : 0600
+            decrypt : true
+
+        - name  : Importing public key into GPG
+          shell : "gpg --import \"{{ temp_pub_key.path }}\""
+
+        - name    : Deleting decrypted temporary key
+          file :
+            state : absent
+            path  : "{{ temp_pub_key.path }}"
+
+      when :
+        - identity.gpg_key.id not in check_public.stdout
+
+
+    # GPG Private Key
+    - block :
+
+        - name     : Reserving temporary file
+          tempfile :
+            state  : file
+            prefix : gpg.priv.
+            suffix : .asc
+          register : temp_priv_key
+
+        - name      : Copying and decrypting key to temporary file
+          copy :
+            src     : "{{ identity.gpg_key.files.private_key }}"
+            dest    : "{{ temp_priv_key.path }}"
+            mode    : 0600
+            decrypt : true
+
+        - name  : Importing private key into GPG
+          shell : "gpg --import \"{{ temp_priv_key.path }}\""
+
+        - name    : Deleting decrypted temporary key
+          file :
+            state : absent
+            path  : "{{ temp_priv_key.path }}"
+
+      when :
+        - identity.gpg_key.id not in check_private.stdout

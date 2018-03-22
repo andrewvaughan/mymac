@@ -6,10 +6,7 @@
 #   - XCode
 #   - XCode Command Line Tools
 #
-# Variables (not a part of dev_tools - should be parallel)
-#   - app_store
-#       - email - the email for the Apple AppStore
-#       - password - the password for the Apple AppStore
+# Requires variables from the app_store module to be populated.  @see app-store.yml
 #
 ---
 - name  : DevTools
@@ -26,7 +23,7 @@
 
     # Install XCode from the Mac AppStore
     - name          : Updating XCode to latest version
-      include_tasks : installers/app-store.yml
+      include_tasks : _installers/app-store.yml
       vars :
         email       : "{{ app_store.email|default('') }}"
         password    : "{{ app_store.password|default('') }}"
@@ -52,8 +49,7 @@
       set_fact :
         mymac  : "{{ mymac|default([]) + [{ 'dev_tools': true }] }}"
 
-
-  when:
+  when :
     - dev_tools is defined
     - dev_tools != false
     - dev_tools != []

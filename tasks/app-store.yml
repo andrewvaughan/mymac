@@ -8,20 +8,27 @@
 #
 ---
 
-- name : AppStore
-  block:
+- name  : AppStore
+  block :
 
-    - name     : Setting frequency for automatic updates
-      osx_defaults:
-        domain : com.apple.SoftwareUpdate
-        key    : ScheduleFrequency
-        type   : int
-        value  : "{{ app_store.update_frequency|default(1) }}"
-      when:
+    # Set the auto-update frequency
+    - name      : Setting frequency for automatic updates
+      osx_defaults :
+        domain  : com.apple.SoftwareUpdate
+        key     : ScheduleFrequency
+        type    : integer
+        value   : "{{ app_store.update_frequency|default(1) }}"
+      when :
         - app_store.update_frequency is defined
         - app_store.update_frequency > 0
 
-  when:
+
+    # Mark this script complete in case others need to reference it
+    - name     : Done
+      set_fact :
+        mymac  : "{{ mymac|default([]) + [{ 'app_store': true }] }}"
+
+  when :
     - app_store is defined
     - app_store != false
     - app_store != []

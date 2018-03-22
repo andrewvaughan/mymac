@@ -1,0 +1,163 @@
+#
+# Configures a Hot Corner on the system.
+#
+# Variables:
+#   - name - the human-readable name of the Hot Corner
+#   - key - the key used in the profile
+#   - id - the ID used by the MacOSX defaults
+#
+---
+- name  : "{{ name }}"
+  block :
+
+    - name      : Clearing Hot-Corner
+      osx_defaults :
+        domain  : com.apple.dock
+        key     : "{{ item.key }}"
+        type    : integer
+        value   : "{{ item.value }}"
+      with_items :
+        - key   : "wvous-{{ id }}-modifier"
+          value : 0
+        - key   : "wvous-{{ id }}-corner"
+          value : 0
+      when :
+        - macos.mouse.hot_corners[key] == false
+
+
+    - name      : "Setting to {{ macos.mouse.hot_corners[key] }}"
+      osx_defaults :
+        domain  : com.apple.dock
+        key     : "{{ item.key }}"
+        type    : integer
+        value   : "{{ item.value }}"
+      with_items :
+        - key   : "wvous-{{ id }}-modifier"
+          value : 0
+        - key   : "wvous-{{ id }}-corner"
+          value : 2
+      when :
+        - macos.mouse.hot_corners[key] == "Mission Control"
+
+
+    - name      : "Setting to {{ macos.mouse.hot_corners[key] }}"
+      osx_defaults :
+        domain  : com.apple.dock
+        key     : "{{ item.key }}"
+        type    : integer
+        value   : "{{ item.value }}"
+      with_items :
+        - key   : "wvous-{{ id }}-modifier"
+          value : 0
+        - key   : "wvous-{{ id }}-corner"
+          value : 3
+      when :
+        - macos.mouse.hot_corners[key] == "Show Windows"
+
+
+    - name      : "Setting to {{ macos.mouse.hot_corners[key] }}"
+      osx_defaults :
+        domain  : com.apple.dock
+        key     : "{{ item.key }}"
+        type    : integer
+        value   : "{{ item.value }}"
+      with_items :
+        - key   : "wvous-{{ id }}-modifier"
+          value : 0
+        - key   : "wvous-{{ id }}-corner"
+          value : 4
+      when :
+        - macos.mouse.hot_corners[key] == "Desktop"
+
+
+    - name      : "Setting to {{ macos.mouse.hot_corners[key] }}"
+      osx_defaults :
+        domain  : com.apple.dock
+        key     : "{{ item.key }}"
+        type    : integer
+        value   : "{{ item.value }}"
+      with_items :
+        - key   : "wvous-{{ id }}-modifier"
+          value : 0
+        - key   : "wvous-{{ id }}-corner"
+          value : 5
+      when :
+        - macos.mouse.hot_corners[key] == "Start Screen Saver"
+
+
+    - name      : "Setting to {{ macos.mouse.hot_corners[key] }}"
+      osx_defaults :
+        domain  : com.apple.dock
+        key     : "{{ item.key }}"
+        type    : integer
+        value   : "{{ item.value }}"
+      with_items :
+        - key   : "wvous-{{ id }}-modifier"
+          value : 0
+        - key   : "wvous-{{ id }}-corner"
+          value : 6
+      when :
+        - macos.mouse.hot_corners[key] == "Disable Screen Saver"
+
+
+    - name      : "Setting to {{ macos.mouse.hot_corners[key] }}"
+      osx_defaults :
+        domain  : com.apple.dock
+        key     : "{{ item.key }}"
+        type    : integer
+        value   : "{{ item.value }}"
+      with_items :
+        - key   : "wvous-{{ id }}-modifier"
+          value : 0
+        - key   : "wvous-{{ id }}-corner"
+          value : 7
+      when :
+        - macos.mouse.hot_corners[key] == "Dashboard"
+
+
+    - name      : "Setting to {{ macos.mouse.hot_corners[key] }}"
+      osx_defaults :
+        domain  : com.apple.dock
+        key     : "{{ item.key }}"
+        type    : integer
+        value   : "{{ item.value }}"
+      with_items :
+        - key   : "wvous-{{ id }}-modifier"
+          value : 0
+        - key   : "wvous-{{ id }}-corner"
+          value : 10
+      when :
+        - macos.mouse.hot_corners[key] == "Sleep"
+
+
+    - name      : "Setting to {{ macos.mouse.hot_corners[key] }}"
+      osx_defaults :
+        domain  : com.apple.dock
+        key     : "{{ item.key }}"
+        type    : integer
+        value   : "{{ item.value }}"
+      with_items :
+        - key   : "wvous-{{ id }}-modifier"
+          value : 0
+        - key   : "wvous-{{ id }}-corner"
+          value : 11
+      when :
+        - macos.mouse.hot_corners[key] == "Launchpad"
+
+
+    - name      : "Setting to {{ macos.mouse.hot_corners[key] }}"
+      osx_defaults :
+        domain  : com.apple.dock
+        key     : "{{ item.key }}"
+        type    : integer
+        value   : "{{ item.value }}"
+      with_items :
+        - key   : "wvous-{{ id }}-modifier"
+          value : 0
+        - key   : "wvous-{{ id }}-corner"
+          value : 12
+      when :
+        - macos.mouse.hot_corners[key] == "Notification Center"
+
+  when :
+    - macos.mouse.hot_corners[key] is defined

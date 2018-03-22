@@ -7,16 +7,16 @@
 #   - volumes - a list of Volumes, already mounted, to use as backup destinations
 #   - exclude - a list of files and/or directories to exclude from backups with Time Machine
 ---
-- name : Time Machine
-  block:
+- name  : Time Machine
+  block :
 
     - name         : Enabling Time Machine
       become       : true
       shell        : tmutil enable
       changed_when : false
 
-    - name     : Setting new-disk connection prompts
-      osx_defaults:
+    - name          : Setting new-disk connection prompts
+      osx_defaults :
         domain : com.apple.TimeMachine
         key    : DoNotOfferNewDisksForBackup
         type   : boolean
@@ -27,19 +27,19 @@
       changed_when : false
       register     : sip_status
 
-    - debug:
+    - debug :
         msg : WARNING - Could not set Time Machine Backup interval; System Integrity Protection is enabled
-      when:
+      when :
         - sip_status.stdout.find("enabled") != -1
 
     - name     : Setting Time Machine backup interval
       become   : true
-      osx_defaults:
+      osx_defaults :
         domain : /System/Library/LaunchDaemons/com.apple.backupd-auto
         key    : StartInterval
         type   : int
         value  : "{{ time_machine.backup_interval|default(3600) }}"
-      when:
+      when :
         - sip_status.stdout.find("disabled") != -1
 
     - name         : Gathering target volume information
@@ -47,39 +47,39 @@
       register     : tm_destinations
       changed_when : false
 
-    - name   : Configuring Time Machine Volumes
-      become : true
-      shell  : "tmutil setdestination -a \"{{ item }}\""
+    - name       : Configuring Time Machine Volumes
+      become     : true
+      shell      : "tmutil setdestination -a \"{{ item }}\""
       with_items : "{{ time_machine.volumes }}"
-      when:
+      when :
         - time_machine.volumes is defined
         - time_machine.volumes != false
         - time_machine.volumes != []
         - item not in tm_destinations.stdout
 
-    - include_tasks : "helpers/time-machine-exclusion.yml exclude={{ item }}"
+    - include_tasks : "time-machine/exclusion.yml exclude={{ item }}"
       with_items    : "{{ time_machine.exclude }}"
-      when:
+      when :
         - time_machine.exclude is defined
         - time_machine.exclude != false
         - time_machine.exclude != []
 
 
-  when:
+  when :
     - time_machine is defined
     - time_machine != false
     - time_machine != []
 
 
 # If set to false, disable Time Machine
-- name : Time Machine
-  block:
+- name  : Time Machine
+  block :
 
     - name         : Disabling Time Machine
       become       : true
       shell        : tmutil disable
       changed_when : false
 
-  when:
+  when :
     - time_machine is defined
     - time_machine == false
