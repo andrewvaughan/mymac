@@ -97,6 +97,15 @@
         - macos.mouse != []
 
 
+    - name          : Loading system configuration sub-module
+      include_tasks : macos/system.yml
+      when :
+        - macos.system is defined
+        - macos.system != false
+        - macos.system != []
+
+
+
     # Mark this script complete in case others need to reference it
     - name    : Done
       set_fact:
