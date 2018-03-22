@@ -1,0 +1,23 @@
+#
+# Configure MacOSX FileVault
+#
+---
+- name  : File Vault
+  block :
+
+    - name      : Enabling FileVault on next reboot
+      become    : true
+      filevault :
+        enabled : True
+      when :
+        - macos.filevault == true
+
+    - name      : Disabling FileVault on next reboot
+      become    : true
+      filevault :
+        enabled : False
+      when :
+        - macos.filevault == false
+
+  when :
+    - macos.filevault is defined

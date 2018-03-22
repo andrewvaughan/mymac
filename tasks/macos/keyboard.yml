@@ -1,0 +1,16 @@
+#
+# Sets keyboard configuraitons
+#
+---
+- name  : Keyboard
+  block :
+
+    # Enable or disable global auto-correct
+    - name     : Setting global auto-correct
+      osx_defaults :
+        domain : NSGlobalDomain
+        key    : NSAutomaticSpellingCorrectionEnabled
+        type   : boolean
+        value  : "{{ macos.keyboard.auto_correct == true }}"
+      when :
+        - macos.keyboard.auto_correct is defined

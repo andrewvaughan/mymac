@@ -16,7 +16,7 @@
       when       : sed_path is undefined
 
 
-    - debug:
+    - debug :
         var       : sed_path
         verbosity : 2
 

@@ -1,0 +1,140 @@
+#
+# Configures the Finder application
+#
+---
+- name  : Finder
+  block :
+
+    - name     : Setting functionality for when new drive is mounted
+      osx_defaults :
+        domain : "{{ item.domain }}"
+        key    : "{{ item.key }}"
+        type   : boolean
+        value  : "{{ macos.finder.open_on_mount == true }}"
+      with_items :
+        - domain : com.apple.frameworks.diskimages
+          key    : auto-open-ro-root
+        - domain : com.apple.frameworks.diskimages
+          key    : auto-open-rw-root
+        - domain : com.apple.finder
+          key    : OpenWindowForNewRemovableDisk
+      when :
+        - macos.finder.open_on_mount is defined
+
+
+    - name     : Setting hidden file functionality
+      osx_defaults :
+        domain : com.apple.finder
+        key    : AppleShowAllFiles
+        type   : boolean
+        value  : "{{ macos.finder.show_hidden_files == true }}"
+      when :
+        - macos.finder.show_hidden_files is defined
+
+
+    - name     : Setting desktop file visibility
+      osx_defaults :
+        domain : com.apple.finder
+        key    : CreateDesktop
+        type   : boolean
+        value  : "{{ macos.finder.hide_desktop_files == true }}"
+      when :
+        - macos.finder.hide_desktop_files is defined
+
+
+    - name     : Setting file extension visibility
+      osx_defaults :
+        domain : NSGlobalDomain
+        key    : AppleShowAllExtensions
+        type   : boolean
+        value  : "{{ macos.finder.show_extensions == true }}"
+      when :
+        - macos.finder.show_extensions is defined
+
+
+    - name     : Setting file extension change warning
+      osx_defaults :
+        domain : com.apple.finder
+        key    : FXEnableExtensionChangeWarning
+        type   : boolean
+        value  : "{{ macos.finder.extension_change_warning == true }}"
+      when :
+        - macos.finder.extension_change_warning is defined
+
+
+    - name     : Setting file extension visibility
+      osx_defaults :
+        domain : com.apple.finder
+        key    : QuitMenuItem
+        type   : boolean
+        value  : "{{ macos.finder.quit_menu_item == true }}"
+      when :
+        - macos.finder.quit_menu_item is defined
+
+
+    - name     : Setting file extension visibility
+      osx_defaults :
+        domain : com.apple.finder
+        key    : _FXShowPosixPathInTitle
+        type   : boolean
+        value  : "{{ macos.finder.posix_title == true }}"
+      when :
+        - macos.finder.posix_title is defined
+
+
+    # Which view to use by default (options "cover", "list", "column", "icon")
+    - block :
+
+        - name     : Setting default view to "cover"
+          osx_defaults :
+            domain : com.apple.finder
+            key    : FXPreferredViewStyle
+            type   : string
+            value  : "Flwv"
+          when :
+            - macos.finder.default_view == "cover"
+
+        - name     : Setting default view to "list"
+          osx_defaults :
+            domain : com.apple.finder
+            key    : FXPreferredViewStyle
+            type   : string
+            value  : "Nlsv"
+          when :
+            - macos.finder.default_view == "list"
+
+        - name     : Setting default view to "column"
+          osx_defaults :
+            domain : com.apple.finder
+            key    : FXPreferredViewStyle
+            type   : string
+            value  : "clmv"
+          when :
+            - macos.finder.default_view == "column"
+
+        - name     : Setting default view to "icon"
+          osx_defaults :
+            domain : com.apple.finder
+            key    : FXPreferredViewStyle
+            type   : string
+            value  : "icnv"
+          when :
+            - macos.finder.default_view == "icon"
+
+      when :
+        - macos.finder.default_view is defined
+
+
+    # Show or hide user library
+    - block :
+
+        - name  : Setting user Library path visibility
+          shell : chflags nohidden ~/Library/
+          when  : macos.finder.show_user_library == true
+
+        - name  : Setting user Library path visibility
+          shell : chflags hidden ~/Library/
+          when  : macos.finder.show_user_library == false
+
+      when :
+        - macos.finder.show_user_library is defined

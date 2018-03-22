@@ -1,0 +1,64 @@
+#
+# Sets mouse configurations.
+#
+---
+
+# Configure Trackpad
+- name  : Trackpad
+  block :
+
+    # Set trackpad to register tap as a click
+    - name     : Setting trackpad tap-to-click functionality
+      osx_defaults :
+        domain : "{{ item.domain }}"
+        key    : "{{ item.key }}"
+        type   : "{{ item.type }}"
+        value  : "{{ item.value }}"
+      with_items :
+        - domain : com.apple.driver.AppleBluetoothMultitouch.trackpad
+          key    : Clicking
+          type   : boolean
+          value  : "{{ macos.mouse.tap_to_click == true }}"
+        - domain : NSGlobalDomain
+          key    : com.apple.mouse.tapBehavior
+          type   : integer
+          value  : "{{ 1 if macos.mouse.tap_to_click == true else 0 }}"
+      when :
+        - macos.mouse.tap_to_click is defined
+
+
+# Configure Mouse
+- name  : Mouse
+  block :
+
+    # Configure Mouse Hot-Corners
+    - name  : Hot Corners
+      block :
+
+        - name          : Loading Hot Corner sub-module
+          include_tasks : helpers/hot_corner.yml
+          vars :
+            name   : "{{ hot_corner.name }}"
+            key    : "{{ hot_corner.key }}"
+            id     : "{{ hot_corner.id }}"
+          with_items :
+            - name : Top Left
+              key  : top_left
+              id   : tl
+            - name : Top Right
+              key  : top_right
+              id   : tr
+            - name : Bottom Left
+              key  : bottom_left
+              id   : bl
+            - name : Bottom Right
+              key  : bottom_right
+              id   : br
+          loop_control :
+            loop_var : hot_corner
+
+
+      when :
+        - macos.mouse.hot_corners is defined
+        - macos.mouse.hot_corners != false
+        - macos.mouse.hot_corners != []

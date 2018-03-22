@@ -13,57 +13,57 @@
 # @see http://docs.ansible.com/ansible/latest/get_url_module.html
 ---
 
-- name : DMG
-  block:
+- name  : DMG
+  block :
 
     - name         : Checking if binary exists
       shell        : "{{ bin_test }}"
       register     : bin_check
       changed_when : false
-      when:
+      when :
         - bin_test is defined
         - bin_test != false
         - bin_test != ""
 
     - name         : Checking if applciation exists
-      stat:
+      stat :
         path       : "/Applications/{{ app_test }}"
       register     : app_check
       changed_when : false
-      when:
+      when :
         - app_test is defined
         - app_test != false
         - app_test != ""
 
 
-    - block:
+    - block :
 
         # Download a DMG file to a temporary location if provided, set this as `file`
-        - block:
+        - block :
 
             - name     : Reserving a temporary location to download to
-              tempfile:
+              tempfile :
                 state  : file
                 suffix : .dmg
               register : temp_dmg
 
             - name     : Reserving a temporary location to mount to
-              tempfile:
+              tempfile :
                 state  : directory
               register : temp_mount
 
-            - name : Downloading the DMG file to the temorary location
-              get_url:
+            - name       : Downloading the DMG file to the temorary location
+              get_url :
                 url      : "{{ url }}"
                 dest     : "{{ temp_dmg.path }}"
                 checksum : "{{ checksum|default(omit) }}"
                 mode     : 0700
 
             - name   : Storing the file name as the new DMG file
-              set_fact:
+              set_fact :
                 file : "{{ temp_dmg.path }}"
 
-          when:
+          when :
             - url is defined
             - url != false
             - url != ""
@@ -76,7 +76,7 @@
 
 
         # Run pkg installer, if pkg is defined
-        - block:
+        - block :
 
             - name     : Get our OSX volume name
               shell    : "VolumeOfFile /System"
@@ -86,19 +86,19 @@
               become : true
               shell  : "installer -pkg \"{{ temp_mount.path }}/{{ pkg }}\" -target \"/Volumes/{{ master_volume.stdout }}\""
 
-          when:
+          when :
             - pkg is defined
             - pkg != False
 
 
         # Copy applicaton files, if no pkg is contained
-        - block:
+        - block :
 
             - name   : Copying Application to Computer
               become : true
               shell  : "cp -aR \"{{ temp_mount.path }}/*.app\" /Applications/"
 
-          when:
+          when :
             - pkg is not defined or pkg == False
 
 
@@ -109,18 +109,18 @@
 
         - name    : Removing mounted files
           become  : true
-          file:
+          file :
             state : absent
             path  : "{{ temp_mount.path }}"
 
         - name    : Removing downloaded files
           become  : true
-          file:
+          file :
             state : absent
             path  : "{{ file }}"
           when    : temp_dmg is defined
 
 
-      when:
+      when :
         - bin_check is not defined or bin_check.rc is not defined or bin_check.rc != 0
         - app_check is not defined or app_check.stat is not defined or app_check.stat.exists == False

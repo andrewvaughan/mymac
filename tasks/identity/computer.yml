@@ -1,0 +1,20 @@
+#
+# Configures the computer's identity.
+#
+---
+- name  : Computer
+  block :
+
+    - name         : Checking name
+      become       : true
+      shell        : scutil --get ComputerName
+      register     : check_result
+      changed_when : false
+
+    - name         : Setting name
+      become       : true
+      shell        : "scutil --set ComputerName \"{{ identity.names.computer }}\""
+      register     : set_result
+      changed_when : set_result.rc == 0
+      when :
+        - check_result.stdout != identity.names.computer

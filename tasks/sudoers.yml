@@ -15,27 +15,26 @@
   block :
 
     # Adds a templated sudoers file to an include area; does not modify the direct visudo
-    - name   : Configuring sudoers
-      become : yes
-      template:
+    - name       : Configuring sudoers
+      become     : yes
+      template :
         src      : templates/private/etc/sudoers.d/mymac.j2
         dest     : /private/etc/sudoers.d/mymac
         mode     : 0440
         validate : 'visudo -cf %s'
 
-
-    - debug:
+    - debug :
         msg       : Sudoer configuration complete. Created and validated /private/etc/sudoers.d/mymac from templates/private/etc/sudoers.d/mymac.j2
         verbosity : 2
 
 
     # Mark this script complete in case others need to reference it
-    - name : Sudoers configuration complete
-      set_fact:
+    - name    : Sudoers configuration complete
+      set_fact :
         mymac : "{{ mymac|default([]) + [{ 'sudoers': true }] }}"
 
 
-  when:
+  when :
     - sudoers is defined
     - sudoers != false
     - sudoers != []
@@ -46,14 +45,14 @@
 #
 - name   : Sudoers
   become : true
-  block:
+  block  :
 
     # Clean up the Sudoers file from previous configurations
-    - name: Removing configurations
-      file:
+    - name    : Removing configurations
+      file :
         state : absent
         path  : /private/etc/sudoers.d/mymac
 
-  when:
+  when :
     - sudoers is defined
     - sudoers == false

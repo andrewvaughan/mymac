@@ -34,11 +34,11 @@
 
         # Helper tasks that provide shared functionality for modules
         - name          : Finding `sed` path
-          include_tasks : tasks/helpers/sed.yml
+          include_tasks : tasks/_helpers/sed.yml
 
 
         # If we have a profile set, load it
-        - include_tasks : tasks/helpers/load-profile.yml
+        - include_tasks : tasks/_helpers/load-profile.yml
           vars:
             profile : "{{ mymac_profile }}"
             append  : false

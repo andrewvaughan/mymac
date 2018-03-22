@@ -19,92 +19,17 @@
 - name  : Identity
   block :
 
-    # Hostnames
-    - block:
-
-        # Primary Hostname (with .local)
-        - name         : Checking primary hostname
-          become       : true
-          shell        : scutil --get HostName
-          register     : check_result
-          changed_when : false
-
-        - debug:
-            var       : check_result
-            verbosity : 2
-
-
-        - name         : Setting primary hostname
-          become       : true
-          shell        : "scutil --set HostName \"{{ identity.names.host }}\".local"
-          register     : set_result
-          changed_when : set_result.rc == 0
-          when:
-            - check_result.stdout != identity.names.host + '.local'
-
-        - debug:
-            var       : set_result
-            verbosity : 2
-          when:
-            - set_result is defined
-
-
-        # Bonjour Hostname (without .local)
-        - name         : Checking bonjour hostname
-          become       : true
-          shell        : scutil --get LocalHostName
-          register     : check_result
-          changed_when : false
-
-        - debug:
-            var       : check_result
-            verbosity : 2
-
-
-        - name         : Setting bonjour hostname
-          become       : true
-          shell        : "scutil --set LocalHostName \"{{ identity.names.host }}\""
-          register     : set_result
-          changed_when : set_result.rc == 0
-          when:
-            - check_result.stdout != identity.names.host
-
-        - debug:
-            var       : set_result
-            verbosity : 2
-          when:
-            - set_result is defined
-
-      when:
+    # Names
+    - name          : Loading Hostnames sub-module
+      include_tasks : identity/hostnames.yml
+      when :
         - identity.names is defined
         - identity.names.host is defined
         - identity.names.host != ""
 
-
-    # Computer Name
-    - block:
-
-        - name         : Checking computer name
-          become       : true
-          shell        : scutil --get ComputerName
-          register     : check_result
-          changed_when : false
-
-        - name         : Setting computer name
-          become       : true
-          shell        : "scutil --set ComputerName \"{{ identity.names.computer }}\""
-          register     : set_result
-          changed_when : set_result.rc == 0
-          when:
-            - check_result.stdout != identity.names.computer
-
-        - debug:
-            var       : set_result
-            verbosity : 2
-          when:
-            - set_result is defined
-
-      when:
+    - name          : Loading Computer Identity sub-module
+      include_tasks : identity/computer.yml
+      when :
         - identity.names is defined
         - identity.names.computer is defined
         - identity.names.computer != ""
@@ -117,101 +42,17 @@
       changed_when : false
 
 
-    # Generate SSH key
-    - name: "Generating SSH key for user {{ ansible_user_id }}"
-      user:
-        name               : "{{ ansible_user_id }}"
-        ssh_key_bits       : "{{ identity.ssh_key.bits|default(4096) }}"
-        ssh_key_comment    : "{{ identity.ssh_key.comment|default(omit) }}"
-        ssh_key_passphrase : "{{ identity.ssh_key.password|default(omit) }}"
-        generate_ssh_key   : yes
-      when:
+    # Keys
+    - name          : Loading SSH Key sub-module
+      include_tasks : identity/ssh-key.yml
+      when :
         - identity.ssh_key is defined
         - identity.ssh_key != false
 
-    - block:
 
-        # Install GPG, if missing
-        - name          : Installing GPG Suite via DMG Installer sub-module
-          include_tasks : installers/dmg.yml
-          vars:
-            url      : https://releases.gpgtools.org/GPG_Suite-2018.1.dmg
-            checksum : sha256:f2be13ca1aeb7d29ba46134d1d38f88de9c52eb1270ac00fd5f1bc305fd5921e
-            pkg      : Install.pkg
-            bin_test : gpg --version
-
-
-        # Check if the GPG key is installed
-        - name         : Checking if GPG public key exists on current machine
-          shell        : gpg --list-keys --keyid-format LONG
-          register     : check_public
-          changed_when : false
-
-
-        - name         : Checking if GPG private key exists on current machine
-          shell        : gpg --list-secret-keys --keyid-format LONG
-          register     : check_private
-          changed_when : false
-
-
-        # Install public key if missing
-        - block:
-
-            - name: Reserving temporary file
-              tempfile:
-                state  : file
-                prefix : gpg.pub.
-                suffix : .asc
-              register : temp_pub_key
-
-            - name: Copying and decrypting key to temporary file
-              copy:
-                src     : "{{ identity.gpg_key.files.public_key }}"
-                dest    : "{{ temp_pub_key.path }}"
-                mode    : 0600
-                decrypt : true
-
-            - name     : Importing public key into GPG
-              shell    : "gpg --import \"{{ temp_pub_key.path }}\""
-
-            - name: Deleting decrypted temporary key
-              file:
-                state : absent
-                path  : "{{ temp_pub_key.path }}"
-
-          when:
-            - identity.gpg_key.id not in check_public.stdout
-
-
-        # Install private key if missing
-        - block:
-
-            - name: Reserving temporary file
-              tempfile:
-                state  : file
-                prefix : gpg.priv.
-                suffix : .asc
-              register : temp_priv_key
-
-            - name: Copying and decrypting key to temporary file
-              copy:
-                src     : "{{ identity.gpg_key.files.private_key }}"
-                dest    : "{{ temp_priv_key.path }}"
-                mode    : 0600
-                decrypt : true
-
-            - name : Importing private key into GPG
-              shell : "gpg --import \"{{ temp_priv_key.path }}\""
-
-            - name: Deleting decrypted temporary key
-              file:
-                state : absent
-                path  : "{{ temp_priv_key.path }}"
-
-          when:
-            - identity.gpg_key.id not in check_private.stdout
-
-      when:
+    - name          : Loading GPG Key sub-module
+      include_tasks : identity/gpg-key.yml
+      when :
         - identity.gpg_key is defined
         - identity.gpg_key != false
         - identity.gpg_key.id is defined
@@ -227,9 +68,9 @@
 
 
     # Mark this script complete in case others need to reference it
-    - name: Done
-      set_fact:
-        mymac : "{{ mymac|default([]) + [{ 'identity': true }] }}"
+    - name     : Done
+      set_fact :
+        mymac  : "{{ mymac|default([]) + [{ 'identity': true }] }}"
 
 
   when:

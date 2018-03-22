@@ -10,8 +10,7 @@
     - fail : msg="No profile provided"
       when : profile is undefined or not profile or profile == ''
 
-
-    - debug:
+    - debug :
         msg       : "Loading profile '{{ profile }}'"
         verbosity : 1
 
@@ -28,8 +27,9 @@
       when          : "profile[0:4] != 'http'"
 
 
-    # Load a URL if provided one
-    - block :
+    # Load a URL, if provided one
+    - name  : Via URL
+      block :
 
         - name     : Reserving temporary file for download
           tempfile:
@@ -38,24 +38,12 @@
             suffix : .yml
           register : temp_profile
 
-
-        - debug:
-            var      : temp_profile
-            verbosity : 2
-
-
         - name    : "Downloading profile from {{ profile }}"
           get_url:
             url   : "{{ profile }}"
             dest  : "{{ temp_profile.path }}"
             force : true
           register : file
-
-
-        - debug:
-            var       : file
-            verbosity : 2
-
 
         - name         : Loading profile from downloaded file
           include_vars : "{{ temp_profile.path }}"
@@ -64,11 +52,13 @@
 
 
     # Output all variables currently set on max verbosity
-    - debug:
+    - debug :
         var       : hostvars
         verbosity : 2
 
 
     # Done!
     - name  : Done
-      debug : msg="Profile loading complete"
+      debug :
+        msg       : "Profile loading complete"
+        verbosity : 1
