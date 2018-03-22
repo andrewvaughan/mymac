@@ -51,9 +51,9 @@
         (version_check.os.major == version_check.target.major and version_check.os.minor > version_check.target.minor)
 
 
-    # Setup .bash_profile
-    - name : Loading DotFiles configuration sub-module
-      include_tasks : macos/dotfiles.yml
+    # Setup .bash_profile and other files
+    - name : Loading Home Files configuration sub-module
+      include_tasks : macos/home_files.yml
 
 
     # Load custom binary scripts

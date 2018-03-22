@@ -17,11 +17,22 @@ macos:
   update        : true
   filevault     : true
 
+  # Copy these files over to the user's home directory
+  home_files:
+    - ./profiles/files/.bashrc
+    - ./profiles/files/.inputrc
+    - ./profiles/files/.vimrc
+
+  # Set up a block in .bash_profile
   bash_profile:
     exports:
 
       # MyMac Profile
       MYMAC_PROFILE : ~/Repositories/mymac/profiles/personal.yml
+
+      # Locale
+      LANG   : en_US.UTF-8
+      LC_ALL : en_US.UTF-8
 
       # Terminal Colors
       PS1      : '\[\033[36m\]\u\[\033[m\]@\[\033[32m\]\h:\[\033[33;1m\]\w\[\033[m\]\$ '
@@ -31,10 +42,44 @@ macos:
       # Default Editor
       EDITOR : /usr/bin/vi
 
-    aliases:
-      ls : 'ls -GFh'
-      ll : 'ls -GFhal'
+      # Make Python use UTF-8 encoding for output to stdin, stdout, and stderr.
+      PYTHONIOENCODING : UTF-8
 
+      # Increase bash history size to maximum integer (default is 500)
+      HISTSIZE     : 32768
+      HISTFILESIZE : "${HISTSIZE}"
+
+      # Omit duplicates and commands that begin with a space from history.
+      HISTCONTROL : ignoreboth
+
+    aliases:
+      # Shortcuts
+      r : cd ~/Repositories
+
+      # Colorize ls
+      ls : ls -GFh
+      ll : ls -GFhal
+
+      # Colorize grep
+      grep  : grep --color=auto
+      fgrep : fgrep --color=auto
+      egrep : egrep --color=auto
+
+      # IP Lookup
+      ip      : dig +short myip.opendns.com @resolver1.opendns.com
+      localip : ipconfig getifaddr en0
+
+      # Spotlight control
+      spotoff : sudo mdutil -a -i off
+      spoton  : sudo mdutil -a -i on
+
+      # Lock the computer
+      afk : /System/Library/CoreServices/Menu\ Extras/User.menu/Contents/Resources/CGSession -suspend
+
+      # Print the current path settings one-per-line
+      path : echo -e ${PATH//:/\\n}
+
+  # Configure the finder
   finder:
     open_on_mount            : true     # Open Finder when a drive is connected
     show_hidden_files        : true     # Show hidden files in Finder
@@ -46,9 +91,11 @@ macos:
     default_view             : "column" # Which view to use by default (options "cover", "list", "column", "icon")
     show_user_library        : true     # Show the user's ~/Library/ folder in Finder
 
+  # Configure the keyboard
   keyboard:
     auto_correct             : false    # Turn off Apple's global auto-correct
 
+  # Configure the mouse
   mouse:
     tap_to_click             : true     # Turn tapping on trackpad to click on
     hot_corners:
@@ -57,6 +104,7 @@ macos:
       bottom_left            : "Start Screen Saver"
       bottom_right           : "Desktop"
 
+  # Configure miscellaneous system options
   system:
     battery:
       show_percent           : true       # Whether to show the battery percentage in the menu bar

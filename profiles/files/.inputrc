@@ -1,0 +1,67 @@
+##################################################
+# Enhanced Shortcuts
+
+"\e[5C": forward-word   # [Option + Left]  Move cursor left one word
+"\e[5D": backward-word  # [Option + Right] Move cursor right one word
+"\e\e[C": forward-word
+"\e\e[D": backward-word
+
+"\e[A": history-search-backward  # [Up Arrow]       'ssh <up>' gets last 'ssh' command used
+"\e[B": history-search-forward   # [Down Arrow]     'ssh <down>' get next 'ssh' command used
+"\e[C": forward-char
+"\e[D": backward-char
+
+"\e[1~": beginning-of-line
+"\e[4~": end-of-line
+"\e[5~": beginning-of-history
+"\e[6~": end-of-history
+"\e[3~": delete-char
+"\e[2~": quoted-insert
+
+
+
+##################################################
+# Terminal Configuration
+
+# Don't output everything on one line
+set horizontal-scroll-mode off
+
+# Enable 8-bit input
+set meta-flag on
+set input-meta on
+
+# Turn off 8-bit stripping
+set convert-meta off
+
+# Keep 8-bit for display
+set output-meta on
+
+# Turn off terminal bell
+set bell-style none
+
+# Turn on colored completions
+set colored-completion-prefix on
+
+# Blink the matching paren on a line
+set blink-matching-paren on
+
+# Auto-completion in case-insensitive format
+set completion-ignore-case on
+
+# Treat _ and - as the same character when auto-completing
+set completion-map-case on
+
+# Expand tilde to home directory
+set expand-tilde on
+
+# List ambiguous messages instead of error
+set show-all-if-ambiguous on
+
+# File type character appended to filename when completing
+set visible-stats on
+
+# Colored stats
+set colored-stats on
+
+# Set vi as default editor
+set -o vi
