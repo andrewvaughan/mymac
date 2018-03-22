@@ -5,6 +5,34 @@
 - name  : System
   block :
 
+    - name  : Battery
+      block :
+
+        - name     : Setting percentage visibility in menu
+          osx_defaults :
+            domain : com.apple.menuextra.battery
+            key    : ShowPercent
+            type   : string
+            value  : "{{ 'YES' if macos.system.battery.show_percent == true else 'NO' }}"
+          when :
+            - macos.system.battery.show_percent is defined
+
+
+        - name     : Setting time visibility in menu
+          osx_defaults :
+            domain : com.apple.menuextra.battery
+            key    : ShowTime
+            type   : string
+            value  : "{{ 'YES' if macos.system.battery.show_time == true else 'NO' }}"
+          when :
+            - macos.system.battery.show_time is defined
+
+      when :
+        - macos.system.battery is defined
+        - macos.system.battery != false
+        - macos.system.battery != []
+
+
     - name  : Screenshots
       block :
 

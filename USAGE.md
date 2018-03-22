@@ -116,6 +116,14 @@ macos:
       top_right              : false
       bottom_left            : "Start Screen Saver"
       bottom_right           : "Desktop"
+
+  system:
+    battery:
+      show_percent           : true       # Whether to show the battery percentage in the menu bar
+      show_time              : true       # Whether to show time remaining in the menu bar
+    screenshots:
+      location               : ~/Desktop  # The location to save screenshots to
+      format                 : png        # The format to save screenshots as (png, jpg, gif, pdf, or tiff)
 ```
 
 #### macos.version_check
@@ -233,6 +241,28 @@ functionality will not be changed.  Additionally the following options are also 
 | `Show Windows`         | Show all application windows          |
 | `Sleep`                | Set the system to sleep               |
 | `Start Screen Saver`   | Start the Screen Saver                |
+
+#### macos.system
+
+These are settings that affect various parts of the system and their behavior.  There are multiple groups of options,
+which include:
+
+`battery`
+
+| Feature        | Options           | Default | Description                                                       |
+|:--------------:|:-----------------:|:-------:|-------------------------------------------------------------------|
+| `show_percent` | `true` or `false` | `true`  | Whether to show the battery percentage in the menu bar            |
+| `show_time`    | `true` or `false` | `false` | Whether to show the remaining time of the battery in the menu bar |
+
+`screenshots`
+
+| Feature    | Options                               | Default      | Description                                           |
+|:----------:|:-------------------------------------:|:------------:|-------------------------------------------------------|
+| `location` | varies                                | `~/Desktop`  | The location to store screenshots when they are taken |
+| `format`   | `jpg`, `png`, `tiff`, `gif`, or `pdf` | `jpg`        | The file format to save screenshots as                |
+
+Setting any non-boolean settings to `false` will skip that particular section.  It is recommended that you omit these
+sections from your profile, however, if you do not intend to set them.
 
 ### sudoers
 

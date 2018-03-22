@@ -58,6 +58,9 @@ macos:
       bottom_right           : "Desktop"
 
   system:
+    battery:
+      show_percent           : true       # Whether to show the battery percentage in the menu bar
+      show_time              : true       # Whether to show time remaining in the menu bar
     screenshots:
       location               : ~/Desktop  # The location to save screenshots to
       format                 : png        # The format to save screenshots as (png, jpg, gif, pdf, or tiff)
