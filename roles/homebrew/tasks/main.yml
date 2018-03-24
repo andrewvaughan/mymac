@@ -1,0 +1,10 @@
+#
+# Role that manages Homebrew on a MacOSX platform.
+#
+---
+
+- include_role:
+    name             : homebrew
+    tasks_from       : install
+    allow_duplicates : no
+    private          : yes

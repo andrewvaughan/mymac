@@ -1,0 +1,9 @@
+---
+- hosts      : all
+  connection : local
+
+  tasks:
+
+    - name   : Installing Homebrew applications
+      include_role:
+        name : homebrew

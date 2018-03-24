@@ -1,0 +1,108 @@
+#
+# Installs Homebrew on the platform.
+#
+---
+
+# Setup paths
+- name    : Setting parent directory permissions
+  become  : yes
+  file:
+    path  : "{{ homebrew.install.directory | dirname }}"
+    owner : root
+    state : directory
+
+
+# - name    : Ensuring repo directory exists
+#   become  : yes
+#   file:
+#     path  : "{{ homebrew.install.dest|default('') }}"
+#     owner : "{{ ansible_user_id }}"
+#     group : admin
+#     state : directory
+#     mode  : 0775
+#
+#
+# # Install and set permissions
+# - name : Installing repository
+#   git:
+#     repo           : "{{ homebrew.install.repo|default('https://github.com/Homebrew/brew') }}"
+#     version        : master
+#     dest           : "{{ homebrew.install.dest|default('/usr/local/Homebrew') }}"
+#     update         : true
+#     accept_hostkey : true
+#     depth          : 1
+#
+# - name    : Ensuring binary path permissions are set
+#   become  : yes
+#   file:
+#     path  : "{{ homebrew.install.bin|default('/usr/local/bin') }}"
+#     state : directory
+#     owner : "{{ ansible_user_id }}"
+#     group : admin
+#     mode  : 0775
+#
+# - name      : Ensuring install path permissions are set
+#   become    : yes
+#   file:
+#     path    : "{{ homebrew.install.dest|default('/usr/local/Homebrew') }}"
+#     state   : directory
+#     owner   : "{{ ansible_user_id }}"
+#     group   : admin
+#     recurse : true
+#
+# - name : Checking if binary already exists
+#   stat:
+#     path   : "{{ homebrew.install.bin|default('/usr/local/bin') }}/brew"
+#   register : homebrew_binary
+#
+# - name    : Symlinking repository binary to install path
+#   become  : yes
+#   file:
+#     src   : "{{ homebrew.install.dest|default('/usr/local/Homebrew') }}/bin/brew"
+#     dest  : "{{ homebrew.install.bin|default('/usr/local/bin') }}/brew"
+#     state : link
+#   when:
+#     - homebrew_binary.stat.exists == false
+#
+# - name      : Checking install directories
+#   become    : yes
+#   file:
+#     path    : "{{ homebrew.install.parent|default('/usr/local') }}/{{ item }}"
+#     state   : directory
+#     owner   : "{{ ansible_user_id }}"
+#     group   : admin
+#     recurse : true
+#   with_items:
+#     - Cellar
+#     - Homebrew
+#     - Frameworks
+#     - Caskroom
+#     - bin
+#     - etc
+#     - include
+#     - lib
+#     - opt
+#     - sbin
+#     - share
+#     - share/zsh
+#     - share/zsh/site-functions
+#     - var
+#
+# - name: Updating Homebrew to latest version
+#   command : "{{ homebrew.install.bin|default('/usr/local/bin') }}/brew update --force"
+#   when:
+#     - (homebrew_binary.stat.exists == false) or (homebrew.update_homebrew == true)
+#
+#
+# # Tap Configurations
+# - name    : Configuring taps
+#   homebrew_tap:
+#     tap   : "{{ item }}"
+#     state : present
+#   with_items : "{{ homebrew.taps }}"
+#
+#
+# # Mark this script complete in case others need to reference it
+# - name     : Done
+#   set_fact :
+#     mymac  : "{{ mymac|default([]) + [{ 'install_homebrew': true }] }}"

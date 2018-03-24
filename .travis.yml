@@ -34,14 +34,14 @@ script:
   - ansible-galaxy install -r requirements.yml
 
   # Check our syntax before beginning
-  - ansible-playbook playbook.yml --syntax-check
+  - ansible-playbook test.yml --syntax-check
 
   # Run the playbook to see if it gets to the end
-  - ansible-playbook playbook.yml
+  - ansible-playbook test.yml
 
   # Repeat the playbook to ensure that all changes were identified and skipped (idempotence test)
   - DIFFTEST=$(mktemp)
-  - ansible-playbook playbook.yml | tee -a ${DIFFTEST}
+  - ansible-playbook test.yml | tee -a ${DIFFTEST}
   - >
     cat ${DIFFTEST}
     | grep -q 'changed=0.*failed=0'

@@ -15,7 +15,6 @@
 #   mas search "[App Name]"
 #
 ---
-
 - name  : AppStore
   block :
 

@@ -1,0 +1,5 @@
+---
+homebrew:
+  install:
+    directory : /usr/local/Homebrew
+    
